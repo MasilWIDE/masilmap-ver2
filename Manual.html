@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MasilMAP ver2 — Manual</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Noto+Serif+KR:wght@400;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --beige:    #FFFFFF;
+      --beigeAlt: #EFEAE0;
+      --cream:    #FAF4E8;
+      --terra:    #D26A4E;
+      --terraSoft:#F0B997;
+      --terraDeep:#A4422A;
+      --olive:    #788B4A;
+      --oliveDeep:#5A6B33;
+      --ink:      #3A2E22;
+      --muted:    #8A7A65;
+      --faint:    rgba(58,46,34,0.45);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', system-ui, sans-serif;
+      background: var(--beige);
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+      line-height: 1.6;
+    }
+    a { color: var(--terra); text-decoration: none; font-weight: 700; }
+    a:hover { text-decoration: underline; }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88em;
+      background: var(--cream);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--terraDeep);
+    }
+
+    .page {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 64px 32px 96px;
+    }
+
+    /* Header */
+    .mark {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 700; font-size: 22px;
+      color: var(--terra);
+      letter-spacing: -0.01em;
+    }
+    .mark svg { display: block; }
+
+    .cap {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--muted);
+    }
+    .cap--terra { color: var(--terra); }
+
+    h1 {
+      font-size: 56px; font-weight: 900;
+      letter-spacing: -0.03em; line-height: 1.04;
+      margin: 24px 0 16px;
+    }
+    h1 em {
+      font-style: italic; font-family: 'Noto Serif KR', serif;
+      font-weight: 700; color: var(--terra);
+    }
+    .lede {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 17px; line-height: 1.75;
+      color: var(--ink); font-weight: 400;
+      margin: 0 0 8px;
+      max-width: 640px;
+    }
+    .meta {
+      display: flex; gap: 18px;
+      margin-top: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      color: var(--muted);
+    }
+    .meta span + span::before {
+      content: '·'; margin-right: 18px; color: var(--faint);
+    }
+
+    .hairline {
+      display: flex; align-items: center; gap: 12px;
+      margin: 48px 0 28px;
+    }
+    .hairline::before, .hairline::after {
+      content: ''; flex: 1; height: 1px; background: var(--beigeAlt);
+    }
+    .hairline .cap { white-space: nowrap; }
+
+    /* Menu cards */
+    .menu {
+      background: var(--cream);
+      border-radius: 24px;
+      padding: 32px 36px;
+      margin-bottom: 24px;
+      box-shadow: 0 6px 22px rgba(58,46,34,0.06);
+    }
+    .menu__head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 16px; margin-bottom: 8px;
+    }
+    .menu__title {
+      font-size: 28px; font-weight: 900;
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--ink); margin: 0;
+    }
+    .menu__title em {
+      font-style: italic; font-family: 'Noto Serif KR', serif;
+      font-weight: 700; color: var(--terra);
+      margin-right: 8px;
+    }
+    .menu__serial {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px; font-weight: 600;
+      color: var(--terra); letter-spacing: 0.05em;
+    }
+    .menu__role {
+      font-size: 14px; font-weight: 700; color: var(--muted);
+      letter-spacing: -0.005em;
+      margin: 4px 0 18px;
+    }
+    .menu__body p {
+      margin: 0 0 14px; font-size: 14px; line-height: 1.7;
+      color: var(--ink); font-weight: 500;
+    }
+    .menu__body ul {
+      margin: 0 0 14px; padding-left: 18px;
+    }
+    .menu__body li {
+      font-size: 13px; line-height: 1.7;
+      color: var(--ink); font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .menu__body li strong {
+      font-weight: 800; color: var(--terraDeep);
+    }
+
+    .chips {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-top: 16px;
+    }
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 11px; border-radius: 999px;
+      font-size: 11px; font-weight: 700;
+      background: rgba(210,106,78,0.12); color: var(--terra);
+    }
+    .chip--olive { background: rgba(120,139,74,0.14); color: var(--oliveDeep); }
+    .chip--auth  { background: rgba(58,46,34,0.08); color: var(--ink); }
+
+    /* Footer note */
+    .foot {
+      margin-top: 56px; padding-top: 24px;
+      border-top: 1px solid var(--beigeAlt);
+      font-size: 12px; color: var(--muted); font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 16px; flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <!-- HEADER -->
+    <div class="mark">
+      <svg width="24" height="32" viewBox="0 0 200 260" fill="none">
+        <path d="M100 16 C145 16 180 49 180 92 C180 138 132 188 108 222 C103 229 97 229 92 222 C68 188 20 138 20 92 C20 49 55 16 100 16 Z" fill="#D26A4E"/>
+        <circle cx="100" cy="92" r="44" fill="#FAF4E8"/>
+        <path d="M100 66 L132 92 L124 92 L124 116 L76 116 L76 92 L68 92 Z" fill="#D26A4E"/>
+      </svg>
+      <span>masilmap</span>
+    </div>
+
+    <div style="margin-top: 28px;">
+      <div class="cap cap--terra">MASILMAP VER2 · NAVIGATION MANUAL</div>
+      <h1>상단 메뉴는<br/>각각 <em>어디로</em> 데려갈까?</h1>
+      <p class="lede">
+        masilmap의 상단 네비게이션 6개 항목이 무엇을 보여주는지,
+        어떤 라우트로 연결되는지, 어떤 레이아웃을 강제하는지 정리한
+        한 장짜리 안내서입니다.
+      </p>
+      <div class="meta">
+        <span>6 MENUS</span>
+        <span>13 SCREENS</span>
+        <span>2026 SPRING</span>
+      </div>
+    </div>
+
+    <div class="hairline"><span class="cap">PRIMARY NAVIGATION</span></div>
+
+    <!-- 01 홈 -->
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>01</em>홈</h2>
+        <span class="menu__serial">→ route: home · layout: split</span>
+      </div>
+      <div class="menu__role">매거진형 랜딩 · 지도 좌 / 리스트 우 50:50</div>
+      <div class="menu__body">
+        <p>
+          서비스의 첫 인상이자 가장 균형 잡힌 기본 화면. 좌측에 한국 지도(SVG 일러스트)가 펼쳐지고
+          우측에는 현재 영역의 건축물 카드 리스트가 위에서 아래로 흐릅니다.
+          상단에는 큰 헤드라인 "오늘은 어느 동네를 <em>마실</em> 다녀올까요?"와
+          타입(한옥·근현대·미술관 등) / 지역 필터 바.
+        </p>
+        <ul>
+          <li><strong>지도 핀 클릭</strong> → 우측 리스트의 해당 카드가 하이라이트, 핀 주변에 펄스 애니메이션</li>
+          <li><strong>리스트 카드 클릭</strong> → 지도 핀이 활성화 (양방향 동기화)</li>
+          <li>하단에 <strong>이번 호 큐레이션</strong> 3개 컬렉션 카드 밴드</li>
+        </ul>
+        <div class="chips">
+          <span class="chip">layout: split</span>
+          <span class="chip--olive chip">9 BUILDINGS · 3 COLLECTIONS</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 02 지도 -->
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>02</em>지도</h2>
+        <span class="menu__serial">→ route: home · layout: mapPrimary</span>
+      </div>
+      <div class="menu__role">탐색 우선 · 지도 풀블리드 + 플로팅 패널</div>
+      <div class="menu__body">
+        <p>
+          같은 home 라우트지만 레이아웃이 <code>mapPrimary</code>로 강제되는 모드.
+          지도가 화면 전체를 채우고, 좌측에는 NOW EXPLORING 패널(작은 건물 리스트),
+          우측에는 현재 선택된 건축물의 큰 카드가 떠 있는 형태입니다.
+        </p>
+        <ul>
+          <li>"지도 위에서 오늘 갈 곳을 골라요" — 탐색을 가장 빠르게 끝내는 모드</li>
+          <li>우측 큰 카드 클릭 → 해당 건축물 상세 화면으로 진입</li>
+          <li>상단 nav는 <code>variant="transparent"</code>로 지도 위에 떠 있음</li>
+        </ul>
+        <div class="chips">
+          <span class="chip">layout: mapPrimary</span>
+          <span class="chip--olive chip">FULL-BLEED MAP</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 03 건축물 -->
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>03</em>건축물</h2>
+        <span class="menu__serial">→ route: detail · id: kongkan (기본)</span>
+      </div>
+      <div class="menu__role">단일 건축물 큐레이션 페이지 (잡지 피처 톤)</div>
+      <div class="menu__body">
+        <p>
+          첫 번째 건축물(<strong>공간 사옥</strong>, id <code>kongkan</code>)의 상세 화면으로 바로 진입.
+          큰 헤로 갤러리 + 건축가/연도/주소 등의 메타 + 에디터 longRead 본문 +
+          위치 미니맵 + 같은 컬렉션의 다른 건물 추천으로 구성됩니다.
+        </p>
+        <ul>
+          <li>레이아웃 변형 3종: <code>hero</code> · <code>sidebar</code> · <code>longform</code> (Tweaks 패널에서 전환)</li>
+          <li>지도/리스트에서 핀이나 카드를 누르면 같은 detail 화면이 해당 건물 id로 열림</li>
+          <li>본문 하단에 <strong>이 건물과 연결된 외부 공간</strong>(숙박·식음·체험) 진입점</li>
+        </ul>
+        <div class="chips">
+          <span class="chip">layout: hero / sidebar / longform</span>
+          <span class="chip--olive chip">9 BUILDINGS</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 04 코스 -->
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>04</em>코스</h2>
+        <span class="menu__serial">→ route: course</span>
+      </div>
+      <div class="menu__role">큐레이터가 묶은 마실 코스 인덱스 + 도슨트 예약</div>
+      <div class="menu__body">
+        <p>
+          한 건축물이 아니라 <strong>"코스"</strong>를 보여주는 화면. 거리·소요시간·난이도·도슨트
+          유무·가격이 명확히 표기된 4개의 큐레이션 코스가 정렬됩니다.
+        </p>
+        <ul>
+          <li><strong>C-01 북촌</strong>: 김수근 검은 벽돌 ↔ 종묘 회랑, 4시간 (도슨트 ₩32,000)</li>
+          <li><strong>C-02 콘크리트와 빛</strong>: 1박 2일 미술관 순례 (₩280,000)</li>
+          <li><strong>C-03 부석사</strong>: 가을 한정 당일 왕복</li>
+          <li><strong>C-04 DDP 야간</strong>: 셀프 무료 투어</li>
+        </ul>
+        <p>
+          코스 카드 클릭 → 코스 상세 → <strong>예약 플로우</strong>(도슨트 선택 → 토스 결제 → 외부 공간 연결)로 이어집니다.
+        </p>
+        <div class="chips">
+          <span class="chip">4 COURSES</span>
+          <span class="chip--olive chip">+ 예약 3단 플로우</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 05 컬렉션 -->
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>05</em>컬렉션</h2>
+        <span class="menu__serial">→ route: collection</span>
+      </div>
+      <div class="menu__role">에디터/큐레이터가 묶은 매거진 특집 인덱스</div>
+      <div class="menu__body">
+        <p>
+          코스가 <strong>"실제로 걷는 동선"</strong>이라면, 컬렉션은 <strong>"읽는 큐레이션"</strong>.
+          큐레이터의 노트와 큰 건물 슬라이드로 구성된 매거진 특집 6편을 펼쳐봅니다.
+        </p>
+        <ul>
+          <li><strong>Vol.01 벽돌의 시간</strong> — 한국 모더니즘 건축 8선 (이주영 · 14분)</li>
+          <li><strong>Vol.02 한옥, 다시 짓다</strong> — 21세기 한옥 12선 (박정현)</li>
+          <li><strong>Vol.03 콘크리트와 빛</strong> — 미술관 산책 (최은영)</li>
+          <li><strong>Vol.04 바다 곁의 집들</strong>, <strong>Vol.05 도시의 틈</strong>, <strong>Vol.06 밤의 건축</strong></li>
+        </ul>
+        <p>
+          레이아웃 변형 3종: <code>magazine</code>(큰 표지 + 에디터 노트) · <code>index</code>(잡지 차례) · <code>bento</code>(비대칭 그리드).
+        </p>
+        <div class="chips">
+          <span class="chip">layout: magazine / index / bento</span>
+          <span class="chip--olive chip">6 COLLECTIONS</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 06 내 마실 -->
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>06</em>내 마실</h2>
+        <span class="menu__serial">→ route: mypage · 로그인 시에만 노출</span>
+      </div>
+      <div class="menu__role">개인 활동 대시보드 — 방문/저장/예약</div>
+      <div class="menu__body">
+        <p>
+          로그인한 사용자에게만 보이는 마이페이지. 내가 다녀온 건축물,
+          저장한 건축물·코스, 예약 내역(예정/완료)이 한 화면에 모입니다.
+        </p>
+        <ul>
+          <li>방문 카운트 · 저장 건축물 · 저장 코스 · 팔로워 통계</li>
+          <li>예약 내역: 예정 2건(북촌 / 콘크리트 1박2일) + 완료 1건(DDP 야간)</li>
+          <li>본인 소개·핸들(<code>@minseo</code>)·가입일</li>
+        </ul>
+        <div class="chips">
+          <span class="chip--auth chip">🔒 로그인 필요</span>
+          <span class="chip--olive chip">USER · 민서 (@minseo)</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- AUTH section -->
+    <div class="hairline"><span class="cap">AUTH FLOWS</span></div>
+
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>+1</em>로그인</h2>
+        <span class="menu__serial">→ route: login</span>
+      </div>
+      <div class="menu__role">돌아온 사용자 · 이메일+비번 / 소셜</div>
+      <div class="menu__body">
+        <p>
+          "로그인" 텍스트 클릭 시 진입. 이메일+비밀번호 폼 + 카카오/네이버/구글 소셜 로그인.
+          하단에 <strong>"처음 오셨나요? 마실 시작하기 →"</strong> 링크로 온보딩과 연결.
+        </p>
+        <div class="chips">
+          <span class="chip">simple form</span>
+          <span class="chip--auth chip">로그아웃 상태에서만 진입 의미</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>+2</em>마실 시작하기 (온보딩)</h2>
+        <span class="menu__serial">→ route: onboarding · 4 step</span>
+      </div>
+      <div class="menu__role">처음 오는 사용자 · 가입 + 취향 등록 + 첫 큐레이션 선물</div>
+      <div class="menu__body">
+        <p>
+          단순 회원가입이 아니라 <strong>"잡지를 처음 펴는 의식"</strong>. 4단계 진행:
+        </p>
+        <ul>
+          <li><strong>STEP 1</strong> · 가입 (이름·이메일·비번·약관) <em style="color: var(--muted)">또는 소셜로 건너뛰기</em></li>
+          <li><strong>STEP 2</strong> · "어느 동네부터 마실 다녀올까요?" — 7개 지역 카드에서 하나 선택</li>
+          <li><strong>STEP 3</strong> · "어떤 건축이 끌리세요?" — 한옥/근현대/미술관 등 칩 다중 선택</li>
+          <li><strong>STEP 4</strong> · "첫 큐레이션이 도착했어요" — 취향에 맞는 컬렉션 1개를 선물처럼 제시 → "마실 시작하기 →" 로 홈 진입</li>
+        </ul>
+        <p>
+          step 1 하단에 "이미 회원이신가요? <strong>로그인 →</strong>" 링크 제공. 두 화면이 서로 갈아탈 수 있게 연결.
+        </p>
+        <div class="chips">
+          <span class="chip">4 steps</span>
+          <span class="chip--olive chip">취향 → 큐레이션 매칭</span>
+          <span class="chip--auth chip">완료 시 자동 로그인</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="menu">
+      <div class="menu__head">
+        <h2 class="menu__title"><em>+3</em>로그아웃</h2>
+        <span class="menu__serial">우측 상단 "로그아웃" 텍스트</span>
+      </div>
+      <div class="menu__role">상태 토글 · mypage에 있으면 홈으로 리다이렉트</div>
+      <div class="menu__body">
+        <ul>
+          <li><strong>로그아웃 상태</strong>: nav "내 마실" 숨김, "로그인" 텍스트 + "마실 시작하기" CTA</li>
+          <li><strong>로그인 상태</strong>: nav "내 마실" 노출, "로그아웃" 텍스트 + "내 마실 →" CTA</li>
+        </ul>
+      </div>
+    </article>
+
+    <div class="foot">
+      <div>masilmap · 마실그라운드의 B2C 서비스</div>
+      <div>© 2026 마실그라운드</div>
+    </div>
+
+  </main>
+</body>
+</html>
