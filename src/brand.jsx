@@ -213,10 +213,10 @@ function MAvatarStack({ colors = [M.terra, M.olive, M.terraDeep, M.oliveSoft], s
    Names: home, map, users, user, heart, search, walk, sparkle,
           bookmark, calendar, clock, location, arrow, chevron,
           plus, share, settings, bell, camera, edit                 */
-function MIcon({ name, size = 20, color = M.ink, stroke = 1.8 }) {
+function MIcon({ name, size = 20, color = M.ink, stroke = 1.8, style = {} }) {
   const p = { stroke: color, strokeWidth: stroke, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" };
   const v = `0 0 24 24`;
-  const wh = { width: size, height: size, viewBox: v };
+  const wh = { width: size, height: size, viewBox: v, style };
   switch (name) {
     case "home":      return (<svg {...wh}><path d="M4 11 L12 4 L20 11 L20 20 L4 20 Z" {...p}/></svg>);
     case "map":       return (<svg {...wh}><path d="M3 6 L9 4 L15 6 L21 4 L21 18 L15 20 L9 18 L3 20 Z M9 4 L9 18 M15 6 L15 20" {...p}/></svg>);

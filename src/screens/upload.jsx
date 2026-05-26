@@ -312,7 +312,7 @@ function UploadDeepScreen({ onNavigate }) {
                   <span style={{ fontSize: 11, color: M.faint, fontWeight: 600 }}>최대 50MB · 다중 업로드 가능</span>
                 </div>
               </div>
-              <NavRow onPrev={null} onNext={() => setSection("info")} nextLabel="다음 · 상세 속성"/>
+              <SectionNavRow onPrev={null} onNext={() => setSection("info")} nextLabel="다음 · 상세 속성"/>
             </div>
           )}
 
@@ -334,7 +334,7 @@ function UploadDeepScreen({ onNavigate }) {
                   <MInput label="입장료" placeholder="예: 무료 / ₩ 15,000"/>
                 </div>
               </div>
-              <NavRow onPrev={() => setSection("photos")} onNext={() => setSection("intent")} nextLabel="다음 · 건축가의 한마디"/>
+              <SectionNavRow onPrev={() => setSection("photos")} onNext={() => setSection("intent")} nextLabel="다음 · 건축가의 한마디"/>
             </div>
           )}
 
@@ -358,7 +358,7 @@ function UploadDeepScreen({ onNavigate }) {
                   <span>0 / 4,000자</span>
                 </div>
               </div>
-              <NavRow onPrev={() => setSection("info")} onNext={() => setSection("rights")} nextLabel="다음 · 권리 게이트"/>
+              <SectionNavRow onPrev={() => setSection("info")} onNext={() => setSection("rights")} nextLabel="다음 · 권리 게이트"/>
             </div>
           )}
 
@@ -474,7 +474,7 @@ function UploadDeepScreen({ onNavigate }) {
                 </div>
               </div>
 
-              <NavRow onPrev={() => setSection("intent")} onNext={() => onNavigate("admin-content")} nextLabel="등록 완료 → 검수 대기"/>
+              <SectionNavRow onPrev={() => setSection("intent")} onNext={() => onNavigate("admin-content")} nextLabel="등록 완료 → 검수 대기"/>
             </div>
           )}
         </div>
@@ -485,7 +485,7 @@ function UploadDeepScreen({ onNavigate }) {
   );
 }
 
-function NavRow({ onPrev, onNext, nextLabel }) {
+function SectionNavRow({ onPrev, onNext, nextLabel }) {
   return (
     <div style={{ display: "flex", justifyContent: "space-between", paddingTop: 10 }}>
       {onPrev

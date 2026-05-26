@@ -450,7 +450,7 @@ function Check({ on, onToggle, label }) {
    ================================================================ */
 function BookingExternalScreen({ onNavigate, spaceId }) {
   const s = EXTERNAL_SPACES.find((x) => x.id === spaceId) || EXTERNAL_SPACES[0];
-  const b = BUILDINGS.find((x) => x.id === s.building);
+  const b = BUILDINGS.find((x) => x.id === s.building) || BUILDINGS[0];
   const [showModal, setShowModal] = React.useState(false);
 
   return (

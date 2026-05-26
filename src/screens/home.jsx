@@ -417,11 +417,13 @@ function HomeScreen({ route, onNavigate, t }) {
                 variant="compact"
               />
             ))}
-            <div style={{ padding: 12, textAlign: "center" }}>
-              <MButton kind="outline" size="md" onClick={() => onNavigate("detail", selected.id)}>
-                {selected.name} 상세 보기 →
-              </MButton>
-            </div>
+            {selected && (
+              <div style={{ padding: 12, textAlign: "center" }}>
+                <MButton kind="outline" size="md" onClick={() => onNavigate("detail", selected.id)}>
+                  {selected.name} 상세 보기 →
+                </MButton>
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -498,13 +500,15 @@ function HomeScreen({ route, onNavigate, t }) {
               <div style={{ height: 420, borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.card }}>
                 <MasilMap buildings={filtered} selectedId={selectedId} onSelect={setSelectedId} compact />
               </div>
-              <div style={{ marginTop: 16, padding: 18, background: M.cream, borderRadius: MR.card, boxShadow: MS.cardSm }}>
-                <Serial color={M.terra}>#{selected.no}</Serial>
-                <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "4px 0 4px" }}>{selected.name}</div>
-                <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>{selected.architect} · {selected.year} · {selected.region}</div>
-                <p style={{ fontSize: 13, lineHeight: 1.55, color: M.ink, fontWeight: 500, margin: "10px 0 12px" }}>{selected.intro}</p>
-                <MButton kind="primary" size="sm" onClick={() => onNavigate("detail", selected.id)}>상세 →</MButton>
-              </div>
+              {selected && (
+                <div style={{ marginTop: 16, padding: 18, background: M.cream, borderRadius: MR.card, boxShadow: MS.cardSm }}>
+                  <Serial color={M.terra}>#{selected.no}</Serial>
+                  <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "4px 0 4px" }}>{selected.name}</div>
+                  <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>{selected.architect} · {selected.year} · {selected.region}</div>
+                  <p style={{ fontSize: 13, lineHeight: 1.55, color: M.ink, fontWeight: 500, margin: "10px 0 12px" }}>{selected.intro}</p>
+                  <MButton kind="primary" size="sm" onClick={() => onNavigate("detail", selected.id)}>상세 →</MButton>
+                </div>
+              )}
             </div>
           </section>
         </>
