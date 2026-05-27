@@ -193,6 +193,29 @@ const parseGfa = (s) => {
   const m = String(s || "").replace(/,/g, "").match(/\d+(\.\d+)?/);
   return m ? parseFloat(m[0]) : 0;
 };
+
+/* 지역 매핑 — region 문자열 첫 단어로 광역권 묶기 */
+const KR_PROVINCES = [
+  { id: "kr-seoul",       name: "서울",            matches: ["서울"] },
+  { id: "kr-gyeonggi",    name: "경기·인천",       matches: ["경기", "인천"] },
+  { id: "kr-gangwon",     name: "강원",            matches: ["강원"] },
+  { id: "kr-chungcheong", name: "충청·대전·세종", matches: ["충북", "충남", "대전", "세종"] },
+  { id: "kr-jeolla",      name: "전라·광주",       matches: ["전북", "전남", "광주"] },
+  { id: "kr-gyeongsang",  name: "경상·부산·대구·울산", matches: ["경북", "경남", "부산", "대구", "울산"] },
+  { id: "kr-jeju",        name: "제주",            matches: ["제주"] },
+];
+const INTL_COUNTRIES = [
+  { id: "intl-jp",    name: "일본",  flag: "🇯🇵" },
+  { id: "intl-cn",    name: "중국",  flag: "🇨🇳" },
+  { id: "intl-us",    name: "미국",  flag: "🇺🇸" },
+  { id: "intl-eu",    name: "유럽",  flag: "🌍" },
+  { id: "intl-other", name: "그 외", flag: "🌏" },
+];
+const provinceIdOf = (b) => {
+  const prov = String(b.region || "").split(" ")[0];
+  const m = KR_PROVINCES.find((p) => p.matches.includes(prov));
+  return m ? m.id : null;
+};
 const inputStyle = {
   width: "100%", padding: "8px 12px", borderRadius: 10,
   border: `1px solid ${M.beigeAlt}`,
@@ -211,6 +234,7 @@ function BuildingsIndexScreen({ onNavigate }) {
 
   // 필터 state
   const [projects, setProjects] = React.useState(new Set(["building"]));     // 기본 건축물
+  const [regions, setRegions]   = React.useState(new Set());                  // 지역 키 set
   const [uses, setUses]         = React.useState(new Set());                  // typeKey set
   const [areaType, setAreaType] = React.useState("gfa");                      // 대지/건축/연면적
   const [areaMin, setAreaMin]   = React.useState(0);
@@ -240,8 +264,23 @@ function BuildingsIndexScreen({ onNavigate }) {
     return found.length === 3 ? found : BUILDINGS.slice(0, 3);
   })();
 
+  // 지역별 카운트 (한국 광역권만, 현재 데이터 기준)
+  const provinceCounts = (() => {
+    const c = {};
+    BUILDINGS.forEach((b) => {
+      const id = provinceIdOf(b);
+      if (id) c[id] = (c[id] || 0) + 1;
+    });
+    return c;
+  })();
+  const krTotal = Object.values(provinceCounts).reduce((a, b) => a + b, 0);
+
   // 필터링
   const filtered = BUILDINGS.filter((b) => {
+    if (regions.size > 0) {
+      const id = provinceIdOf(b);
+      if (!id || !regions.has(id)) return false;
+    }
     if (uses.size > 0 && !uses.has(b.typeKey)) return false;
     if (areaType === "gfa") {
       const g = parseGfa(b.metrics?.gfa);
@@ -261,9 +300,10 @@ function BuildingsIndexScreen({ onNavigate }) {
   const showPicks  = safePage === 1;
 
   // 활성 배지 계산
-  const usesBadge   = uses.size;
-  const areaBadge   = (areaMin > 0 || areaMax < 200000) ? 1 : 0;
-  const floorsBadge = (floorsMin > 1 || floorsMax < 50 || floorsType !== "above") ? 1 : 0;
+  const regionBadge  = regions.size;
+  const usesBadge    = uses.size;
+  const areaBadge    = (areaMin > 0 || areaMax < 200000) ? 1 : 0;
+  const floorsBadge  = (floorsMin > 1 || floorsMax < 50 || floorsType !== "above") ? 1 : 0;
   const projectBadge = 0; // 항상 "건축물" 기본 → 배지 없음
 
   // TYPES (without 'all') for 용도 chips
@@ -369,6 +409,50 @@ function BuildingsIndexScreen({ onNavigate }) {
               </div>
             </FilterChip>
 
+            {/* === 지역 === */}
+            <FilterChip label="지역" badge={regionBadge}
+              open={openMenu === "region"} onToggle={() => toggleMenu("region")}
+              icon="location" width={320}>
+              {/* 한국 섹션 */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                <span style={{ fontSize: 12, color: M.ink, fontWeight: 800 }}>🇰🇷 한국</span>
+                <span style={{ fontSize: 11, color: M.muted, fontWeight: 700 }}>{krTotal}곳</span>
+              </div>
+              {KR_PROVINCES.map((p) => (
+                <CheckRow key={p.id}
+                  checked={regions.has(p.id)}
+                  onChange={() => toggleSet(regions, p.id, setRegions)}
+                  label={p.name}
+                  count={provinceCounts[p.id] || 0}/>
+              ))}
+
+              {/* 국제 섹션 */}
+              <div style={{
+                marginTop: 14, paddingTop: 12,
+                borderTop: `1px solid ${M.beigeAlt}`,
+                display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6,
+              }}>
+                <span style={{ fontSize: 12, color: M.ink, fontWeight: 800 }}>🌏 국제</span>
+                <span style={{ fontSize: 10, color: M.terra, fontWeight: 800 }}>준비중</span>
+              </div>
+              {INTL_COUNTRIES.map((c) => (
+                <CheckRow key={c.id}
+                  checked={false} disabled
+                  label={`${c.flag} ${c.name}`}/>
+              ))}
+              <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>
+                ※ 국제 건축은 큐레이션 준비중입니다
+              </div>
+
+              {regions.size > 0 && (
+                <div onClick={() => { setRegions(new Set()); setPage(1); }} style={{
+                  marginTop: 10, padding: "8px 0", textAlign: "center",
+                  fontSize: 12, fontWeight: 700, color: M.terra,
+                  cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
+                }}>모두 해제</div>
+              )}
+            </FilterChip>
+
             {/* === 용도 === */}
             <FilterChip label="용도" badge={usesBadge}
               open={openMenu === "use"} onToggle={() => toggleMenu("use")}
@@ -468,9 +552,10 @@ function BuildingsIndexScreen({ onNavigate }) {
             </FilterChip>
 
             {/* 우측: 전체 초기화 (필터 활성시만) */}
-            {(usesBadge + areaBadge + floorsBadge) > 0 && (
+            {(regionBadge + usesBadge + areaBadge + floorsBadge) > 0 && (
               <div onClick={() => {
-                setUses(new Set()); setAreaMin(0); setAreaMax(200000);
+                setRegions(new Set()); setUses(new Set());
+                setAreaMin(0); setAreaMax(200000);
                 setFloorsType("above"); setFloorsMin(1); setFloorsMax(50);
                 setPage(1);
               }} style={{
