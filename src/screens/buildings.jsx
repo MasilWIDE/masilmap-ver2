@@ -214,8 +214,8 @@ function UseFilterChip({ uses, setUses, open, onToggle }) {
     setUses(next);
   };
 
-  const subSelectedCount = (cat1.children || []).filter((s) => uses.has(s.id)).length;
-  const subTotal = (cat1.children || []).length;
+  const subSelectedCount = (cat.children || []).filter((s) => uses.has(s.id)).length;
+  const subTotal = (cat.children || []).length;
 
   return (
     <FilterChip label="용도" badge={uses.size}
