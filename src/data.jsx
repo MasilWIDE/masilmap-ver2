@@ -16,7 +16,7 @@ const BUILDINGS = [
     address: "서울 종로구 율곡로 83",
     type: "사무소·갤러리",
     typeKey: "modern",
-    useKey: "office",
+    useKey: "office-general",
     style: "한국 모더니즘",
     palette: "#7B4A2E",
     intro: "담쟁이덩굴이 외벽을 뒤덮은 검은 벽돌 건물. 좁고 깊은 동선이 도시의 골목을 닮았다.",
@@ -39,7 +39,7 @@ const BUILDINGS = [
     address: "서울 종로구 자하문로40길 63",
     type: "미술관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "art-museum",
     style: "콘크리트 모더니즘",
     palette: "#7E8A6E",
     intro: "북악산 자락에 안긴 콘크리트 군. 빛이 천창을 통해 천천히 내려앉는 곳.",
@@ -62,7 +62,7 @@ const BUILDINGS = [
     address: "경북 영주시 부석면 부석사로 345",
     type: "전통 사찰",
     typeKey: "hanok",
-    useKey: "religion",
+    useKey: "museum",
     style: "고려 목조 건축",
     palette: "#A4422A",
     intro: "산 능선이 멀리 겹쳐 보이는 자리. 기둥의 배흘림이 가장 오래된 호흡을 한다.",
@@ -85,7 +85,7 @@ const BUILDINGS = [
     address: "서울 종로구 효자로 33",
     type: "문화공간 (구 여관)",
     typeKey: "modern",
-    useKey: "culture",
+    useKey: "exhibit-hall",
     style: "근대 적산가옥",
     palette: "#8A7A65",
     intro: "시인 서정주가 묵었다는 옛 여관. 삐걱이는 마룻바닥에 새 전시가 걸린다.",
@@ -108,7 +108,7 @@ const BUILDINGS = [
     address: "제주 서귀포시 산록남로762번길 69",
     type: "박물관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "museum",
     style: "노출 콘크리트",
     palette: "#6B6B6B",
     intro: "한라산 중턱의 회색 상자들. 물·돌·콘크리트가 한 화면에 정렬된다.",
@@ -131,7 +131,7 @@ const BUILDINGS = [
     address: "강원 강릉시 솔올로 119",
     type: "미술관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "art-museum",
     style: "백색 모더니즘",
     palette: "#E8E2D4",
     intro: "동해를 마주 본 백색 입방체. 빛의 결을 가장 정직하게 받아내는 곳.",
@@ -154,7 +154,7 @@ const BUILDINGS = [
     address: "서울 종로구 종로 157",
     type: "왕실 사당",
     typeKey: "hanok",
-    useKey: "culture",
+    useKey: "museum",
     style: "조선 의례 건축",
     palette: "#5A4332",
     intro: "길이 109m, 한국에서 가장 긴 목조 건물. 비례만으로 위엄이 만들어진다.",
@@ -177,7 +177,7 @@ const BUILDINGS = [
     address: "서울 중구 을지로 281",
     type: "복합문화시설",
     typeKey: "modern",
-    useKey: "culture",
+    useKey: "culture-complex",
     style: "비정형 파라메트릭",
     palette: "#A6A6A6",
     intro: "도시 한가운데 떨어진 은빛 액체. 어떤 각도에서도 같은 면을 갖지 않는다.",
@@ -200,7 +200,7 @@ const BUILDINGS = [
     address: "서울 용산구 이태원로55길 60",
     type: "미술관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "art-museum",
     style: "세 거장의 협업",
     palette: "#8C5A3E",
     intro: "세 명의 건축가가 각자 다른 언어로 지은 세 채의 미술관.",
@@ -223,7 +223,7 @@ const BUILDINGS = [
     address: "강원 원주시 지정면 오크밸리2길 260",
     type: "미술관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "art-museum",
     style: "노출 콘크리트",
     palette: "#6F6F6F",
     intro: "산 능선 따라 천천히 흐르는 콘크리트 회랑. 빛이 가장 천천히 도달하는 곳.",
@@ -246,7 +246,7 @@ const BUILDINGS = [
     address: "경기 용인시 기흥구 백남준로 10",
     type: "미술관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "art-museum",
     style: "현대 미니멀",
     palette: "#4A5570",
     intro: "작가의 사인 'V'를 위에서 본 평면. 인공의 빛을 가장 정직하게 받쳐주는 검은 건축.",
@@ -269,7 +269,7 @@ const BUILDINGS = [
     address: "서울 종로구 삼청로 30",
     type: "미술관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "art-museum",
     style: "현대 복합",
     palette: "#B0A99C",
     intro: "옛 기무사 터에 흩어진 작은 매스들. 도시 한가운데서 가장 조용한 진입.",
@@ -292,7 +292,7 @@ const BUILDINGS = [
     address: "서울 종로구 종로 51",
     type: "사무소",
     typeKey: "modern",
-    useKey: "office",
+    useKey: "office-general",
     style: "하이테크 모더니즘",
     palette: "#6B6B6B",
     intro: "33층 위에 떠 있는 도넛. 도시가 건물 한가운데를 관통한다.",
@@ -315,7 +315,7 @@ const BUILDINGS = [
     address: "서울 종로구 사직로 161",
     type: "왕실 정전",
     typeKey: "hanok",
-    useKey: "culture",
+    useKey: "museum",
     style: "조선 정궐 건축",
     palette: "#8C3D1F",
     intro: "두 단의 월대 위에 올라선 가장 큰 한옥. 모든 한옥의 비례가 여기서 시작된다.",
@@ -338,7 +338,7 @@ const BUILDINGS = [
     address: "경북 안동시 풍천면 종가길 68",
     type: "종택",
     typeKey: "hanok",
-    useKey: "house-single",
+    useKey: "villa",
     style: "조선 종가 한옥",
     palette: "#6B4A30",
     intro: "하회마을 강안 비탈 위에 올라선 종갓집. 사대부 살림의 원형이 가장 정직하게 남았다.",
@@ -361,7 +361,7 @@ const BUILDINGS = [
     address: "경북 안동시 서후면 봉정사길 222",
     type: "전통 사찰",
     typeKey: "hanok",
-    useKey: "religion",
+    useKey: "museum",
     style: "고려 목조 건축",
     palette: "#7B4A2E",
     intro: "한국에 남은 가장 오래된 목조 건물. 천 년 동안 같은 자리에 같은 비례로.",
@@ -384,7 +384,7 @@ const BUILDINGS = [
     address: "광주 동구 문화전당로 38",
     type: "복합문화시설",
     typeKey: "modern",
-    useKey: "culture",
+    useKey: "culture-complex",
     style: "빛의 숲",
     palette: "#6E7C5A",
     intro: "옛 전남도청 위에 비어 있는 광장. 도시의 기억 위로 빛이 떨어진다.",
@@ -407,7 +407,7 @@ const BUILDINGS = [
     address: "서울 용산구 한강대로 100",
     type: "사옥",
     typeKey: "modern",
-    useKey: "office",
+    useKey: "office-general",
     style: "미니멀 큐브",
     palette: "#C8C6C0",
     intro: "도시 한복판에 떨어진 큰 정사각형. 사옥의 중정이 도시에 열려 있다.",
@@ -430,7 +430,7 @@ const BUILDINGS = [
     address: "서울 영등포구 선유로 343",
     type: "도시 공원",
     typeKey: "modern",
-    useKey: "master-plan",
+    useKey: "visitor-center",
     style: "산업 유산 재생",
     palette: "#6E8C6E",
     intro: "옛 정수장의 콘크리트 수조를 그대로 두고 정원이 된 한강의 섬.",
@@ -453,7 +453,7 @@ const BUILDINGS = [
     address: "강원 양구군 양구읍 박수근로 265-15",
     type: "미술관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "art-museum",
     style: "자연 친화 모더니즘",
     palette: "#8A7A5C",
     intro: "작가의 화강암 회벽을 건축어로 옮긴 곳. 마을 한복판에 낮게 누운 미술관.",
@@ -476,7 +476,7 @@ const BUILDINGS = [
     address: "서울 용산구 서빙고로 139",
     type: "박물관",
     typeKey: "museum",
-    useKey: "culture",
+    useKey: "museum",
     style: "현대 박물관 건축",
     palette: "#A5836A",
     intro: "한글 모음의 곡선을 그대로 입면에 옮긴 박물관. 글자가 건축이 되는 순간.",
@@ -602,26 +602,91 @@ const TYPES = [
   { id: "house",  name: "주택",        count: 33  },
 ];
 
-/* ---------- 건축 용도 (건축법 시행령 별표 1 기반 16분류) ----------
-   필터의 "용도" dropdown 옵션. id는 코드용, name이 표시 라벨. */
+/* ---------- 건축 용도 (1차 법정용도 → 2차 세부유형 hierarchical) ----------
+   각 1차 카테고리가 children 배열로 2차 유형을 가진다.
+   buildings의 useKey는 2차 id를 가리킨다. */
 const USE_TYPES = [
-  { id: "nrlf",            name: "근린생활시설" },
-  { id: "house-single",    name: "단독주택" },
-  { id: "house-multi",     name: "공동주택" },
-  { id: "office",          name: "업무시설" },
-  { id: "commerce",        name: "상업시설" },
-  { id: "retail",          name: "소매시설" },
-  { id: "culture",         name: "문화시설" },
-  { id: "religion",        name: "종교시설" },
-  { id: "education",       name: "교육시설" },
-  { id: "medical",         name: "의료시설" },
-  { id: "industrial",      name: "산업시설" },
-  { id: "master-plan",     name: "마스터플랜" },
-  { id: "cafe-restaurant", name: "카페 & 레스토랑" },
-  { id: "exhibit",         name: "전시" },
-  { id: "installation",    name: "설치물" },
-  { id: "etc",             name: "기타" },
+  { id: "house-single", name: "단독주택", children: [
+    { id: "villa", name: "별장" },
+  ]},
+  { id: "house-multi", name: "공동주택", children: [
+    { id: "apartment", name: "공동주택" },
+    { id: "dormitory", name: "기숙사" },
+    { id: "coliving",  name: "코리빙(공유주거)" },
+    { id: "townhouse", name: "타운하우스" },
+  ]},
+  { id: "nrlf", name: "제1·2종 근린생활시설", children: [
+    { id: "cafe", name: "카페" },
+  ]},
+  { id: "culture", name: "문화 및 집회시설", children: [
+    { id: "art-museum",        name: "미술관" },
+    { id: "museum",            name: "박물관" },
+    { id: "exhibit-hall",      name: "전시장" },
+    { id: "performance",       name: "공연예술센터" },
+    { id: "culture-complex",   name: "복합문화시설" },
+    { id: "multipurpose-hall", name: "다목적홀" },
+  ]},
+  { id: "retail", name: "판매시설", children: [
+    { id: "retail-general", name: "판매시설" },
+    { id: "market",         name: "시장" },
+    { id: "showroom",       name: "쇼룸" },
+  ]},
+  { id: "medical", name: "의료시설", children: [
+    { id: "hospital",      name: "병원" },
+    { id: "health-center", name: "보건소" },
+  ]},
+  { id: "education", name: "교육연구시설", children: [
+    { id: "kindergarten", name: "유치원" },
+    { id: "elementary",   name: "초등학교" },
+    { id: "secondary",    name: "중·고등학교" },
+    { id: "library",      name: "도서관" },
+    { id: "edu-center",   name: "교육센터" },
+  ]},
+  { id: "elderly", name: "노유자시설", children: [
+    { id: "care-center", name: "돌봄센터" },
+  ]},
+  { id: "training", name: "수련시설", children: [
+    { id: "youth-center", name: "청소년센터" },
+  ]},
+  { id: "sports", name: "운동시설", children: [
+    { id: "sports-center", name: "스포츠센터" },
+    { id: "wellness",      name: "웰니스 시설" },
+  ]},
+  { id: "office", name: "업무시설", children: [
+    { id: "office-general",  name: "오피스" },
+    { id: "coworking",       name: "공유오피스" },
+    { id: "public-office",   name: "공공업무시설" },
+    { id: "public-service",  name: "공공서비스센터" },
+    { id: "admin-welfare",   name: "행정복지센터" },
+  ]},
+  { id: "lodging", name: "숙박시설", children: [
+    { id: "hotel",      name: "호텔" },
+    { id: "hostel",     name: "호스텔" },
+    { id: "guesthouse", name: "게스트하우스" },
+    { id: "pension",    name: "펜션" },
+    { id: "resort",     name: "리조트" },
+  ]},
+  { id: "tourism", name: "관광휴게시설", children: [
+    { id: "camping",        name: "캠핑장" },
+    { id: "visitor-center", name: "방문자센터" },
+  ]},
+  { id: "auto", name: "자동차관련시설", children: [
+    { id: "parking", name: "주차장" },
+  ]},
+  { id: "transport",   name: "운수시설",         children: [] },
+  { id: "warehouse",   name: "창고시설",         children: [] },
+  { id: "recycling",   name: "자원순환관련시설", children: [] },
+  { id: "agriculture", name: "동식물관련시설",   children: [] },
 ];
+
+/* 2차 id → 1차 id 역색인 (필터·표시용) */
+const USE_TYPE_INDEX = (() => {
+  const idx = {};
+  USE_TYPES.forEach((cat) => {
+    (cat.children || []).forEach((sub) => { idx[sub.id] = cat.id; });
+  });
+  return idx;
+})();
 
 /* ---------- 마실 코스 (큐레이션 워크) ---------- */
 const COURSES = [
@@ -775,4 +840,4 @@ const ASSETS = [
   { id: "A-3208", building: "boan",    name: "보안여관_재현_도면.dwg",       type: "도면",      uploader: "마실맵", owner: "마실맵",          consent: "완료", split: "100%",                       status: "공개" },
 ];
 
-Object.assign(window, { BUILDINGS, COLLECTIONS, REGIONS, TYPES, USE_TYPES, COURSES, EXTERNAL_SPACES, USER, BOOKINGS, ASSETS });
+Object.assign(window, { BUILDINGS, COLLECTIONS, REGIONS, TYPES, USE_TYPES, USE_TYPE_INDEX, COURSES, EXTERNAL_SPACES, USER, BOOKINGS, ASSETS });

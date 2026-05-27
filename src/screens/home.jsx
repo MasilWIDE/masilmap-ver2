@@ -278,12 +278,6 @@ function FilterBar({ onFilteredChange }) {
     return c;
   })();
   const krTotal = Object.values(provinceCounts).reduce((a, b) => a + b, 0);
-  const useCounts = (() => {
-    const c = {};
-    BUILDINGS.forEach((b) => { if (b.useKey) c[b.useKey] = (c[b.useKey] || 0) + 1; });
-    return c;
-  })();
-
   // 필터링
   const filtered = BUILDINGS.filter((b) => {
     if (regions.size > 0) {
@@ -367,26 +361,9 @@ function FilterBar({ onFilteredChange }) {
         )}
       </FilterChip>
 
-      {/* 용도 */}
-      <FilterChip label="용도" badge={usesBadge}
-        open={openMenu === "use"} onToggle={() => toggleMenu("use")}
-        icon="settings" width={260}>
-        <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>건축 용도 (다중 선택)</div>
-        <div style={{ maxHeight: 360, overflowY: "auto", margin: "0 -4px", paddingRight: 4 }}>
-          {USE_TYPES.map((t) => (
-            <CheckRow key={t.id} checked={uses.has(t.id)}
-              onChange={() => toggleSet(uses, t.id, setUses)}
-              label={t.name} count={useCounts[t.id] || 0}/>
-          ))}
-        </div>
-        {uses.size > 0 && (
-          <div onClick={() => setUses(new Set())} style={{
-            marginTop: 10, padding: "8px 0", textAlign: "center",
-            fontSize: 12, fontWeight: 700, color: M.terra,
-            cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
-          }}>모두 해제</div>
-        )}
-      </FilterChip>
+      {/* 용도 (1차 → 2차 hierarchical) */}
+      <UseFilterChip uses={uses} setUses={setUses}
+        open={openMenu === "use"} onToggle={() => toggleMenu("use")}/>
 
       {/* 면적 */}
       <FilterChip label="면적" badge={areaBadge}

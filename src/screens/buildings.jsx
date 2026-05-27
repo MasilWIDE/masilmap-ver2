@@ -187,6 +187,141 @@ function RadioRow({ value, current, onChange, label }) {
   );
 }
 
+/* ---------- 용도 필터 (1차 → 2차 hierarchical, ArchDaily 톤) ---------- */
+function UseFilterChip({ uses, setUses, open, onToggle }) {
+  // 첫 데이터 있는 1차로 기본값
+  const firstWithData = USE_TYPES.find((c) => (c.children || []).some((s) => useCountFor(s.id) > 0));
+  const [activeCat, setActiveCat] = React.useState((firstWithData || USE_TYPES[0]).id);
+
+  const cat = USE_TYPES.find((c) => c.id === activeCat) || USE_TYPES[0];
+
+  // 1차 카테고리별 합계
+  const totalFor = (cat1) => (cat1.children || []).reduce((s, sub) => s + useCountFor(sub.id), 0);
+
+  const toggleSub = (id) => {
+    const next = new Set(uses);
+    next.has(id) ? next.delete(id) : next.add(id);
+    setUses(next);
+  };
+  const selectAllInCat = (cat1) => {
+    const next = new Set(uses);
+    (cat1.children || []).forEach((s) => next.add(s.id));
+    setUses(next);
+  };
+  const clearCat = (cat1) => {
+    const next = new Set(uses);
+    (cat1.children || []).forEach((s) => next.delete(s.id));
+    setUses(next);
+  };
+
+  const subSelectedCount = (cat1.children || []).filter((s) => uses.has(s.id)).length;
+  const subTotal = (cat1.children || []).length;
+
+  return (
+    <FilterChip label="용도" badge={uses.size}
+      open={open} onToggle={onToggle}
+      icon="settings" width={620}>
+      <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 16, maxHeight: 440 }}>
+        {/* === 좌측: 1차 (법정 용도) === */}
+        <div style={{ overflowY: "auto", paddingRight: 4, borderRight: `1px solid ${M.beigeAlt}` }}>
+          <div style={{ fontSize: 11, color: M.muted, fontWeight: 800, letterSpacing: "0.06em",
+            textTransform: "uppercase", padding: "0 6px 8px" }}>
+            1차 · 법정 용도
+          </div>
+          {USE_TYPES.map((c) => {
+            const total = totalFor(c);
+            const isEmpty = (c.children || []).length === 0;
+            const on = activeCat === c.id;
+            return (
+              <div key={c.id} onClick={() => setActiveCat(c.id)} style={{
+                padding: "8px 10px", borderRadius: 8, cursor: "pointer",
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                background: on ? `${M.terra}10` : "transparent",
+                color: isEmpty ? M.faint : (on ? M.terra : M.ink),
+                fontSize: 13, fontWeight: on ? 800 : 600,
+                marginBottom: 1,
+              }}>
+                <span>{c.name}</span>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                  {!isEmpty && (
+                    <span style={{ fontSize: 11, color: M.muted, fontWeight: 700 }}>{total}</span>
+                  )}
+                  <span style={{ fontSize: 12, color: on ? M.terra : M.faint }}>›</span>
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* === 우측: 2차 (세부 유형) === */}
+        <div style={{ overflowY: "auto" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: M.ink }}>{cat.name}</div>
+            {(cat.children || []).length > 0 && (
+              <div style={{ display: "flex", gap: 8 }}>
+                <span onClick={() => selectAllInCat(cat)} style={{
+                  fontSize: 11, fontWeight: 700, color: M.terra,
+                  cursor: "pointer",
+                }}>전체</span>
+                <span style={{ color: M.faint, fontSize: 11 }}>·</span>
+                <span onClick={() => clearCat(cat)} style={{
+                  fontSize: 11, fontWeight: 700, color: M.muted,
+                  cursor: "pointer",
+                }}>해제</span>
+              </div>
+            )}
+          </div>
+
+          {(cat.children || []).length === 0 ? (
+            <div style={{
+              padding: "20px 8px", color: M.muted, fontSize: 12, fontWeight: 600,
+              fontStyle: "italic",
+            }}>
+              (현재 해당 건물 없음)
+            </div>
+          ) : (
+            cat.children.map((sub) => (
+              <CheckRow key={sub.id}
+                checked={uses.has(sub.id)}
+                onChange={() => toggleSub(sub.id)}
+                label={sub.name}
+                count={useCountFor(sub.id)}/>
+            ))
+          )}
+
+          {subTotal > 0 && (
+            <div style={{ marginTop: 12, paddingTop: 10,
+              borderTop: `1px solid ${M.beigeAlt}`,
+              fontSize: 11, color: M.muted, fontWeight: 700,
+            }}>
+              {cat.name} · {subSelectedCount} / {subTotal} 선택
+            </div>
+          )}
+        </div>
+      </div>
+
+      {uses.size > 0 && (
+        <div onClick={() => setUses(new Set())} style={{
+          marginTop: 12, padding: "8px 0", textAlign: "center",
+          fontSize: 12, fontWeight: 700, color: M.terra,
+          cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
+        }}>모두 해제 ({uses.size})</div>
+      )}
+    </FilterChip>
+  );
+}
+
+/* 2차 id별 BUILDINGS 카운트 (UseFilterChip이 호출) */
+const useCountCache = { v: null };
+function useCountFor(subId) {
+  if (!useCountCache.v) {
+    const c = {};
+    (window.BUILDINGS || []).forEach((b) => { if (b.useKey) c[b.useKey] = (c[b.useKey] || 0) + 1; });
+    useCountCache.v = c;
+  }
+  return useCountCache.v[subId] || 0;
+}
+
 /* ---------- 인덱스 화면 ---------- */
 const ITEMS_PER_PAGE = 20;
 const parseGfa = (s) => {
@@ -306,12 +441,7 @@ function BuildingsIndexScreen({ onNavigate }) {
   const floorsBadge  = (floorsMin > 1 || floorsMax < 50 || floorsType !== "above") ? 1 : 0;
   const projectBadge = 0; // 항상 "건축물" 기본 → 배지 없음
 
-  // USE_TYPES: 용도 16분류 + 실제 BUILDINGS 카운트
-  const useCounts = (() => {
-    const c = {};
-    BUILDINGS.forEach((b) => { if (b.useKey) c[b.useKey] = (c[b.useKey] || 0) + 1; });
-    return c;
-  })();
+  // (용도 카운트는 UseFilterChip 내부에서 useCountFor() 호출로 처리)
 
   // 체크박스 토글 헬퍼
   const toggleSet = (set, val, setter, resetPage = true) => {
@@ -457,30 +587,9 @@ function BuildingsIndexScreen({ onNavigate }) {
               )}
             </FilterChip>
 
-            {/* === 용도 (16분류, 건축법 기반) === */}
-            <FilterChip label="용도" badge={usesBadge}
-              open={openMenu === "use"} onToggle={() => toggleMenu("use")}
-              icon="settings" width={260}>
-              <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>
-                건축 용도 (다중 선택)
-              </div>
-              <div style={{ maxHeight: 360, overflowY: "auto", margin: "0 -4px", paddingRight: 4 }}>
-                {USE_TYPES.map((t) => (
-                  <CheckRow key={t.id}
-                    checked={uses.has(t.id)}
-                    onChange={() => toggleSet(uses, t.id, setUses)}
-                    label={t.name}
-                    count={useCounts[t.id] || 0}/>
-                ))}
-              </div>
-              {uses.size > 0 && (
-                <div onClick={() => setUsesAndReset(new Set())} style={{
-                  marginTop: 10, padding: "8px 0", textAlign: "center",
-                  fontSize: 12, fontWeight: 700, color: M.terra,
-                  cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
-                }}>모두 해제</div>
-              )}
-            </FilterChip>
+            {/* === 용도 (1차 → 2차 hierarchical) === */}
+            <UseFilterChip uses={uses} setUses={setUses}
+              open={openMenu === "use"} onToggle={() => toggleMenu("use")}/>
 
             {/* === 면적 === */}
             <FilterChip label="면적" badge={areaBadge}
@@ -654,6 +763,6 @@ function BuildingsIndexScreen({ onNavigate }) {
 
 Object.assign(window, {
   BuildingsIndexScreen, FeaturedCard, GridCard,
-  FilterChip, CheckRow, RadioRow,
+  FilterChip, CheckRow, RadioRow, UseFilterChip, useCountFor,
   KR_PROVINCES, INTL_COUNTRIES, provinceIdOf, parseGfa, inputStyle,
 });
