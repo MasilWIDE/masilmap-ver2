@@ -445,6 +445,28 @@ const BUILDINGS = [
     visited: 1820,
     saved: 380,
   },
+  {
+    id: "hangeulmuseum",
+    no: "021",
+    name: "국립한글박물관",
+    nameEn: "National Hangeul Museum",
+    architect: "박승홍 (삼우건축)",
+    year: 2014,
+    region: "서울 용산",
+    address: "서울 용산구 서빙고로 139",
+    type: "박물관",
+    typeKey: "museum",
+    style: "현대 박물관 건축",
+    palette: "#A5836A",
+    intro: "한글 모음의 곡선을 그대로 입면에 옮긴 박물관. 글자가 건축이 되는 순간.",
+    longRead: "용산가족공원 안에 들어선 한글 전용 박물관. ㅏ·ㅓ·ㅗ·ㅜ 같은 한글 모음의 획에서 출발한 곡선과 사선이 입면 전체에 반복된다. 진입로 처마 아래에서 책장이 펼쳐지듯 외피가 펼쳐지는 장면이 이 건축의 한 컷이다. 옆 동의 국립중앙박물관과 마당을 공유한다.",
+    coord: [780, 425],
+    metrics: { rooms: 6, floors: 3, gfa: "11,322㎡", visit: "상시" },
+    tags: ["한글", "2010s", "박물관", "용산"],
+    pinTone: "terra",
+    visited: 3240,
+    saved: 680,
+  },
 ];
 
 const COLLECTIONS = [
