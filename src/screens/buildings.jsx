@@ -103,14 +103,20 @@ function GridCard({ b, onClick }) {
 }
 
 /* ---------- 인덱스 화면 ---------- */
-function BuildingsIndexScreen({ onNavigate }) {
-  const [activeType, setActiveType] = React.useState("all");
-  const [activeRegion, setActiveRegion] = React.useState("all");
+const ITEMS_PER_PAGE = 20;
 
-  // 상단 Editor's Picks 3개 — 컬렉션의 다양성을 보여주도록 typeKey가 다른 것들 우선
+function BuildingsIndexScreen({ onNavigate }) {
+  const [activeType, setActiveType]     = React.useState("all");
+  const [activeRegion, setActiveRegion] = React.useState("all");
+  const [page, setPage]                 = React.useState(1);
+
+  // 필터 변경 시 페이지 리셋
+  const changeType   = (t) => { setActiveType(t);   setPage(1); };
+  const changeRegion = (r) => { setActiveRegion(r); setPage(1); };
+
+  // 상단 Editor's Picks 3개 — typeKey 다양성 (모더니즘 / 한옥 / 콘크리트 미술관)
   const picks = (() => {
-    const used = new Set();
-    const pickIds = ["kongkan", "buseoksa", "bonte"]; // 모더니즘 / 한옥 / 콘크리트 미술관
+    const pickIds = ["kongkan", "buseoksa", "bonte"];
     const found = pickIds.map((id) => BUILDINGS.find((b) => b.id === id)).filter(Boolean);
     return found.length === 3 ? found : BUILDINGS.slice(0, 3);
   })();
@@ -119,6 +125,12 @@ function BuildingsIndexScreen({ onNavigate }) {
     if (activeType !== "all" && b.typeKey !== activeType) return false;
     return true;
   });
+
+  // 페이지네이션
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const safePage   = Math.min(page, totalPages);
+  const pageItems  = filtered.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
+  const showPicks  = safePage === 1;
 
   return (
     <MPage>
@@ -147,86 +159,93 @@ function BuildingsIndexScreen({ onNavigate }) {
         </div>
       </section>
 
-      {/* EDITOR'S PICKS — 3개 동일 컴팩트 카드 (한 줄) */}
-      <section style={{ padding: "16px 56px 28px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-            <MagCap color={M.terra}>EDITOR'S PICKS · 2026 SPRING</MagCap>
-            <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", margin: 0, color: M.ink }}>
-              이번 호의 세 건축
-            </h2>
+      {/* EDITOR'S PICKS — 1페이지에만 노출 */}
+      {showPicks && (
+        <section style={{ padding: "16px 56px 28px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
+            <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+              <MagCap color={M.terra}>EDITOR'S PICKS · 2026 SPRING</MagCap>
+              <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", margin: 0, color: M.ink }}>
+                이번 호의 세 건축
+              </h2>
+            </div>
+            <span style={{ fontSize: 12, color: M.terra, fontWeight: 800, cursor: "pointer" }}
+              onClick={() => onNavigate("collection")}>
+              큐레이션 컬렉션 전체 보기 →
+            </span>
           </div>
-          <span style={{ fontSize: 12, color: M.terra, fontWeight: 800, cursor: "pointer" }}
-            onClick={() => onNavigate("collection")}>
-            큐레이션 컬렉션 전체 보기 →
-          </span>
-        </div>
 
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 20,
-        }}>
-          {picks.map((p) => (
-            <FeaturedCard
-              key={p.id}
-              b={p}
-              onClick={() => onNavigate("detail", p.id)}
-              variant="compact"
-            />
-          ))}
-        </div>
-      </section>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 20,
+          }}>
+            {picks.map((p) => (
+              <FeaturedCard
+                key={p.id}
+                b={p}
+                onClick={() => onNavigate("detail", p.id)}
+                variant="compact"
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* DIVIDER */}
-      <div style={{ padding: "0 56px" }}>
-        <Hairline label={`ALL · ${filtered.length} / ${BUILDINGS.length} PLACES`} />
+      {/* STICKY FILTER (스크롤 내려도 nav 바로 아래 고정) */}
+      <div style={{
+        position: "sticky", top: 71, zIndex: 40,
+        background: M.beige,
+        borderBottom: `1px solid ${M.beigeAlt}`,
+        boxShadow: "0 4px 12px rgba(58,46,34,0.04)",
+      }}>
+        <div style={{ padding: "0 56px" }}>
+          <Hairline label={`ALL · ${filtered.length} / ${BUILDINGS.length} PLACES${totalPages > 1 ? ` · PAGE ${safePage}/${totalPages}` : ""}`} />
+        </div>
+        <section style={{ padding: "14px 0 14px" }}>
+          <div style={{ display: "flex", gap: 24, alignItems: "center", padding: "0 56px", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+              <MagCap style={{ marginRight: 6 }}>TYPE</MagCap>
+              {TYPES.map((t) => {
+                const on = t.id === activeType;
+                return (
+                  <span key={t.id} onClick={() => changeType(t.id)} style={{
+                    padding: "8px 14px", borderRadius: 999,
+                    fontSize: 12, fontWeight: 700,
+                    background: on ? M.ink : "transparent",
+                    color: on ? M.cream : M.ink,
+                    border: on ? "none" : `1px solid ${M.beigeAlt}`,
+                    cursor: "pointer", whiteSpace: "nowrap",
+                    transition: "all .15s",
+                  }}>
+                    {t.name}
+                    <span style={{ marginLeft: 6, opacity: 0.5, fontSize: 11 }}>{t.count}</span>
+                  </span>
+                );
+              })}
+            </div>
+            <div style={{ width: 1, height: 28, background: M.beigeAlt }}/>
+            <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+              <MagCap style={{ marginRight: 6 }}>REGION</MagCap>
+              {[{id:"all", name:"전국"}, ...REGIONS].map((r) => {
+                const on = r.id === activeRegion;
+                return (
+                  <span key={r.id} onClick={() => changeRegion(r.id)} style={{
+                    padding: "8px 14px", borderRadius: 999,
+                    fontSize: 12, fontWeight: 700,
+                    background: on ? `${M.terra}1f` : "transparent",
+                    color: on ? M.terra : M.ink,
+                    border: on ? `1px solid ${M.terra}40` : `1px solid ${M.beigeAlt}`,
+                    cursor: "pointer", whiteSpace: "nowrap",
+                  }}>{r.name}</span>
+                );
+              })}
+            </div>
+          </div>
+        </section>
       </div>
 
-      {/* TYPE / REGION 필터 */}
-      <section style={{ padding: "18px 0 8px" }}>
-        <div style={{ display: "flex", gap: 24, alignItems: "center", padding: "0 56px", flexWrap: "wrap" }}>
-          <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-            <MagCap style={{ marginRight: 6 }}>TYPE</MagCap>
-            {TYPES.map((t) => {
-              const on = t.id === activeType;
-              return (
-                <span key={t.id} onClick={() => setActiveType(t.id)} style={{
-                  padding: "8px 14px", borderRadius: 999,
-                  fontSize: 12, fontWeight: 700,
-                  background: on ? M.ink : "transparent",
-                  color: on ? M.cream : M.ink,
-                  border: on ? "none" : `1px solid ${M.beigeAlt}`,
-                  cursor: "pointer", whiteSpace: "nowrap",
-                  transition: "all .15s",
-                }}>
-                  {t.name}
-                  <span style={{ marginLeft: 6, opacity: 0.5, fontSize: 11 }}>{t.count}</span>
-                </span>
-              );
-            })}
-          </div>
-          <div style={{ width: 1, height: 28, background: M.beigeAlt }}/>
-          <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-            <MagCap style={{ marginRight: 6 }}>REGION</MagCap>
-            {[{id:"all", name:"전국"}, ...REGIONS].map((r) => {
-              const on = r.id === activeRegion;
-              return (
-                <span key={r.id} onClick={() => setActiveRegion(r.id)} style={{
-                  padding: "8px 14px", borderRadius: 999,
-                  fontSize: 12, fontWeight: 700,
-                  background: on ? `${M.terra}1f` : "transparent",
-                  color: on ? M.terra : M.ink,
-                  border: on ? `1px solid ${M.terra}40` : `1px solid ${M.beigeAlt}`,
-                  cursor: "pointer", whiteSpace: "nowrap",
-                }}>{r.name}</span>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 3-COL 그리드 (masilground 톤) */}
+      {/* 4-COL 그리드 (masilground 톤) · 20개/페이지 */}
       <section style={{ padding: "32px 56px 64px" }}>
         {filtered.length === 0 ? (
           <div style={{
@@ -238,31 +257,62 @@ function BuildingsIndexScreen({ onNavigate }) {
         ) : (
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "44px 32px",
+            gridTemplateColumns: "repeat(4, 1fr)",
+            gap: "40px 24px",
           }}>
-            {filtered.map((b) => (
+            {pageItems.map((b) => (
               <GridCard key={b.id} b={b} onClick={() => onNavigate("detail", b.id)} />
             ))}
           </div>
         )}
 
-        {/* 페이지네이션 (마실그라운드 톤) */}
-        {filtered.length > 0 && (
+        {/* 페이지네이션 — totalPages > 1일 때만 노출 */}
+        {totalPages > 1 && (
           <div style={{
-            marginTop: 64, padding: "20px 0",
+            marginTop: 56, padding: "20px 0",
             borderTop: `1px solid ${M.beigeAlt}`,
-            display: "flex", justifyContent: "center", alignItems: "center", gap: 8,
+            display: "flex", justifyContent: "center", alignItems: "center", gap: 4,
             fontSize: 13, fontWeight: 700, color: M.ink,
           }}>
-            <span style={{ padding: "6px 10px", color: M.muted, cursor: "not-allowed" }}>← PREV</span>
-            <span style={{ padding: "6px 12px", borderRadius: 6, background: M.terra, color: M.cream }}>1</span>
-            <span style={{ padding: "6px 12px", cursor: "pointer" }}>2</span>
-            <span style={{ padding: "6px 12px", cursor: "pointer" }}>3</span>
-            <span style={{ padding: "6px 12px", cursor: "pointer" }}>4</span>
-            <span style={{ padding: "6px 4px", color: M.muted }}>…</span>
-            <span style={{ padding: "6px 12px", cursor: "pointer" }}>59</span>
-            <span style={{ padding: "6px 10px", color: M.ink, cursor: "pointer" }}>NEXT →</span>
+            <span
+              onClick={() => safePage > 1 && setPage(safePage - 1)}
+              style={{
+                padding: "6px 12px",
+                color: safePage > 1 ? M.ink : M.muted,
+                opacity: safePage > 1 ? 1 : 0.4,
+                cursor: safePage > 1 ? "pointer" : "not-allowed",
+              }}>← PREV</span>
+
+            {(() => {
+              // 노출할 페이지 번호 계산: 처음·끝·현재 주변 ±1
+              const set = new Set([1, totalPages, safePage, safePage - 1, safePage + 1]);
+              const nums = [...set].filter((n) => n >= 1 && n <= totalPages).sort((a, b) => a - b);
+              const out = [];
+              for (let i = 0; i < nums.length; i++) {
+                if (i > 0 && nums[i] - nums[i - 1] > 1) {
+                  out.push(<span key={`dot-${i}`} style={{ padding: "6px 4px", color: M.muted }}>…</span>);
+                }
+                const n = nums[i];
+                const on = n === safePage;
+                out.push(
+                  <span key={n} onClick={() => setPage(n)} style={{
+                    padding: "6px 12px", borderRadius: 6, cursor: "pointer",
+                    background: on ? M.terra : "transparent",
+                    color: on ? M.cream : M.ink,
+                  }}>{n}</span>
+                );
+              }
+              return out;
+            })()}
+
+            <span
+              onClick={() => safePage < totalPages && setPage(safePage + 1)}
+              style={{
+                padding: "6px 12px",
+                color: safePage < totalPages ? M.ink : M.muted,
+                opacity: safePage < totalPages ? 1 : 0.4,
+                cursor: safePage < totalPages ? "pointer" : "not-allowed",
+              }}>NEXT →</span>
           </div>
         )}
       </section>
