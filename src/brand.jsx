@@ -300,12 +300,15 @@ function MFooter() {
   );
 }
 
-/* ---------- 14. PAGE SHELL (background + font defaults) ---------- */
+/* ---------- 14. PAGE SHELL (background + font defaults) ---------- *
+   NOTE: overflowX: "clip" prevents horizontal blow-out without creating
+   a scrolling context — so descendant `position: sticky` still works.
+   (overflow: hidden would kill sticky on all child screens.) */
 function MPage({ children, style = {} }) {
   return (
     <div style={{
       width: "100%", minHeight: "100%", background: M.beige, color: M.ink,
-      fontFamily: MT.family, overflow: "hidden", ...style,
+      fontFamily: MT.family, overflowX: "clip", ...style,
     }}>{children}</div>
   );
 }
