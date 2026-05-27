@@ -103,7 +103,7 @@ function GridCard({ b, onClick }) {
 }
 
 /* ---------- 필터 드롭다운 칩 (masilmap.com 스타일) ---------- */
-function FilterChip({ label, badge = 0, open, onToggle, children, width = 280, icon = "filter" }) {
+function FilterChip({ label, badge = 0, open, onToggle, children, width = 280, icon = "filter", prominent = false }) {
   const active = badge > 0;
   return (
     <div data-filter-chip style={{ position: "relative", display: "inline-block" }}>
@@ -111,10 +111,14 @@ function FilterChip({ label, badge = 0, open, onToggle, children, width = 280, i
         onClick={(e) => { e.stopPropagation(); onToggle(); }}
         style={{
           display: "inline-flex", alignItems: "center", gap: 8,
-          padding: "10px 16px", borderRadius: 999,
-          background: active ? `${M.terra}14` : M.cream,
-          border: `1px solid ${active ? `${M.terra}55` : M.beigeAlt}`,
-          fontSize: 13, fontWeight: 700,
+          padding: prominent ? "12px 28px" : "10px 16px",
+          borderRadius: 999,
+          background: active
+            ? `${M.terra}14`
+            : (prominent ? `${M.olive}14` : M.cream),
+          border: `1px solid ${active ? `${M.terra}55` : (prominent ? `${M.olive}55` : M.beigeAlt)}`,
+          fontSize: prominent ? 14 : 13,
+          fontWeight: prominent ? 800 : 700,
           color: active ? M.terra : M.ink,
           cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap",
           transition: "all .15s",
@@ -220,7 +224,7 @@ function UseFilterChip({ uses, setUses, open, onToggle }) {
   return (
     <FilterChip label="용도" badge={uses.size}
       open={open} onToggle={onToggle}
-      icon="settings" width={620}>
+      icon="settings" width={620} prominent>
       <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", gap: 16, maxHeight: 440 }}>
         {/* === 좌측: 1차 (법정 용도) === */}
         <div style={{ overflowY: "auto", paddingRight: 4, borderRight: `1px solid ${M.beigeAlt}` }}>
