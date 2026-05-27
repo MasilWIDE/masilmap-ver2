@@ -13,7 +13,6 @@
 function MasilNav({ route, onNavigate, items, variant = "default" }) {
   const t = window.__masilT || {};
   const auth = window.__masilAuth || { isLoggedIn: false, login: () => {}, logout: () => {} };
-  const firstBuilding = (window.BUILDINGS && window.BUILDINGS[0]?.id) || "kongkan";
 
   // 로그인 상태에 따라 메뉴 구성. 명시적 items 인자가 오면 그걸 우선.
   const navItems = items || (auth.isLoggedIn
@@ -24,7 +23,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
     switch (label) {
       case "홈":       return onNavigate("home", null, { homeLayout: "split" });
       case "지도":     return onNavigate("home", null, { homeLayout: "mapPrimary" });
-      case "건축물":   return onNavigate("detail", firstBuilding);
+      case "건축물":   return onNavigate("buildings");
       case "코스":     return onNavigate("course");
       case "컬렉션":
       case "저널":     return onNavigate("collection");
@@ -34,6 +33,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
   };
 
   const activeLabel = (() => {
+    if (route === "buildings")   return "건축물";
     if (route === "detail")      return "건축물";
     if (route === "home")        return t.homeLayout === "mapPrimary" ? "지도" : "홈";
     if (route === "course")      return "코스";

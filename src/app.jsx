@@ -39,6 +39,8 @@ function App() {
   switch (route.name) {
     case "home":
       screen = <HomeScreen route="home" onNavigate={navigate} t={t}/>; break;
+    case "buildings":
+      screen = <BuildingsIndexScreen onNavigate={navigate}/>; break;
     case "detail":
       screen = <DetailScreen route="detail" onNavigate={navigate} buildingId={route.id || "kongkan"} t={t}/>; break;
     case "collection":
@@ -79,6 +81,7 @@ function App() {
 
   const label = (() => {
     if (route.name === "home")             return "01 홈 / 지도";
+    if (route.name === "buildings")        return "02 건축물 인덱스";
     if (route.name === "detail")           return `02 건축물 상세 · ${route.id || "kongkan"}`;
     if (route.name === "collection" && route.id) return `04 컬렉션 · ${route.id}`;
     if (route.name === "collection")       return "04 컬렉션 인덱스";
@@ -105,6 +108,7 @@ function App() {
       <TweaksPanel title="Tweaks · 화면 & 변형">
         <TweakSection label="유저 흐름">
           <NavRow active={route.name === "home"}            onClick={() => navigate("home")}>홈 · 지도</NavRow>
+          <NavRow active={route.name === "buildings"}       onClick={() => navigate("buildings")}>건축물 인덱스</NavRow>
           <NavRow active={route.name === "detail"}          onClick={() => navigate("detail", "kongkan")}>건축물 상세</NavRow>
           <NavRow active={route.name === "course" && !route.id} onClick={() => navigate("course")}>코스 인덱스</NavRow>
           <NavRow active={route.name === "course" && !!route.id} onClick={() => navigate("course", "bukchon")}>코스 상세</NavRow>

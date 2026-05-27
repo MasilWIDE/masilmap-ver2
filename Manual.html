@@ -261,23 +261,25 @@
     <article class="menu">
       <div class="menu__head">
         <h2 class="menu__title"><em>03</em>건축물</h2>
-        <span class="menu__serial">→ route: detail · id: kongkan (기본)</span>
+        <span class="menu__serial">→ route: buildings (인덱스) / detail (개별)</span>
       </div>
-      <div class="menu__role">단일 건축물 큐레이션 페이지 (잡지 피처 톤)</div>
+      <div class="menu__role">건축물 인덱스 + ArchDaily 톤 Editor's Picks + masilground 톤 그리드</div>
       <div class="menu__body">
         <p>
-          첫 번째 건축물(<strong>공간 사옥</strong>, id <code>kongkan</code>)의 상세 화면으로 바로 진입.
-          큰 헤로 갤러리 + 건축가/연도/주소 등의 메타 + 에디터 longRead 본문 +
-          위치 미니맵 + 같은 컬렉션의 다른 건물 추천으로 구성됩니다.
+          상단 nav의 "건축물"을 누르면 <strong>인덱스 페이지</strong>로 진입합니다. 단일 건축물 페이지가 아니라
+          큐레이터가 매월 고른 픽 + 전체 526곳을 펼친 리스트가 함께 보입니다.
         </p>
         <ul>
-          <li>레이아웃 변형 3종: <code>hero</code> · <code>sidebar</code> · <code>longform</code> (Tweaks 패널에서 전환)</li>
-          <li>지도/리스트에서 핀이나 카드를 누르면 같은 detail 화면이 해당 건물 id로 열림</li>
-          <li>본문 하단에 <strong>이 건물과 연결된 외부 공간</strong>(숙박·식음·체험) 진입점</li>
+          <li><strong>EDITOR'S PICKS</strong> · 상단 고정 3개. 큰 카드 1 + 중간 카드 2 (ArchDaily 톤)</li>
+          <li><strong>전체 그리드</strong> · 3-col 매거진 그리드. 이미지 + "이름 / 건축가" + 카테고리 (masilground 톤)</li>
+          <li>TYPE / REGION 필터 (한옥, 근현대, 미술관 ··· · 서울, 경기 ···)</li>
+          <li>카드 클릭 → <strong>route: detail</strong> 로 이동. 상세 화면은 레이아웃 변형 3종 (<code>hero</code> · <code>sidebar</code> · <code>longform</code>)</li>
+          <li>상세 화면에서 "건축물 목록" 링크로 인덱스 복귀</li>
         </ul>
         <div class="chips">
+          <span class="chip">2 routes: buildings + detail</span>
           <span class="chip">layout: hero / sidebar / longform</span>
-          <span class="chip--olive chip">9 BUILDINGS</span>
+          <span class="chip--olive chip">3 picks + 526 places</span>
         </div>
       </div>
     </article>

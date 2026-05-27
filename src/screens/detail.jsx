@@ -151,15 +151,6 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
       <MPage>
         <MasilNav route={route} onNavigate={onNavigate} />
 
-        {/* breadcrumb */}
-        <div style={{ padding: "20px 56px 0", display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: M.muted, fontWeight: 700 }}>
-          <span onClick={() => onNavigate("home")} style={{ cursor: "pointer" }}>지도</span>
-          <MIcon name="chevron" size={12} color={M.muted}/>
-          <span>{b.region}</span>
-          <MIcon name="chevron" size={12} color={M.muted}/>
-          <span style={{ color: M.ink }}>{b.name}</span>
-        </div>
-
         {/* hero header */}
         <section style={{ padding: "32px 56px 28px" }}>
           <Hairline label={`PLACE · ${b.no} · ${b.typeKey.toUpperCase()}`} style={{ marginBottom: 24 }}/>
@@ -322,9 +313,9 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
             borderRight: `1px solid ${M.beigeAlt}`,
             display: "flex", flexDirection: "column", gap: 14,
           }}>
-            <div onClick={() => onNavigate("home")} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: M.muted, fontWeight: 700, cursor: "pointer", marginBottom: 12 }}>
+            <div onClick={() => onNavigate("buildings")} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: M.muted, fontWeight: 700, cursor: "pointer", marginBottom: 12 }}>
               <MIcon name="chevron" size={12} color={M.muted} style={{ transform: "rotate(180deg)" }}/>
-              <span>지도로</span>
+              <span>건축물 목록</span>
             </div>
             <Serial color={accent} size={14}>#{b.no}</Serial>
             <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, lineHeight: 1.15 }}>{b.name}</div>
