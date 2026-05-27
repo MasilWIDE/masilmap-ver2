@@ -249,48 +249,219 @@ function BuildingListCard({ b, onClick, selected = false, variant = "default" })
 }
 
 /* ---------- 필터 바 ---------- */
-function FilterBar({ activeType, setActiveType, activeRegion, setActiveRegion }) {
+/* ---------- 필터 바 (5-chip dropdown · BuildingsIndexScreen과 동일) ---------- */
+function FilterBar({ onFilteredChange }) {
+  const [openMenu, setOpenMenu] = React.useState(null);
+  const toggleMenu = (k) => setOpenMenu((cur) => (cur === k ? null : k));
+
+  const [projects, setProjects]     = React.useState(new Set(["building"]));
+  const [regions, setRegions]       = React.useState(new Set());
+  const [uses, setUses]             = React.useState(new Set());
+  const [areaType, setAreaType]     = React.useState("gfa");
+  const [areaMin, setAreaMin]       = React.useState(0);
+  const [areaMax, setAreaMax]       = React.useState(200000);
+  const [floorsType, setFloorsType] = React.useState("above");
+  const [floorsMin, setFloorsMin]   = React.useState(1);
+  const [floorsMax, setFloorsMax]   = React.useState(50);
+
+  // 외부 클릭 시 dropdown 닫기
+  React.useEffect(() => {
+    const h = (e) => { if (!e.target.closest("[data-filter-chip]")) setOpenMenu(null); };
+    document.addEventListener("click", h);
+    return () => document.removeEventListener("click", h);
+  }, []);
+
+  // 지역별 / 용도별 카운트
+  const provinceCounts = (() => {
+    const c = {};
+    BUILDINGS.forEach((b) => { const id = provinceIdOf(b); if (id) c[id] = (c[id] || 0) + 1; });
+    return c;
+  })();
+  const krTotal = Object.values(provinceCounts).reduce((a, b) => a + b, 0);
+  const useCounts = (() => {
+    const c = {};
+    BUILDINGS.forEach((b) => { if (b.useKey) c[b.useKey] = (c[b.useKey] || 0) + 1; });
+    return c;
+  })();
+
+  // 필터링
+  const filtered = BUILDINGS.filter((b) => {
+    if (regions.size > 0) {
+      const id = provinceIdOf(b);
+      if (!id || !regions.has(id)) return false;
+    }
+    if (uses.size > 0 && !uses.has(b.useKey)) return false;
+    if (areaType === "gfa") {
+      const g = parseGfa(b.metrics?.gfa);
+      if (g < areaMin || g > areaMax) return false;
+    }
+    if (floorsType === "above") {
+      const f = b.metrics?.floors || 0;
+      if (f < floorsMin || f > floorsMax) return false;
+    }
+    return true;
+  });
+
+  // 부모에 필터 결과 통지
+  React.useEffect(() => {
+    if (onFilteredChange) onFilteredChange(filtered);
+  }, [regions, uses, areaType, areaMin, areaMax, floorsType, floorsMin, floorsMax]);
+
+  // 배지
+  const regionBadge  = regions.size;
+  const usesBadge    = uses.size;
+  const areaBadge    = (areaMin > 0 || areaMax < 200000) ? 1 : 0;
+  const floorsBadge  = (floorsMin > 1 || floorsMax < 50 || floorsType !== "above") ? 1 : 0;
+  const projectBadge = 0;
+
+  const toggleSet = (set, val, setter) => {
+    const next = new Set(set);
+    next.has(val) ? next.delete(val) : next.add(val);
+    setter(next);
+  };
+
   return (
-    <div style={{ display: "flex", gap: 24, alignItems: "center", padding: "0 56px", flexWrap: "wrap" }}>
-      <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-        <MagCap style={{ marginRight: 6 }}>TYPE</MagCap>
-        {TYPES.map((t) => {
-          const on = t.id === activeType;
-          return (
-            <span key={t.id} onClick={() => setActiveType(t.id)} style={{
-              padding: "8px 14px", borderRadius: 999,
-              fontSize: 12, fontWeight: 700,
-              background: on ? M.ink : "transparent",
-              color: on ? M.cream : M.ink,
-              border: on ? "none" : `1px solid ${M.beigeAlt}`,
-              cursor: "pointer",
-              transition: "all .15s",
-              whiteSpace: "nowrap",
-            }}>
-              {t.name}
-              <span style={{ marginLeft: 6, opacity: 0.5, fontSize: 11 }}>{t.count}</span>
-            </span>
-          );
-        })}
-      </div>
-      <div style={{ width: 1, height: 28, background: M.beigeAlt }}/>
-      <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
-        <MagCap style={{ marginRight: 6 }}>REGION</MagCap>
-        {[{id:"all", name:"전국"}, ...REGIONS].map((r) => {
-          const on = r.id === activeRegion;
-          return (
-            <span key={r.id} onClick={() => setActiveRegion(r.id)} style={{
-              padding: "8px 14px", borderRadius: 999,
-              fontSize: 12, fontWeight: 700,
-              background: on ? `${M.terra}1f` : "transparent",
-              color: on ? M.terra : M.ink,
-              border: on ? `1px solid ${M.terra}40` : `1px solid ${M.beigeAlt}`,
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-            }}>{r.name}</span>
-          );
-        })}
-      </div>
+    <div style={{
+      display: "flex", gap: 10, alignItems: "center", justifyContent: "center",
+      flexWrap: "wrap", padding: "0 56px", position: "relative",
+    }}>
+      {/* 프로젝트 */}
+      <FilterChip label="프로젝트" badge={projectBadge}
+        open={openMenu === "project"} onToggle={() => toggleMenu("project")}
+        icon="map" width={240}>
+        <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>카테고리 선택</div>
+        <CheckRow checked={projects.has("building")} disabled dot={M.terra} label="건축물 (현재 페이지)"/>
+        <CheckRow checked={false} disabled dot="#F0A0A0" label="인테리어"/>
+        <CheckRow checked={false} disabled dot="#4A5570" label="계획안"/>
+        <CheckRow checked={false} disabled dot={M.olive}  label="여행지"/>
+        <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>※ 다른 카테고리는 준비중</div>
+      </FilterChip>
+
+      {/* 지역 */}
+      <FilterChip label="지역" badge={regionBadge}
+        open={openMenu === "region"} onToggle={() => toggleMenu("region")}
+        icon="location" width={320}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+          <span style={{ fontSize: 12, color: M.ink, fontWeight: 800 }}>🇰🇷 한국</span>
+          <span style={{ fontSize: 11, color: M.muted, fontWeight: 700 }}>{krTotal}곳</span>
+        </div>
+        {KR_PROVINCES.map((p) => (
+          <CheckRow key={p.id} checked={regions.has(p.id)}
+            onChange={() => toggleSet(regions, p.id, setRegions)}
+            label={p.name} count={provinceCounts[p.id] || 0}/>
+        ))}
+        <div style={{ marginTop: 14, paddingTop: 12, borderTop: `1px solid ${M.beigeAlt}`,
+          display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+          <span style={{ fontSize: 12, color: M.ink, fontWeight: 800 }}>🌏 국제</span>
+          <span style={{ fontSize: 10, color: M.terra, fontWeight: 800 }}>준비중</span>
+        </div>
+        {INTL_COUNTRIES.map((c) => (
+          <CheckRow key={c.id} checked={false} disabled label={`${c.flag} ${c.name}`}/>
+        ))}
+        {regions.size > 0 && (
+          <div onClick={() => setRegions(new Set())} style={{
+            marginTop: 10, padding: "8px 0", textAlign: "center",
+            fontSize: 12, fontWeight: 700, color: M.terra,
+            cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
+          }}>모두 해제</div>
+        )}
+      </FilterChip>
+
+      {/* 용도 */}
+      <FilterChip label="용도" badge={usesBadge}
+        open={openMenu === "use"} onToggle={() => toggleMenu("use")}
+        icon="settings" width={260}>
+        <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>건축 용도 (다중 선택)</div>
+        <div style={{ maxHeight: 360, overflowY: "auto", margin: "0 -4px", paddingRight: 4 }}>
+          {USE_TYPES.map((t) => (
+            <CheckRow key={t.id} checked={uses.has(t.id)}
+              onChange={() => toggleSet(uses, t.id, setUses)}
+              label={t.name} count={useCounts[t.id] || 0}/>
+          ))}
+        </div>
+        {uses.size > 0 && (
+          <div onClick={() => setUses(new Set())} style={{
+            marginTop: 10, padding: "8px 0", textAlign: "center",
+            fontSize: 12, fontWeight: 700, color: M.terra,
+            cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
+          }}>모두 해제</div>
+        )}
+      </FilterChip>
+
+      {/* 면적 */}
+      <FilterChip label="면적" badge={areaBadge}
+        open={openMenu === "area"} onToggle={() => toggleMenu("area")}
+        icon="filter" width={300}>
+        <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>면적 종류</div>
+        <div style={{ marginBottom: 14 }}>
+          <RadioRow value="site"  current={areaType} onChange={setAreaType} label="대지면적"/>
+          <RadioRow value="floor" current={areaType} onChange={setAreaType} label="건축면적"/>
+          <RadioRow value="gfa"   current={areaType} onChange={setAreaType} label="연면적"/>
+        </div>
+        <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>범위 (㎡)</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 8, alignItems: "center" }}>
+          <input type="number" value={areaMin} min={0} max={areaMax}
+            onChange={(e) => setAreaMin(Math.max(0, +e.target.value || 0))} style={inputStyle}/>
+          <span style={{ color: M.muted }}>~</span>
+          <input type="number" value={areaMax} min={areaMin}
+            onChange={(e) => setAreaMax(Math.max(areaMin, +e.target.value || 0))} style={inputStyle}/>
+        </div>
+        {areaType !== "gfa" && (
+          <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>
+            ※ 현재 데이터는 <strong style={{ color: M.terra }}>연면적</strong>만 등록되어 있어요
+          </div>
+        )}
+        {(areaMin > 0 || areaMax < 200000) && (
+          <div onClick={() => { setAreaMin(0); setAreaMax(200000); }} style={{
+            marginTop: 10, padding: "8px 0", textAlign: "center",
+            fontSize: 12, fontWeight: 700, color: M.terra,
+            cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
+          }}>초기화</div>
+        )}
+      </FilterChip>
+
+      {/* 층수 */}
+      <FilterChip label="층수" badge={floorsBadge}
+        open={openMenu === "floors"} onToggle={() => toggleMenu("floors")}
+        icon="filter" width={280}>
+        <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>층 종류</div>
+        <div style={{ marginBottom: 14 }}>
+          <RadioRow value="above" current={floorsType} onChange={setFloorsType} label="지상"/>
+          <RadioRow value="below" current={floorsType} onChange={setFloorsType} label="지하"/>
+        </div>
+        <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>범위</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 8, alignItems: "center" }}>
+          <input type="number" value={floorsMin} min={1} max={floorsMax}
+            onChange={(e) => setFloorsMin(Math.max(1, +e.target.value || 1))} style={inputStyle}/>
+          <span style={{ color: M.muted }}>~</span>
+          <input type="number" value={floorsMax} min={floorsMin}
+            onChange={(e) => setFloorsMax(Math.max(floorsMin, +e.target.value || floorsMin))} style={inputStyle}/>
+        </div>
+        {floorsType === "below" && (
+          <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>
+            ※ 지하층 데이터는 별도 등록 필요
+          </div>
+        )}
+        {(floorsMin > 1 || floorsMax < 50 || floorsType !== "above") && (
+          <div onClick={() => { setFloorsMin(1); setFloorsMax(50); setFloorsType("above"); }} style={{
+            marginTop: 10, padding: "8px 0", textAlign: "center",
+            fontSize: 12, fontWeight: 700, color: M.terra,
+            cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
+          }}>초기화</div>
+        )}
+      </FilterChip>
+
+      {(regionBadge + usesBadge + areaBadge + floorsBadge) > 0 && (
+        <div onClick={() => {
+          setRegions(new Set()); setUses(new Set());
+          setAreaMin(0); setAreaMax(200000);
+          setFloorsType("above"); setFloorsMin(1); setFloorsMax(50);
+        }} style={{
+          position: "absolute", right: 56, top: "50%", transform: "translateY(-50%)",
+          padding: "8px 12px", fontSize: 12, fontWeight: 700, color: M.muted,
+          cursor: "pointer", textDecoration: "underline",
+        }}>모든 필터 초기화</div>
+      )}
     </div>
   );
 }
@@ -345,13 +516,7 @@ function MasilHero({ onNavigate }) {
 /* ---------- 메인 화면 ---------- */
 function HomeScreen({ route, onNavigate, t }) {
   const [selectedId, setSelectedId] = React.useState(BUILDINGS[0].id);
-  const [activeType, setActiveType]   = React.useState("all");
-  const [activeRegion, setActiveRegion] = React.useState("all");
-
-  const filtered = BUILDINGS.filter((b) => {
-    if (activeType !== "all" && b.typeKey !== activeType) return false;
-    return true;
-  });
+  const [filtered, setFiltered]     = React.useState(BUILDINGS);
 
   const selected = BUILDINGS.find((b) => b.id === selectedId);
   const layout = t.homeLayout;
@@ -392,10 +557,7 @@ function HomeScreen({ route, onNavigate, t }) {
 
       {/* 필터 */}
       <div style={{ paddingBottom: 24 }}>
-        <FilterBar
-          activeType={activeType} setActiveType={setActiveType}
-          activeRegion={activeRegion} setActiveRegion={setActiveRegion}
-        />
+        <FilterBar onFilteredChange={setFiltered} />
       </div>
 
       {/* === SPLIT 레이아웃 === */}

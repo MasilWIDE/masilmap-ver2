@@ -281,7 +281,7 @@ function BuildingsIndexScreen({ onNavigate }) {
       const id = provinceIdOf(b);
       if (!id || !regions.has(id)) return false;
     }
-    if (uses.size > 0 && !uses.has(b.typeKey)) return false;
+    if (uses.size > 0 && !uses.has(b.useKey)) return false;
     if (areaType === "gfa") {
       const g = parseGfa(b.metrics?.gfa);
       if (g < areaMin || g > areaMax) return false;
@@ -306,8 +306,12 @@ function BuildingsIndexScreen({ onNavigate }) {
   const floorsBadge  = (floorsMin > 1 || floorsMax < 50 || floorsType !== "above") ? 1 : 0;
   const projectBadge = 0; // 항상 "건축물" 기본 → 배지 없음
 
-  // TYPES (without 'all') for 용도 chips
-  const useTypes = TYPES.filter((t) => t.id !== "all");
+  // USE_TYPES: 용도 16분류 + 실제 BUILDINGS 카운트
+  const useCounts = (() => {
+    const c = {};
+    BUILDINGS.forEach((b) => { if (b.useKey) c[b.useKey] = (c[b.useKey] || 0) + 1; });
+    return c;
+  })();
 
   // 체크박스 토글 헬퍼
   const toggleSet = (set, val, setter, resetPage = true) => {
@@ -388,7 +392,7 @@ function BuildingsIndexScreen({ onNavigate }) {
           <Hairline label={`ALL · ${filtered.length} / ${BUILDINGS.length} PLACES${totalPages > 1 ? ` · PAGE ${safePage}/${totalPages}` : ""}`} />
         </div>
         <section style={{ padding: "14px 56px 16px" }}>
-          <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", justifyContent: "center", flexWrap: "wrap", position: "relative" }}>
 
             {/* === 프로젝트 === */}
             <FilterChip label="프로젝트" badge={projectBadge}
@@ -453,20 +457,22 @@ function BuildingsIndexScreen({ onNavigate }) {
               )}
             </FilterChip>
 
-            {/* === 용도 === */}
+            {/* === 용도 (16분류, 건축법 기반) === */}
             <FilterChip label="용도" badge={usesBadge}
               open={openMenu === "use"} onToggle={() => toggleMenu("use")}
               icon="settings" width={260}>
               <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>
                 건축 용도 (다중 선택)
               </div>
-              {useTypes.map((t) => (
-                <CheckRow key={t.id}
-                  checked={uses.has(t.id)}
-                  onChange={() => toggleSet(uses, t.id, setUses)}
-                  label={t.name}
-                  count={t.count}/>
-              ))}
+              <div style={{ maxHeight: 360, overflowY: "auto", margin: "0 -4px", paddingRight: 4 }}>
+                {USE_TYPES.map((t) => (
+                  <CheckRow key={t.id}
+                    checked={uses.has(t.id)}
+                    onChange={() => toggleSet(uses, t.id, setUses)}
+                    label={t.name}
+                    count={useCounts[t.id] || 0}/>
+                ))}
+              </div>
               {uses.size > 0 && (
                 <div onClick={() => setUsesAndReset(new Set())} style={{
                   marginTop: 10, padding: "8px 0", textAlign: "center",
@@ -559,7 +565,8 @@ function BuildingsIndexScreen({ onNavigate }) {
                 setFloorsType("above"); setFloorsMin(1); setFloorsMax(50);
                 setPage(1);
               }} style={{
-                marginLeft: "auto", padding: "10px 14px",
+                position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)",
+                padding: "8px 12px",
                 fontSize: 12, fontWeight: 700, color: M.muted,
                 cursor: "pointer", textDecoration: "underline",
               }}>모든 필터 초기화</div>
@@ -645,4 +652,8 @@ function BuildingsIndexScreen({ onNavigate }) {
   );
 }
 
-Object.assign(window, { BuildingsIndexScreen, FeaturedCard, GridCard });
+Object.assign(window, {
+  BuildingsIndexScreen, FeaturedCard, GridCard,
+  FilterChip, CheckRow, RadioRow,
+  KR_PROVINCES, INTL_COUNTRIES, provinceIdOf, parseGfa, inputStyle,
+});
