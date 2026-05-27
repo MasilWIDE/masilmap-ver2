@@ -4,17 +4,18 @@
    ================================================================ */
 
 /* ---------- Featured 카드 (Editor's Picks용) ---------- */
-function FeaturedCard({ b, onClick, variant = "large" }) {
+function FeaturedCard({ b, onClick, variant = "compact" }) {
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
   const sizes = {
-    large:  { aspect: "16/10", titleSize: 32, padding: 28 },
-    medium: { aspect: "16/9",  titleSize: 22, padding: 22 },
+    large:   { aspect: "16/10", titleSize: 32, padding: 28, showIntro: true },
+    medium:  { aspect: "16/9",  titleSize: 22, padding: 22, showIntro: false },
+    compact: { aspect: "4/3",   titleSize: 20, padding: 18, showIntro: false },
   }[variant];
 
   return (
     <div onClick={onClick} style={{
       position: "relative", height: "100%",
-      borderRadius: MR.cardLg, overflow: "hidden",
+      borderRadius: MR.card, overflow: "hidden",
       boxShadow: MS.card, cursor: "pointer",
       display: "flex", flexDirection: "column",
     }}>
@@ -26,13 +27,13 @@ function FeaturedCard({ b, onClick, variant = "large" }) {
           style={{ borderRadius: 0, height: "100%" }}
         />
         <div style={{
-          position: "absolute", top: 14, left: 14, display: "flex", gap: 6,
+          position: "absolute", top: 12, left: 12, display: "flex", gap: 6,
         }}>
           <span style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 10, fontWeight: 700, letterSpacing: "0.14em",
             color: M.cream, background: `${M.ink}cc`,
-            padding: "5px 10px", borderRadius: 6,
+            padding: "4px 9px", borderRadius: 6,
           }}>EDITOR'S PICK</span>
         </div>
       </div>
@@ -40,20 +41,20 @@ function FeaturedCard({ b, onClick, variant = "large" }) {
       <div style={{
         padding: sizes.padding,
         background: M.cream, flex: 1,
-        display: "flex", flexDirection: "column", gap: 8,
+        display: "flex", flexDirection: "column", gap: 6,
       }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
           <Serial color={accent}>#{b.no}</Serial>
-          <MagCap>{b.region} · {b.style}</MagCap>
+          <MagCap style={{ fontSize: 10 }}>{b.region} · {b.style}</MagCap>
         </div>
         <div style={{
           fontSize: sizes.titleSize, fontWeight: 900,
-          letterSpacing: "-0.025em", lineHeight: 1.15, color: M.ink,
+          letterSpacing: "-0.02em", lineHeight: 1.2, color: M.ink,
         }}>{b.name}</div>
-        <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>
-          {b.architect} · {b.year} · {b.type}
+        <div style={{ fontSize: 11, color: M.muted, fontWeight: 600 }}>
+          {b.architect} · {b.year}
         </div>
-        {variant === "large" && (
+        {sizes.showIntro && (
           <p style={{
             fontFamily: "'Noto Serif KR', serif",
             fontSize: 15, lineHeight: 1.7, color: M.ink,
@@ -123,42 +124,39 @@ function BuildingsIndexScreen({ onNavigate }) {
     <MPage>
       <MasilNav route="buildings" onNavigate={onNavigate}/>
 
-      {/* HERO 헤더 */}
-      <section style={{ padding: "40px 56px 24px" }}>
-        <Hairline label="ALL BUILDINGS · 526 PLACES" style={{ marginBottom: 24 }}/>
-        <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 56, alignItems: "end" }}>
+      {/* HERO 헤더 — 컴팩트 */}
+      <section style={{ padding: "24px 56px 12px" }}>
+        <Hairline label="ALL BUILDINGS · 526 PLACES" style={{ marginBottom: 16 }}/>
+        <div style={{ display: "flex", alignItems: "end", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
           <h1 style={{
-            fontSize: 64, fontWeight: 900,
-            letterSpacing: "-0.035em",
-            lineHeight: 1.02, color: M.ink, margin: 0,
+            fontSize: 44, fontWeight: 900,
+            letterSpacing: "-0.03em",
+            lineHeight: 1.05, color: M.ink, margin: 0,
             textWrap: "balance",
           }}>
-            한국에 지어진<br/>
+            한국에 지어진{" "}
             <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>모든 건축</span>의 인덱스.
           </h1>
           <p style={{
-            fontFamily: "'Noto Serif KR', serif",
-            fontSize: 17, lineHeight: 1.75,
-            color: M.ink, fontWeight: 400, margin: 0,
-            maxWidth: 460,
-            textWrap: "pretty",
+            fontSize: 13, lineHeight: 1.6,
+            color: M.muted, fontWeight: 500, margin: 0,
+            maxWidth: 340, textWrap: "pretty",
           }}>
-            천 년 된 목조 건축부터 어제 완공된 미술관까지 — 526곳을 카테고리·지역·시대로 펼쳐 두었습니다.
-            매월 에디터가 새 픽을 고릅니다.
+            526곳을 카테고리·지역·시대로 펼쳐 두었습니다. 매월 에디터가 새 픽을 고릅니다.
           </p>
         </div>
       </section>
 
-      {/* EDITOR'S PICKS — ArchDaily 톤 */}
-      <section style={{ padding: "32px 56px 56px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
-          <div>
-            <MagCap color={M.terra} style={{ marginBottom: 6 }}>EDITOR'S PICKS · 2026 SPRING</MagCap>
-            <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.02em", margin: 0, color: M.ink }}>
+      {/* EDITOR'S PICKS — 3개 동일 컴팩트 카드 (한 줄) */}
+      <section style={{ padding: "16px 56px 28px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+            <MagCap color={M.terra}>EDITOR'S PICKS · 2026 SPRING</MagCap>
+            <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", margin: 0, color: M.ink }}>
               이번 호의 세 건축
             </h2>
           </div>
-          <span style={{ fontSize: 13, color: M.terra, fontWeight: 800, cursor: "pointer" }}
+          <span style={{ fontSize: 12, color: M.terra, fontWeight: 800, cursor: "pointer" }}
             onClick={() => onNavigate("collection")}>
             큐레이션 컬렉션 전체 보기 →
           </span>
@@ -166,17 +164,17 @@ function BuildingsIndexScreen({ onNavigate }) {
 
         <div style={{
           display: "grid",
-          gridTemplateColumns: "1.6fr 1fr",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: 20,
         }}>
-          {/* Large featured (left) */}
-          <FeaturedCard b={picks[0]} onClick={() => onNavigate("detail", picks[0].id)} variant="large"/>
-
-          {/* Two stacked medium (right) */}
-          <div style={{ display: "grid", gridTemplateRows: "1fr 1fr", gap: 20 }}>
-            <FeaturedCard b={picks[1]} onClick={() => onNavigate("detail", picks[1].id)} variant="medium"/>
-            <FeaturedCard b={picks[2]} onClick={() => onNavigate("detail", picks[2].id)} variant="medium"/>
-          </div>
+          {picks.map((p) => (
+            <FeaturedCard
+              key={p.id}
+              b={p}
+              onClick={() => onNavigate("detail", p.id)}
+              variant="compact"
+            />
+          ))}
         </div>
       </section>
 
@@ -186,7 +184,7 @@ function BuildingsIndexScreen({ onNavigate }) {
       </div>
 
       {/* TYPE / REGION 필터 */}
-      <section style={{ padding: "24px 0 8px" }}>
+      <section style={{ padding: "18px 0 8px" }}>
         <div style={{ display: "flex", gap: 24, alignItems: "center", padding: "0 56px", flexWrap: "wrap" }}>
           <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
             <MagCap style={{ marginRight: 6 }}>TYPE</MagCap>
