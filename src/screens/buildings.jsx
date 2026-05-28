@@ -111,7 +111,7 @@ function FilterChip({ label, badge = 0, open, onToggle, children, width = 280, i
         onClick={(e) => { e.stopPropagation(); onToggle(); }}
         style={{
           display: "inline-flex", alignItems: "center", gap: 8,
-          padding: prominent ? "12px 28px" : "10px 16px",
+          padding: prominent ? "10px 40px" : "10px 16px",
           borderRadius: 999,
           background: active
             ? `${M.terra}14`
