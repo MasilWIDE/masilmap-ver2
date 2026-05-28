@@ -137,13 +137,147 @@ function BodyBlock({ block, style = {} }) {
   return null;
 }
 
+/* ---------- NetworkSection: 이 건축이 등장하는 코스·컬렉션 그물망 ----------
+   NetworkSection      = 풀 wrapper (section + Hairline + 내부 그리드)
+   NetworkSectionInner = 내부 그리드만 (sidebar/longform처럼 부모가 이미 wrap한 경우) */
+function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
+  const accent = b.pinTone === "olive" ? M.olive : M.terra;
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
+        {/* 좌: 코스 */}
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+            <MagCap color={accent}>코스 · {inCourses.length}</MagCap>
+            {inCourses.length > 0 && (
+              <span onClick={() => onNavigate("course")} style={{
+                fontSize: 11, fontWeight: 800, color: M.muted, cursor: "pointer",
+              }}>전체 코스 →</span>
+            )}
+          </div>
+
+          {inCourses.length === 0 ? (
+            <div style={{
+              padding: "32px 16px", borderRadius: MR.card,
+              background: M.cream, border: `1px dashed ${M.beigeAlt}`,
+              fontSize: 12, color: M.muted, fontWeight: 600, textAlign: "center",
+            }}>
+              아직 이 건축이 포함된 코스가 없습니다
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {inCourses.map((c) => (
+                <div key={c.id} onClick={() => onNavigate("course", c.id)} style={{
+                  display: "grid", gridTemplateColumns: "60px 1fr auto", gap: 14,
+                  padding: 14, borderRadius: MR.card,
+                  background: M.cream, boxShadow: MS.cardSm,
+                  cursor: "pointer", alignItems: "center",
+                }}>
+                  <div style={{
+                    width: 60, height: 60, borderRadius: 12,
+                    background: c.cover, color: M.cream,
+                    display: "flex", flexDirection: "column",
+                    alignItems: "center", justifyContent: "center",
+                  }}>
+                    <div style={{ fontSize: 10, fontWeight: 800, opacity: 0.8 }}>
+                      {c.type === "도슨트" ? "DOCENT" : "SELF"}
+                    </div>
+                    <div style={{ fontSize: 16, fontWeight: 900, marginTop: 2 }}>{c.buildings.length}곳</div>
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em",
+                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {c.name}
+                    </div>
+                    <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 4 }}>
+                      {c.duration} · {c.curator.name} 큐레이션
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 900, color: accent }}>↗</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 우: 컬렉션 */}
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
+            <MagCap color={accent}>컬렉션 · {inCollections.length}</MagCap>
+            {inCollections.length > 0 && (
+              <span onClick={() => onNavigate("collection")} style={{
+                fontSize: 11, fontWeight: 800, color: M.muted, cursor: "pointer",
+              }}>전체 컬렉션 →</span>
+            )}
+          </div>
+
+          {inCollections.length === 0 ? (
+            <div style={{
+              padding: "32px 16px", borderRadius: MR.card,
+              background: M.cream, border: `1px dashed ${M.beigeAlt}`,
+              fontSize: 12, color: M.muted, fontWeight: 600, textAlign: "center",
+            }}>
+              아직 이 건축이 포함된 컬렉션이 없습니다
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              {inCollections.map((c) => (
+                <div key={c.id} onClick={() => onNavigate("collection", c.id)} style={{
+                  display: "grid", gridTemplateColumns: "60px 1fr auto", gap: 14,
+                  padding: 14, borderRadius: MR.card,
+                  background: M.cream, boxShadow: MS.cardSm,
+                  cursor: "pointer", alignItems: "center",
+                }}>
+                  <div style={{
+                    width: 60, height: 60, borderRadius: 12,
+                    background: c.cover, color: M.cream,
+                    display: "flex", flexDirection: "column",
+                    alignItems: "center", justifyContent: "center",
+                  }}>
+                    <div style={{ fontSize: 10, fontWeight: 800, opacity: 0.8, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em" }}>
+                      {c.no}
+                    </div>
+                    <div style={{ fontSize: 16, fontWeight: 900, marginTop: 2 }}>{c.count}곳</div>
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em",
+                      whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {c.title}
+                    </div>
+                    <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 4 }}>
+                      {c.editor} · {c.readTime}분
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, fontWeight: 900, color: accent }}>↗</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+    </div>
+  );
+}
+
+/* 풀 wrapper — hero/longform 등에서 단독 섹션으로 쓸 때 */
+function NetworkSection({ b, inCourses, inCollections, onNavigate }) {
+  if (inCourses.length === 0 && inCollections.length === 0) return null;
+  return (
+    <section style={{ padding: "48px 56px 32px", maxWidth: 1200, margin: "0 auto" }}>
+      <Hairline label="NETWORK · 이 건축이 등장하는 곳" style={{ marginBottom: 28 }}/>
+      <NetworkSectionInner b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
+    </section>
+  );
+}
+
 /* ---------- DetailScreen ---------- */
 function DetailScreen({ route, onNavigate, buildingId, t }) {
   const b = BUILDINGS.find((x) => x.id === buildingId) || BUILDINGS[0];
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
   const layout = t.detailLayout;
   const related = BUILDINGS.filter((x) => x.id !== b.id && x.typeKey === b.typeKey).slice(0, 3);
-  const inCollection = COLLECTIONS.find((c) => c.buildings.includes(b.id));
+  const inCollections = COLLECTIONS.filter((c) => c.buildings.includes(b.id));
+  const inCourses     = COURSES.filter((c) => c.buildings.includes(b.id));
+  // 호환용 (기존 inCollection 참조 코드)
+  const inCollection  = inCollections[0];
 
   // === HERO ===
   if (layout === "hero") {
@@ -153,7 +287,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
         {/* hero header */}
         <section style={{ padding: "32px 56px 28px" }}>
-          <Hairline label={`PLACE · ${b.region.toUpperCase()} · ${b.typeKey.toUpperCase()}`} style={{ marginBottom: 24 }}/>
+          <Hairline label={`PLACE · ${(b.region || "").toUpperCase()} · ${(b.typeKey || "").toUpperCase()}`} style={{ marginBottom: 24 }}/>
           <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 56, alignItems: "end" }}>
             <div>
               <MagCap color={accent} style={{ marginBottom: 16 }}>
@@ -265,6 +399,9 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
           </aside>
         </section>
 
+        {/* NETWORK · 이 건축이 등장하는 코스·컬렉션 */}
+        <NetworkSection b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
+
         {/* related */}
         <section style={{ padding: "32px 56px 64px", background: M.beigeAlt }}>
           <Hairline label="RELATED PLACES · 비슷한 결의 건축" style={{ marginBottom: 24 }}/>
@@ -298,8 +435,9 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
       { id: "story", label: "02. 이야기" },
       { id: "gallery", label: "03. 갤러리" },
       { id: "info", label: "04. 방문 정보" },
-      { id: "notes", label: "05. 방문 후기" },
-      { id: "related", label: "06. 비슷한 건축" },
+      { id: "notes",   label: "05. 방문 후기" },
+      { id: "network", label: "06. 등장하는 곳" },
+      { id: "related", label: "07. 비슷한 건축" },
     ];
     return (
       <MPage>
@@ -410,8 +548,16 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
               </div>
             </section>
 
+            {/* NETWORK · 코스 + 컬렉션 (sidebar: 자체 wrap 사용) */}
+            {(inCourses.length > 0 || inCollections.length > 0) && (
+              <section id="network" style={{ marginBottom: 56 }}>
+                <Hairline label="06 · NETWORK · 이 건축이 등장하는 곳" style={{ marginBottom: 28 }}/>
+                <NetworkSectionInner b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
+              </section>
+            )}
+
             <section id="related" style={{ marginBottom: 56 }}>
-              <Hairline label="06 · RELATED" style={{ marginBottom: 28 }}/>
+              <Hairline label="07 · RELATED" style={{ marginBottom: 28 }}/>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
                 {related.map((r) => (
                   <div key={r.id} onClick={() => onNavigate("detail", r.id)} style={{ cursor: "pointer" }}>
@@ -491,6 +637,9 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
           </div>
         </div>
       </article>
+
+      {/* NETWORK · 코스 + 컬렉션 */}
+      <NetworkSection b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
 
       <section style={{ padding: "32px 24px 64px", background: M.beigeAlt }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>

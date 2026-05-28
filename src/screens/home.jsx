@@ -589,11 +589,19 @@ function PinPopupCard({ b, onClose, onNavigate }) {
           <MChip color={M.muted} bg={M.beige} size="sm">📍 {b.region}</MChip>
         </div>
 
-        {/* 이름 + 건축가 */}
-        <div style={{
-          fontSize: 22, fontWeight: 900, color: M.ink,
-          letterSpacing: "-0.02em", marginBottom: 2,
-        }}>{b.name}</div>
+        {/* 이름 + 건축가 (클릭 시 상세 화면) */}
+        <div
+          onClick={() => onNavigate("detail", b.id)}
+          style={{
+            fontSize: 22, fontWeight: 900, color: M.ink,
+            letterSpacing: "-0.02em", marginBottom: 2,
+            cursor: "pointer",
+            transition: "color .15s",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = accent)}
+          onMouseLeave={(e) => (e.currentTarget.style.color = M.ink)}>
+          {b.name} <span style={{ fontSize: 13, color: accent, fontWeight: 800 }}>↗</span>
+        </div>
         <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginBottom: 14 }}>
           {b.architect} · {b.year}
         </div>
