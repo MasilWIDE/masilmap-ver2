@@ -559,23 +559,16 @@ function PinPopupCard({ b, position, total, onClose, onNavigate }) {
           tone={b.pinTone === "olive" ? "olive" : "beige"}
           style={{ borderRadius: 0 }}/>
 
-        {/* 좌상단: SPACE X OF N 배지 */}
+        {/* 좌상단: 일련번호 (#001 형식) */}
         <div style={{
           position: "absolute", top: 12, left: 12,
           display: "inline-flex", alignItems: "center", gap: 6,
           background: accent, color: M.cream,
-          padding: "4px 12px 4px 4px", borderRadius: 999,
-          fontSize: 10, fontWeight: 800,
-          letterSpacing: "0.1em", textTransform: "uppercase",
-        }}>
-          <span style={{
-            width: 22, height: 22, borderRadius: 999,
-            background: M.cream, color: accent,
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            fontSize: 12, fontWeight: 900,
-          }}>{position}</span>
-          Space {position} of {total}
-        </div>
+          padding: "5px 12px", borderRadius: 999,
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 11, fontWeight: 800,
+          letterSpacing: "0.08em",
+        }}>#{b.no}</div>
 
         {/* 우상단: 닫기 X */}
         <div onClick={onClose} style={{
