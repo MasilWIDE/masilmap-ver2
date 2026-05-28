@@ -172,8 +172,7 @@ function AdminContentScreen({ onNavigate }) {
                 <ImgPlaceholder ratio="1/1" tone={b.pinTone === "olive" ? "olive" : "beige"} style={{ borderRadius: 8 }}/>
               </div>
               <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Serial color={M.terra} size={10}>#{b.no}</Serial>
+                <div>
                   <span style={{ fontSize: 14, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em" }}>{b.name}</span>
                 </div>
                 <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 2 }}>{b.architect} · {b.year}</div>

@@ -163,8 +163,7 @@ function MyPageScreen({ onNavigate }) {
                 }}>
                   <ImgPlaceholder ratio="4/3" tone={b.pinTone === "olive" ? "olive" : "beige"} caption={b.name}/>
                   <div style={{ padding: "14px 4px 4px" }}>
-                    <Serial color={b.pinTone === "olive" ? M.olive : M.terra}>#{b.no}</Serial>
-                    <div style={{ fontSize: 18, fontWeight: 900, color: M.ink, marginTop: 4, letterSpacing: "-0.02em" }}>{b.name}</div>
+                    <div style={{ fontSize: 18, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em" }}>{b.name}</div>
                     <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 2 }}>{b.architect} · {b.year}</div>
                   </div>
                 </div>

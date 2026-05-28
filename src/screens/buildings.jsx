@@ -44,7 +44,6 @@ function FeaturedCard({ b, onClick, variant = "compact" }) {
         display: "flex", flexDirection: "column", gap: 6,
       }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
-          <Serial color={accent}>#{b.no}</Serial>
           <MagCap style={{ fontSize: 10 }}>{b.region} · {b.style}</MagCap>
         </div>
         <div style={{
@@ -81,7 +80,6 @@ function GridCard({ b, onClick }) {
       />
       <div style={{ padding: "0 2px" }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
-          <Serial size={11} color={accent}>#{b.no}</Serial>
           <MagCap style={{ fontSize: 10 }}>{b.region}</MagCap>
         </div>
         <div style={{

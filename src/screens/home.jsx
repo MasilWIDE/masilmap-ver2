@@ -183,7 +183,6 @@ function BuildingListCard({ b, onClick, selected = false, variant = "default" })
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-            <Serial size={10} color={accent}>#{b.no}</Serial>
             <MagCap style={{ fontSize: 9 }}>{b.region}</MagCap>
           </div>
           <div style={{ fontSize: 15, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em", marginBottom: 2 }}>
@@ -224,7 +223,6 @@ function BuildingListCard({ b, onClick, selected = false, variant = "default" })
       </div>
       <div style={{ padding: "0 4px 4px" }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6 }}>
-          <Serial color={accent}>#{b.no}</Serial>
           <MagCap>{b.region}</MagCap>
         </div>
         <div style={{ fontSize: 19, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: 4 }}>
@@ -559,16 +557,6 @@ function PinPopupCard({ b, position, total, onClose, onNavigate }) {
           tone={b.pinTone === "olive" ? "olive" : "beige"}
           style={{ borderRadius: 0 }}/>
 
-        {/* 좌상단: 일련번호 (#001 형식) */}
-        <div style={{
-          position: "absolute", top: 12, left: 12,
-          display: "inline-flex", alignItems: "center", gap: 6,
-          background: accent, color: M.cream,
-          padding: "5px 12px", borderRadius: 999,
-          fontFamily: "'JetBrains Mono', monospace",
-          fontSize: 11, fontWeight: 800,
-          letterSpacing: "0.08em",
-        }}>#{b.no}</div>
 
         {/* 우상단: 닫기 X */}
         <div onClick={onClose} style={{
@@ -817,8 +805,7 @@ function HomeScreen({ route, onNavigate, t }) {
               </div>
               {selected && (
                 <div style={{ marginTop: 16, padding: 18, background: M.cream, borderRadius: MR.card, boxShadow: MS.cardSm }}>
-                  <Serial color={M.terra}>#{selected.no}</Serial>
-                  <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "4px 0 4px" }}>{selected.name}</div>
+                  <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 4px" }}>{selected.name}</div>
                   <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>{selected.architect} · {selected.year} · {selected.region}</div>
                   <p style={{ fontSize: 13, lineHeight: 1.55, color: M.ink, fontWeight: 500, margin: "10px 0 12px" }}>{selected.intro}</p>
                   <MButton kind="primary" size="sm" onClick={() => onNavigate("detail", selected.id)}>상세 →</MButton>

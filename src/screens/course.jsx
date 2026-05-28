@@ -129,7 +129,6 @@ function StopCard({ stop, idx, total, onClick, nextDist }) {
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
-          <Serial color={stop.pinTone === "olive" ? M.olive : M.terra}>#{stop.no}</Serial>
           <MagCap>{stop.type}</MagCap>
         </div>
         <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink }}>{stop.name}</div>

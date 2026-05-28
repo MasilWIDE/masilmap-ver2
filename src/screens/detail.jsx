@@ -153,7 +153,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
         {/* hero header */}
         <section style={{ padding: "32px 56px 28px" }}>
-          <Hairline label={`PLACE · ${b.no} · ${b.typeKey.toUpperCase()}`} style={{ marginBottom: 24 }}/>
+          <Hairline label={`PLACE · ${b.region.toUpperCase()} · ${b.typeKey.toUpperCase()}`} style={{ marginBottom: 24 }}/>
           <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 56, alignItems: "end" }}>
             <div>
               <MagCap color={accent} style={{ marginBottom: 16 }}>
@@ -275,8 +275,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
               }}>
                 <ImgPlaceholder ratio="4/3" tone={r.pinTone === "olive" ? "olive" : "beige"} caption={r.name}/>
                 <div style={{ padding: "14px 4px 4px" }}>
-                  <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6 }}>
-                    <Serial color={r.pinTone === "olive" ? M.olive : M.terra}>#{r.no}</Serial>
+                  <div style={{ marginBottom: 6 }}>
                     <MagCap>{r.region}</MagCap>
                   </div>
                   <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink }}>{r.name}</div>
@@ -317,7 +316,6 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
               <MIcon name="chevron" size={12} color={M.muted} style={{ transform: "rotate(180deg)" }}/>
               <span>건축물 목록</span>
             </div>
-            <Serial color={accent} size={14}>#{b.no}</Serial>
             <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, lineHeight: 1.15 }}>{b.name}</div>
             <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>{b.architect} · {b.year}</div>
             <Hairline style={{ margin: "12px 0" }}/>
@@ -418,8 +416,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
                 {related.map((r) => (
                   <div key={r.id} onClick={() => onNavigate("detail", r.id)} style={{ cursor: "pointer" }}>
                     <ImgPlaceholder ratio="4/3" tone={r.pinTone === "olive" ? "olive" : "beige"} caption={r.name}/>
-                    <Serial color={r.pinTone === "olive" ? M.olive : M.terra} style={{ marginTop: 10, display: "block" }}>#{r.no}</Serial>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: M.ink, marginTop: 4, letterSpacing: "-0.015em" }}>{r.name}</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: M.ink, marginTop: 12, letterSpacing: "-0.015em" }}>{r.name}</div>
                     <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 2 }}>{r.architect} · {r.year}</div>
                   </div>
                 ))}
@@ -438,7 +435,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
       <MasilNav route={route} onNavigate={onNavigate}/>
 
       <section style={{ maxWidth: 760, margin: "0 auto", padding: "64px 24px 24px", textAlign: "center" }}>
-        <Serial color={accent} size={14}>마실맵 / 건축 노트 · #{b.no}</Serial>
+        <Serial color={accent} size={14}>마실맵 / 건축 노트</Serial>
         <h1 style={{ fontSize: 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.04, margin: "20px 0 16px", color: M.ink, textWrap: "balance" }}>
           {b.name}
         </h1>
@@ -503,8 +500,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
               <div key={r.id} onClick={() => onNavigate("detail", r.id)} style={{ background: M.cream, borderRadius: MR.card, padding: 14, cursor: "pointer", boxShadow: MS.cardSm }}>
                 <ImgPlaceholder ratio="4/3" tone={r.pinTone === "olive" ? "olive" : "beige"} caption={r.name}/>
                 <div style={{ padding: "12px 4px 4px" }}>
-                  <Serial color={r.pinTone === "olive" ? M.olive : M.terra}>#{r.no}</Serial>
-                  <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, marginTop: 4 }}>{r.name}</div>
+                  <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink }}>{r.name}</div>
                   <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 2 }}>{r.architect} · {r.year}</div>
                 </div>
               </div>

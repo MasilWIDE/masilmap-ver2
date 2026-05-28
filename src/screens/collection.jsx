@@ -349,7 +349,6 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
               </div>
               <div style={{ padding: 18 }}>
                 <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 4 }}>
-                  <Serial color={b.pinTone === "olive" ? M.olive : M.terra}>#{b.no}</Serial>
                   <MagCap>{b.region}</MagCap>
                 </div>
                 <div style={{ fontSize: 19, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", lineHeight: 1.2 }}>{b.name}</div>
@@ -377,8 +376,7 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
             <div key={b.id} onClick={() => onNavigate("detail", b.id)} style={{ background: M.cream, borderRadius: MR.card, padding: 14, boxShadow: MS.cardSm, cursor: "pointer" }}>
               <ImgPlaceholder ratio="4/3" tone={b.pinTone === "olive" ? "olive" : "beige"} caption={b.name}/>
               <div style={{ padding: "14px 4px 4px" }}>
-                <Serial color={b.pinTone === "olive" ? M.olive : M.terra}>#{b.no}</Serial>
-                <div style={{ fontSize: 19, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", marginTop: 4 }}>{b.name}</div>
+                <div style={{ fontSize: 19, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em" }}>{b.name}</div>
                 <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 2 }}>{b.architect} · {b.year}</div>
                 <p style={{ fontSize: 13, lineHeight: 1.55, color: M.ink, fontWeight: 500, marginTop: 10, textWrap: "pretty" }}>{b.intro}</p>
               </div>
