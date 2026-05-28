@@ -248,7 +248,7 @@ function BuildingListCard({ b, onClick, selected = false, variant = "default" })
 
 /* ---------- 필터 바 ---------- */
 /* ---------- 필터 바 (5-chip dropdown · BuildingsIndexScreen과 동일) ---------- */
-function FilterBar({ onFilteredChange }) {
+function FilterBar({ onFilteredChange, searchQuery = "" }) {
   const [openMenu, setOpenMenu] = React.useState(null);
   const toggleMenu = (k) => setOpenMenu((cur) => (cur === k ? null : k));
 
@@ -277,7 +277,12 @@ function FilterBar({ onFilteredChange }) {
   })();
   const krTotal = Object.values(provinceCounts).reduce((a, b) => a + b, 0);
   // 필터링
+  const q = (searchQuery || "").trim().toLowerCase();
   const filtered = BUILDINGS.filter((b) => {
+    if (q) {
+      const hay = `${b.name} ${b.nameEn || ""} ${b.region} ${b.architect} ${b.style} ${(b.tags || []).join(" ")}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
     if (regions.size > 0) {
       const id = provinceIdOf(b);
       if (!id || !regions.has(id)) return false;
@@ -297,7 +302,7 @@ function FilterBar({ onFilteredChange }) {
   // 부모에 필터 결과 통지
   React.useEffect(() => {
     if (onFilteredChange) onFilteredChange(filtered);
-  }, [regions, uses, areaType, areaMin, areaMax, floorsType, floorsMin, floorsMax]);
+  }, [searchQuery, regions, uses, areaType, areaMin, areaMax, floorsType, floorsMin, floorsMax]);
 
   // 배지
   const regionBadge  = regions.size;
@@ -492,8 +497,7 @@ function MasilHero({ onNavigate }) {
 function ViewportPanel({ buildings, selectedId, onSelect }) {
   return (
     <div style={{
-      position: "absolute", top: 16, left: 48, width: 360,
-      maxHeight: "calc(100% - 48px)",
+      width: 360, height: "100%",
       background: M.cream, borderRadius: MR.cardLg, padding: 20,
       boxShadow: MS.cardLg,
       display: "flex", flexDirection: "column", gap: 12,
@@ -539,16 +543,16 @@ function ViewportPanel({ buildings, selectedId, onSelect }) {
   );
 }
 
-/* ---------- PinPopupCard: 우측 — ver1 스타일 팝업 (사진/뱃지/메트릭/북마크) ---------- */
-function PinPopupCard({ b, position, total, onClose, onNavigate }) {
+/* ---------- PinPopupCard: 좌측 list 옆에 슬라이드 확장 (Naver/Google Maps 톤) ---------- */
+function PinPopupCard({ b, onClose, onNavigate }) {
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
   return (
     <div style={{
-      position: "absolute", top: 16, right: 48, width: 360,
-      maxHeight: "calc(100% - 32px)",
+      width: 380, height: "100%",
       overflowY: "auto",
       background: M.cream, borderRadius: MR.cardLg,
       boxShadow: MS.cardLg,
+      animation: "slideInLeft .2s ease-out",
     }}>
       {/* 이미지 영역 */}
       <div style={{ position: "relative" }}>
@@ -668,7 +672,7 @@ function PinPopupCard({ b, position, total, onClose, onNavigate }) {
 }
 
 /* ---------- 메인 화면 ---------- */
-function HomeScreen({ route, onNavigate, t }) {
+function HomeScreen({ route, onNavigate, t, searchQuery }) {
   const [selectedId, setSelectedId] = React.useState(BUILDINGS[0].id);
   const [filtered, setFiltered]     = React.useState(BUILDINGS);
 
@@ -716,7 +720,7 @@ function HomeScreen({ route, onNavigate, t }) {
         borderBottom:  layout === "mapPrimary" ? `1px solid ${M.beigeAlt}` : "none",
         marginBottom:  layout === "mapPrimary" ? 16 : 0,
       }}>
-        <FilterBar onFilteredChange={setFiltered} />
+        <FilterBar onFilteredChange={setFiltered} searchQuery={searchQuery}/>
       </div>
 
       {/* === SPLIT 레이아웃 === */}
@@ -765,21 +769,25 @@ function HomeScreen({ route, onNavigate, t }) {
             <MasilMap buildings={filtered} selectedId={selectedId} onSelect={setSelectedId} />
           </div>
 
-          {/* 좌측: 현재 지도 영역에 보이는 건축물 리스트 */}
-          <ViewportPanel
-            buildings={filtered}
-            selectedId={selectedId}
-            onSelect={setSelectedId}/>
+          {/* 좌측 패널 컨테이너 — list + 선택 시 detail 확장 (Naver Maps 스타일) */}
+          <div style={{
+            position: "absolute",
+            top: 16, left: 48, bottom: 48,
+            display: "flex", alignItems: "stretch", gap: 12,
+            zIndex: 10,
+          }}>
+            <ViewportPanel
+              buildings={filtered}
+              selectedId={selectedId}
+              onSelect={setSelectedId}/>
 
-          {/* 우측: ver1 스타일 핀 팝업 카드 (선택 시) */}
-          {selected && filtered.some((x) => x.id === selectedId) && (
-            <PinPopupCard
-              b={selected}
-              position={filtered.findIndex((x) => x.id === selectedId) + 1}
-              total={filtered.length}
-              onClose={() => setSelectedId(null)}
-              onNavigate={onNavigate}/>
-          )}
+            {selected && filtered.some((x) => x.id === selectedId) && (
+              <PinPopupCard
+                b={selected}
+                onClose={() => setSelectedId(null)}
+                onNavigate={onNavigate}/>
+            )}
+          </div>
         </section>
       )}
 

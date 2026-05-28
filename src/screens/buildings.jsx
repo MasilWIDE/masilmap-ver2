@@ -361,7 +361,7 @@ const inputStyle = {
   outline: "none",
 };
 
-function BuildingsIndexScreen({ onNavigate }) {
+function BuildingsIndexScreen({ onNavigate, searchQuery }) {
   // 페이지
   const [page, setPage] = React.useState(1);
 
@@ -384,6 +384,9 @@ function BuildingsIndexScreen({ onNavigate }) {
   const setUsesAndReset = (s)  => { setUses(s);     setPage(1); };
   const onChangeArea    = ()   => { setPage(1); };
   const onChangeFloors  = ()   => { setPage(1); };
+
+  // 검색어 바뀌면 첫 페이지로
+  React.useEffect(() => { setPage(1); }, [searchQuery]);
 
   // dropdown 외부 클릭 시 닫기
   React.useEffect(() => {
@@ -413,7 +416,12 @@ function BuildingsIndexScreen({ onNavigate }) {
   const krTotal = Object.values(provinceCounts).reduce((a, b) => a + b, 0);
 
   // 필터링
+  const q = (searchQuery || "").trim().toLowerCase();
   const filtered = BUILDINGS.filter((b) => {
+    if (q) {
+      const hay = `${b.name} ${b.nameEn || ""} ${b.region} ${b.architect} ${b.style} ${(b.tags || []).join(" ")}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
     if (regions.size > 0) {
       const id = provinceIdOf(b);
       if (!id || !regions.has(id)) return false;

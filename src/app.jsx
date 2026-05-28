@@ -13,6 +13,7 @@ function App() {
   const [route, setRoute] = React.useState({ name: "home", id: null });
   const [t, setTweak] = useTweaks(DEFAULT_TWEAKS);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const navigate = (name, id = null, opts = {}) => {
     if (opts.homeLayout)       setTweak("homeLayout", opts.homeLayout);
@@ -22,7 +23,7 @@ function App() {
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
-  // expose tweaks + auth so MasilNav (shared, no props) can read state
+  // expose tweaks + auth + search so MasilNav (shared, no props) can read state
   window.__masilT = t;
   window.__masilAuth = {
     isLoggedIn,
@@ -33,14 +34,15 @@ function App() {
       setRoute((r) => (r.name === "mypage" ? { name: "home", id: null } : r));
     },
   };
+  window.__masilSearch = { query: searchQuery, setQuery: setSearchQuery };
 
   // route → screen
   let screen;
   switch (route.name) {
     case "home":
-      screen = <HomeScreen route="home" onNavigate={navigate} t={t}/>; break;
+      screen = <HomeScreen route="home" onNavigate={navigate} t={t} searchQuery={searchQuery}/>; break;
     case "buildings":
-      screen = <BuildingsIndexScreen onNavigate={navigate}/>; break;
+      screen = <BuildingsIndexScreen onNavigate={navigate} searchQuery={searchQuery}/>; break;
     case "detail":
       screen = <DetailScreen route="detail" onNavigate={navigate} buildingId={route.id || "kongkan"} t={t}/>; break;
     case "collection":

@@ -83,11 +83,26 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
           <MIcon name="search" size={16} color={M.muted} />
           <input
             placeholder="건축물, 지역, 건축가…"
+            value={(window.__masilSearch && window.__masilSearch.query) || ""}
+            onChange={(e) => {
+              const s = window.__masilSearch;
+              if (s && s.setQuery) s.setQuery(e.target.value);
+              // 검색 시작하면 홈/지도 또는 건축물 화면으로 자동 이동
+              if (e.target.value && route !== "home" && route !== "buildings" && route !== "detail") {
+                onNavigate("buildings");
+              }
+            }}
             style={{
               border: "none", outline: "none", background: "transparent",
               fontSize: 13, fontWeight: 600, color: M.ink, fontFamily: "inherit",
               flex: 1, minWidth: 0,
             }}/>
+          {(window.__masilSearch && window.__masilSearch.query) && (
+            <span onClick={() => window.__masilSearch.setQuery("")} style={{
+              cursor: "pointer", color: M.muted, fontSize: 14, fontWeight: 700,
+              padding: "0 4px",
+            }}>×</span>
+          )}
         </div>
         <span
           onClick={auth.isLoggedIn ? auth.logout : () => onNavigate("login")}
