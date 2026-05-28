@@ -58,7 +58,7 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
 
           <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 56, marginTop: 80 }}>
             <div>
-              <div style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontSize: 20, opacity: 0.85, marginBottom: 12 }}>
+              <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 20, opacity: 0.85, marginBottom: 12 }}>
                 a masilmap collection
               </div>
               <h1 style={{
@@ -139,7 +139,7 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
                 <h2 style={{ fontSize: 56, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.04, color: M.ink, margin: "12px 0 12px", textWrap: "balance" }}>
                   {b.name}
                 </h2>
-                <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, fontStyle: "italic", color: M.muted, marginBottom: 20 }}>
+                <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, color: M.muted, marginBottom: 20 }}>
                   {b.architect}, {b.year}
                 </div>
                 <p style={{ fontSize: 17, lineHeight: 1.75, color: M.ink, fontWeight: 500, textWrap: "pretty", margin: 0 }}>
@@ -175,7 +175,7 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
             <div>
               <Serial color={accent} size={16}>마실 저널 / {c.no}</Serial>
               <h1 style={{ fontSize: 84, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 0.96, margin: "16px 0 0", color: M.ink, textWrap: "balance" }}>{c.title}</h1>
-              <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, fontStyle: "italic", color: M.muted, marginTop: 12 }}>{c.subtitle}</div>
+              <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, color: M.muted, marginTop: 12 }}>{c.subtitle}</div>
             </div>
             <div>
               <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, lineHeight: 1.7, color: M.ink, fontWeight: 400, margin: 0, textWrap: "pretty" }}>{c.blurb}</p>
@@ -276,7 +276,7 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
           <div>
             <MagCap color={accent} style={{ marginBottom: 12 }}>{c.no} · {c.tag} · {c.issue}</MagCap>
             <h1 style={{ fontSize: 72, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1, color: M.ink, margin: 0, textWrap: "balance" }}>{c.title}</h1>
-            <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, fontStyle: "italic", color: M.muted, marginTop: 12 }}>{c.subtitle}</div>
+            <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, color: M.muted, marginTop: 12 }}>{c.subtitle}</div>
           </div>
           <div>
             <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 16, lineHeight: 1.7, color: M.ink, fontWeight: 400, margin: 0, textWrap: "pretty" }}>{c.blurb}</p>
@@ -308,13 +308,13 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
             <MagCap color="rgba(255,248,236,0.7)">FEATURE · {c.no}</MagCap>
             <div>
               <div style={{ fontSize: 52, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.02 }}>{c.title}</div>
-              <div style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontSize: 18, opacity: 0.85, marginTop: 8 }}>{c.subtitle}</div>
+              <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 18, opacity: 0.85, marginTop: 8 }}>{c.subtitle}</div>
             </div>
           </div>
 
           {/* editor pull-quote */}
           <div style={{ gridColumn: "span 3", gridRow: "span 1", background: M.cream, borderRadius: MR.cardLg, padding: 24, boxShadow: MS.cardSm, display: "flex", alignItems: "center" }}>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, fontStyle: "italic", lineHeight: 1.45, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>
+            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, lineHeight: 1.45, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>
               “가난한 재료만이 사람의 손길을 견딘다.”
             </p>
           </div>
@@ -428,7 +428,7 @@ function CollectionIndex({ onNavigate, t }) {
             <MagCap color={M.terra} style={{ marginBottom: 16 }}>EDITORIAL · 매 분기 발행</MagCap>
             <h1 style={{ fontSize: 84, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 0.96, margin: 0, color: M.ink, textWrap: "balance" }}>
               건축은 결국<br/>
-              <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>걸어야</span> 알게 된다
+              <span style={{ color: M.olive, fontWeight: 900 }}>걸어야</span> 알게 된다
             </h1>
           </div>
           <div>
@@ -460,7 +460,7 @@ function CollectionIndex({ onNavigate, t }) {
                 </div>
                 <div>
                   <div style={{ fontSize: 36, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.04 }}>{c.title}</div>
-                  <div style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontSize: 15, marginTop: 6, opacity: 0.85 }}>{c.subtitle}</div>
+                  <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 15, marginTop: 6, opacity: 0.85 }}>{c.subtitle}</div>
                 </div>
               </div>
               <div style={{ padding: 20 }}>
@@ -493,7 +493,7 @@ function CollectionIndex({ onNavigate, t }) {
               <div>
                 <Serial color={M.terra}>{c.tag}</Serial>
                 <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, marginTop: 4 }}>{c.title}</div>
-                <div style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontSize: 14, color: M.muted, marginTop: 2 }}>{c.subtitle}</div>
+                <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 14, color: M.muted, marginTop: 2 }}>{c.subtitle}</div>
               </div>
               <div style={{ fontSize: 13, color: M.muted, fontWeight: 600, lineHeight: 1.55 }}>
                 EDITOR · {c.editor} ({c.editorRole}) · {c.issue}

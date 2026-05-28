@@ -113,7 +113,7 @@ function BookingDocentScreen({ onNavigate, courseId }) {
         <Hairline label={`RESERVE · ${c.no}`} style={{ marginBottom: 24 }}/>
         <h1 style={{ fontSize: 48, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.05, color: M.ink, margin: 0, textWrap: "balance" }}>
           언제, 몇 분이서<br/>
-          <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>마실</span> 다녀오실까요?
+          <span style={{ color: M.olive, fontWeight: 900 }}>마실</span> 다녀오실까요?
         </h1>
         <p style={{ fontSize: 15, color: M.muted, marginTop: 14, fontWeight: 500, fontFamily: "'Noto Serif KR', serif" }}>
           {c.curator.name} 큐레이터가 직접 안내합니다. 우천 시에도 운영되며, 1시간 전까지 무료 취소.
@@ -274,7 +274,7 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
           <MagCap color={M.olive}>예약이 확정되었습니다</MagCap>
           <h1 style={{ fontSize: 56, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.05, color: M.ink, margin: "16px 0", textWrap: "balance" }}>
             6월 27일,<br/>
-            <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>마실</span> 갑니다.
+            <span style={{ color: M.olive, fontWeight: 900 }}>마실</span> 갑니다.
           </h1>
           <p style={{ fontSize: 16, color: M.muted, fontFamily: "'Noto Serif KR', serif", lineHeight: 1.7, fontWeight: 400, margin: "0 auto 40px", maxWidth: 480, textWrap: "pretty" }}>
             확정 안내를 카카오톡과 이메일로 보내드렸어요. 당일 출발 15분 전까지 집합 장소에서 만나요.
@@ -381,7 +381,7 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
                   &lt;PaymentWidget /&gt;
                 </code> 가 이 자리에 렌더됩니다
               </div>
-              <div style={{ fontSize: 12, color: M.faint, fontStyle: "italic", marginTop: 4 }}>
+              <div style={{ fontSize: 12, color: M.faint, marginTop: 4 }}>
                 실제 결제 UI는 토스페이먼츠 SDK가 주입
               </div>
             </div>
@@ -494,7 +494,7 @@ function BookingExternalScreen({ onNavigate, spaceId }) {
           {/* 마실맵 큐레이션 한 줄 */}
           <div style={{ padding: 24, background: M.cream, borderRadius: MR.cardLg, boxShadow: MS.cardSm, borderLeft: `4px solid ${M.terra}` }}>
             <MagCap color={M.terra} style={{ marginBottom: 10 }}>MASILMAP CURATION</MagCap>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontSize: 22, lineHeight: 1.5, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>
+            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, lineHeight: 1.5, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>
               “{b.name}의 동선을 그대로 옮긴 곳. 머무는 것 자체가 건축 산책의 연장이 됩니다.”
             </p>
             <div style={{ marginTop: 14, fontSize: 12, color: M.muted, fontWeight: 700 }}>— 마실맵 에디터팀</div>

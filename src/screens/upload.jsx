@@ -76,7 +76,7 @@ function UploadQuickScreen({ onNavigate }) {
             <MagCap color={M.terra} style={{ marginBottom: 12 }}>2~3분이면 끝나요</MagCap>
             <h1 style={{ fontSize: 56, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.05, color: M.ink, margin: 0, textWrap: "balance" }}>
               지도 위에<br/>
-              <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>건물 하나</span>를 올려요
+              <span style={{ color: M.olive, fontWeight: 900 }}>건물 하나</span>를 올려요
             </h1>
             <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, lineHeight: 1.7, color: M.muted, marginTop: 16, fontWeight: 400, maxWidth: 540 }}>
               위치와 기본 정보만 먼저 등록하고, 상세 내용은 나중에 천천히 채우셔도 됩니다.
@@ -230,7 +230,7 @@ function UploadDeepScreen({ onNavigate }) {
           <div>
             <MagCap color={M.terra} style={{ marginBottom: 12 }}>천천히 채워도 괜찮아요 · 자동 저장</MagCap>
             <h1 style={{ fontSize: 56, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.04, color: M.ink, margin: 0, textWrap: "balance" }}>
-              건축물의 <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>이야기</span>를<br/>
+              건축물의 <span style={{ color: M.olive, fontWeight: 900 }}>이야기</span>를<br/>
               한 줄씩 모아주세요
             </h1>
           </div>

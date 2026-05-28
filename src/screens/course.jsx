@@ -13,7 +13,7 @@ function CourseIndex({ onNavigate }) {
         <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 56, alignItems: "end" }}>
           <h1 style={{ fontSize: 72, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1, color: M.ink, margin: 0, textWrap: "balance" }}>
             오늘 걷기 좋은<br/>
-            <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>코스</span> 47가지
+            <span style={{ color: M.olive, fontWeight: 900 }}>코스</span> 47가지
           </h1>
           <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, lineHeight: 1.75, color: M.ink, margin: 0, textWrap: "pretty" }}>
             마실 코스는 동네 큐레이터와 건축사학자가 직접 걸어보고 묶은 워킹 가이드입니다. 도슨트가 있는 코스는 예약, 셀프 코스는 무료로 따라 걸으실 수 있어요.

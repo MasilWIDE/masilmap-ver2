@@ -128,7 +128,7 @@ function LoginScreen({ onNavigate }) {
         lineHeight: 1.1, color: M.ink, margin: "12px 0 12px",
       }}>
         다시 만나서<br/>
-        <span style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", color: M.terra }}>반가워요</span>.
+        <span style={{ fontWeight: 900, color: M.olive }}>반가워요</span>.
       </h1>
       <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 32 }}>
         이메일로 들어오시거나, 소셜로 빠르게 시작해보세요.
@@ -211,7 +211,7 @@ function OnboardingScreen({ onNavigate }) {
         <>
           <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
             잡지에 이름을<br/>
-            <span style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", color: M.terra }}>남겨주세요</span>.
+            <span style={{ fontWeight: 900, color: M.olive }}>남겨주세요</span>.
           </h1>
           <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 28 }}>
             먼저 계정을 만들어요. 다음 단계에서 마실 취향을 함께 정해볼게요.
@@ -256,7 +256,7 @@ function OnboardingScreen({ onNavigate }) {
         <>
           <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
             어느 동네부터<br/>
-            <span style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", color: M.terra }}>마실</span> 다녀올까요?
+            <span style={{ fontWeight: 900, color: M.olive }}>마실</span> 다녀올까요?
           </h1>
           <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 28 }}>
             지금 가장 가까운 동네 한 곳만 골라주세요. 나중에 더 추가할 수 있어요.
@@ -297,7 +297,7 @@ function OnboardingScreen({ onNavigate }) {
         <>
           <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
             어떤 건축이<br/>
-            가장 <span style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", color: M.terra }}>끌리세요?</span>
+            가장 <span style={{ fontWeight: 900, color: M.olive }}>끌리세요?</span>
           </h1>
           <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 24 }}>
             여러 개 골라도 좋아요. 고른 취향에 맞춰 첫 큐레이션을 보내드릴게요.
@@ -345,7 +345,7 @@ function OnboardingScreen({ onNavigate }) {
           <MagCap color={M.terra} style={{ marginBottom: 8 }}>READY · 첫 큐레이션</MagCap>
           <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
             마실맵에 오신 걸<br/>
-            <span style={{ fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", color: M.terra }}>환영해요</span>{name ? `, ${name}` : ""}.
+            <span style={{ fontWeight: 900, color: M.olive }}>환영해요</span>{name ? `, ${name}` : ""}.
           </h1>
           <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 28 }}>
             취향에 맞는 첫 번째 컬렉션을 골라뒀어요. 지금 바로 펼쳐볼까요?

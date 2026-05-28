@@ -28,7 +28,7 @@ function MyPageScreen({ onNavigate }) {
               <h1 style={{ fontSize: 48, fontWeight: 900, letterSpacing: "-0.03em", margin: 0, color: M.ink }}>{USER.name}</h1>
               <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: M.muted, fontWeight: 600 }}>{USER.handle}</span>
             </div>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, color: M.ink, fontStyle: "italic", margin: "0 0 16px", fontWeight: 400 }}>
+            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, color: M.ink, margin: "0 0 16px", fontWeight: 400 }}>
               “{USER.bio}”
             </p>
             <div style={{ display: "flex", gap: 28 }}>

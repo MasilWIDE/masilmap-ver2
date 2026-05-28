@@ -462,7 +462,7 @@ function MasilHero({ onNavigate }) {
             lineHeight: 1.02, color: M.ink, margin: 0,
             textWrap: "pretty",
           }}>
-            한국에 지어진 <span style={{ color: M.terra, fontStyle: "italic", fontFamily: "'Noto Serif KR', serif", fontWeight: 700 }}>모든 건축</span>은<br/>
+            한국에 지어진 <span style={{ color: M.olive, fontWeight: 900 }}>모든 건축</span>은<br/>
             한 번쯤 걸어볼 가치가 있다.
           </h1>
           <div style={{ display: "flex", gap: 12, marginTop: 32, alignItems: "center" }}>
@@ -721,7 +721,7 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
               textWrap: "pretty",
             }}>
               오늘은 어느 동네를<br/>
-              <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>마실</span> 다녀올까요?
+              <span style={{ color: M.olive, fontWeight: 900 }}>마실</span> 다녀올까요?
             </h1>
             <div style={{ maxWidth: 360, textAlign: "right" }}>
               <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, margin: 0, fontWeight: 500 }}>

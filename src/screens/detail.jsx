@@ -457,7 +457,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
         <figure style={{ margin: "16px -120px" }}>
           <ImgPlaceholder ratio="16/9" tone="deep" caption={`${b.name} · 내부 디테일`} style={{ borderRadius: MR.cardLg }}/>
-          <figcaption style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 13, fontStyle: "italic", color: M.muted, marginTop: 12, textAlign: "center" }}>
+          <figcaption style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 13, color: M.muted, marginTop: 12, textAlign: "center" }}>
             FIG. 02 · 빛이 떨어지는 자리. 회랑 끝에서 본 모습.
           </figcaption>
         </figure>

@@ -476,7 +476,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
             textWrap: "balance",
           }}>
             한국에 지어진{" "}
-            <span style={{ color: M.terra, fontFamily: "'Noto Serif KR', serif", fontStyle: "italic", fontWeight: 700 }}>모든 건축</span>의 인덱스.
+            <span style={{ color: M.olive, fontWeight: 900 }}>모든 건축</span>의 인덱스.
           </h1>
           <p style={{
             fontSize: 13, lineHeight: 1.6,
