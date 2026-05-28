@@ -671,17 +671,41 @@ function PinPopupCard({ b, onClose, onNavigate }) {
   );
 }
 
+/* ---------- 지도 페이지 전용 빠른 필터 (FastFive 톤) ---------- */
+const MAP_QUICK_FILTERS = [
+  { id: "all",    label: "전체",       match: () => true },
+  { id: "picks",  label: "✨ 추천",    match: (b) => ["kongkan", "buseoksa", "bonte"].includes(b.id) },
+  { id: "hanok",  label: "한옥",       match: (b) => b.typeKey === "hanok" },
+  { id: "modern", label: "근현대",     match: (b) => b.typeKey === "modern" },
+  { id: "museum", label: "미술관",     match: (b) => b.typeKey === "museum" },
+];
+
 /* ---------- 메인 화면 ---------- */
 function HomeScreen({ route, onNavigate, t, searchQuery }) {
   const [selectedId, setSelectedId] = React.useState(BUILDINGS[0].id);
   const [filtered, setFiltered]     = React.useState(BUILDINGS);
+  const [mapQuickFilter, setMapQuickFilter] = React.useState("all");
 
   const selected = BUILDINGS.find((b) => b.id === selectedId);
   const layout = t.homeLayout;
 
+  // 지도 페이지 전용 filtered (quickFilter + 상단 nav 검색어)
+  const mapFiltered = (() => {
+    const f = MAP_QUICK_FILTERS.find((x) => x.id === mapQuickFilter) || MAP_QUICK_FILTERS[0];
+    const q = (searchQuery || "").trim().toLowerCase();
+    return BUILDINGS.filter((b) => {
+      if (!f.match(b)) return false;
+      if (q) {
+        const hay = `${b.name} ${b.nameEn || ""} ${b.region} ${b.architect} ${b.style} ${(b.tags || []).join(" ")}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  })();
+
   return (
     <MPage>
-      <MasilNav route={route} onNavigate={onNavigate} variant={layout === "mapPrimary" ? "transparent" : "default"} />
+      <MasilNav route={route} onNavigate={onNavigate} variant="default" />
 
       {/* 헤더 영역 — 변형별 다르게 */}
       {layout === "editorial" && <MasilHero onNavigate={onNavigate} />}
@@ -713,15 +737,12 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
         </section>
       )}
 
-      {/* 필터 — mapPrimary일 때 위/아래 여유 추가해서 nav랑 안 부딪치게 */}
-      <div style={{
-        paddingTop:    layout === "mapPrimary" ? 24 : 0,
-        paddingBottom: layout === "mapPrimary" ? 16 : 24,
-        borderBottom:  layout === "mapPrimary" ? `1px solid ${M.beigeAlt}` : "none",
-        marginBottom:  layout === "mapPrimary" ? 16 : 0,
-      }}>
-        <FilterBar onFilteredChange={setFiltered} searchQuery={searchQuery}/>
-      </div>
+      {/* 필터 바 — split / editorial 에서만. mapPrimary는 지도 위 오버레이 칩 사용 */}
+      {layout !== "mapPrimary" && (
+        <div style={{ paddingBottom: 24 }}>
+          <FilterBar onFilteredChange={setFiltered} searchQuery={searchQuery}/>
+        </div>
+      )}
 
       {/* === SPLIT 레이아웃 === */}
       {layout === "split" && (
@@ -753,12 +774,12 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
         </section>
       )}
 
-      {/* === MAP-PRIMARY 레이아웃 (전체 지도 · 좌측 viewport · 우측 ver1 popup) === */}
+      {/* === MAP-PRIMARY 레이아웃 (FastFive 톤 · 풀 지도 + 칩 오버레이 + 좌측 panel) === */}
       {layout === "mapPrimary" && (
         <section style={{
           position: "relative",
-          height: "calc(100vh - 260px)",
-          minHeight: 540,
+          height: "calc(100vh - 180px)",
+          minHeight: 620,
           padding: "0 24px 32px",
         }}>
           {/* 전체 지도 */}
@@ -766,27 +787,59 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
             position: "absolute", inset: "0 24px 32px",
             borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg,
           }}>
-            <MasilMap buildings={filtered} selectedId={selectedId} onSelect={setSelectedId} />
+            <MasilMap buildings={mapFiltered} selectedId={selectedId} onSelect={setSelectedId} />
           </div>
 
-          {/* 좌측 패널 컨테이너 — list + 선택 시 detail 확장 (Naver Maps 스타일) */}
+          {/* 좌측 패널 컨테이너 — list + (선택시) detail 슬라이드 (Naver Maps 스타일) */}
           <div style={{
             position: "absolute",
-            top: 16, left: 48, bottom: 48,
+            top: 20, left: 48, bottom: 52,
             display: "flex", alignItems: "stretch", gap: 12,
             zIndex: 10,
           }}>
             <ViewportPanel
-              buildings={filtered}
+              buildings={mapFiltered}
               selectedId={selectedId}
               onSelect={setSelectedId}/>
 
-            {selected && filtered.some((x) => x.id === selectedId) && (
+            {selected && mapFiltered.some((x) => x.id === selectedId) && (
               <PinPopupCard
                 b={selected}
                 onClose={() => setSelectedId(null)}
                 onNavigate={onNavigate}/>
             )}
+          </div>
+
+          {/* 상단 우측: 빠른 필터 칩 오버레이 (FastFive 톤) */}
+          <div style={{
+            position: "absolute", top: 20, right: 48,
+            display: "flex", gap: 8, zIndex: 5, flexWrap: "wrap",
+            justifyContent: "flex-end", maxWidth: "60%",
+          }}>
+            {MAP_QUICK_FILTERS.map((f) => {
+              const on = f.id === mapQuickFilter;
+              const count = BUILDINGS.filter(f.match).length;
+              return (
+                <button key={f.id} onClick={() => setMapQuickFilter(f.id)} style={{
+                  display: "inline-flex", alignItems: "center", gap: 6,
+                  padding: "10px 18px", borderRadius: 999,
+                  background: on ? M.terra : M.cream,
+                  color: on ? M.cream : M.ink,
+                  border: `1px solid ${on ? M.terra : M.beigeAlt}`,
+                  fontSize: 13, fontWeight: 700,
+                  fontFamily: "inherit", cursor: "pointer",
+                  boxShadow: MS.cardSm,
+                  whiteSpace: "nowrap",
+                  transition: "all .15s",
+                }}>
+                  <span>{f.label}</span>
+                  <span style={{
+                    fontSize: 11, fontWeight: 800,
+                    opacity: on ? 0.85 : 0.5,
+                  }}>{count}</span>
+                </button>
+              );
+            })}
           </div>
         </section>
       )}
