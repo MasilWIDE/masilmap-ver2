@@ -490,6 +490,200 @@ function MasilHero({ onNavigate }) {
   );
 }
 
+/* ---------- ViewportPanel: 좌측 — 현재 지도 영역의 건축물 리스트 ---------- */
+function ViewportPanel({ buildings, selectedId, onSelect }) {
+  return (
+    <div style={{
+      position: "absolute", top: 24, left: 56, width: 380,
+      maxHeight: "calc(100% - 48px)",
+      background: M.cream, borderRadius: MR.cardLg, padding: 22,
+      boxShadow: MS.cardLg,
+      display: "flex", flexDirection: "column", gap: 12,
+    }}>
+      <div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          <span style={{ width: 6, height: 6, borderRadius: 999, background: M.terra,
+            animation: "pulse 1.6s ease-in-out infinite" }}/>
+          <MagCap color={M.terra}>NOW EXPLORING · 전국</MagCap>
+        </div>
+        <div style={{
+          fontSize: 18, fontWeight: 800, color: M.ink,
+          letterSpacing: "-0.015em", lineHeight: 1.25,
+        }}>
+          현재 지도 영역에 <span style={{ color: M.terra }}>{buildings.length}곳</span>
+        </div>
+        <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 4 }}>
+          지도를 이동하면 목록이 따라 갱신됩니다
+        </div>
+      </div>
+
+      <Hairline />
+
+      <div style={{
+        display: "flex", flexDirection: "column", gap: 6,
+        overflowY: "auto", paddingRight: 4, flex: 1, minHeight: 0,
+      }}>
+        {buildings.length === 0 ? (
+          <div style={{ padding: "40px 8px", textAlign: "center", color: M.muted,
+            fontSize: 13, fontWeight: 600 }}>
+            현재 영역에 표시할 건축물이 없습니다
+          </div>
+        ) : (
+          buildings.map((b) => (
+            <BuildingListCard key={b.id} b={b}
+              selected={b.id === selectedId}
+              onClick={() => onSelect(b.id)}
+              variant="compact"/>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- PinPopupCard: 우측 — ver1 스타일 팝업 (사진/뱃지/메트릭/북마크) ---------- */
+function PinPopupCard({ b, position, total, onClose, onNavigate }) {
+  const accent = b.pinTone === "olive" ? M.olive : M.terra;
+  return (
+    <div style={{
+      position: "absolute", top: 24, right: 56, width: 380,
+      background: M.cream, borderRadius: MR.cardLg,
+      boxShadow: MS.cardLg, overflow: "hidden",
+    }}>
+      {/* 이미지 영역 */}
+      <div style={{ position: "relative" }}>
+        <ImgPlaceholder
+          ratio="16/10"
+          tone={b.pinTone === "olive" ? "olive" : "beige"}
+          style={{ borderRadius: 0 }}/>
+
+        {/* 좌상단: SPACE X OF N 배지 */}
+        <div style={{
+          position: "absolute", top: 12, left: 12,
+          display: "inline-flex", alignItems: "center", gap: 6,
+          background: accent, color: M.cream,
+          padding: "4px 12px 4px 4px", borderRadius: 999,
+          fontSize: 10, fontWeight: 800,
+          letterSpacing: "0.1em", textTransform: "uppercase",
+        }}>
+          <span style={{
+            width: 22, height: 22, borderRadius: 999,
+            background: M.cream, color: accent,
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            fontSize: 12, fontWeight: 900,
+          }}>{position}</span>
+          Space {position} of {total}
+        </div>
+
+        {/* 우상단: 닫기 X */}
+        <div onClick={onClose} style={{
+          position: "absolute", top: 12, right: 12,
+          width: 28, height: 28, borderRadius: 999,
+          background: "rgba(58,46,34,0.7)", color: M.cream,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 16, fontWeight: 700, cursor: "pointer",
+        }}>×</div>
+
+        {/* 우하단: PHOTO 인디케이터 */}
+        <div style={{
+          position: "absolute", bottom: 12, right: 12,
+          fontFamily: "'JetBrains Mono', monospace",
+          fontSize: 10, fontWeight: 700, letterSpacing: "0.14em",
+          color: M.cream, background: "rgba(58,46,34,0.7)",
+          padding: "4px 9px", borderRadius: 6,
+        }}>PHOTO · 1/8</div>
+      </div>
+
+      {/* 본문 */}
+      <div style={{ padding: 20 }}>
+        {/* 칩: 스타일 + 거리 */}
+        <div style={{ display: "flex", gap: 6, marginBottom: 12, flexWrap: "wrap" }}>
+          <MChip color={accent} size="sm">{b.style}</MChip>
+          <MChip color={M.muted} bg={M.beige} size="sm">📍 {b.region}</MChip>
+        </div>
+
+        {/* 이름 + 건축가 */}
+        <div style={{
+          fontSize: 22, fontWeight: 900, color: M.ink,
+          letterSpacing: "-0.02em", marginBottom: 2,
+        }}>{b.name}</div>
+        <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginBottom: 14 }}>
+          {b.architect} · {b.year}
+        </div>
+
+        {/* 인용 박스 */}
+        <div style={{
+          padding: "12px 14px", borderRadius: 12,
+          background: M.beige, border: `1px solid ${M.beigeAlt}`,
+          fontFamily: "'Noto Serif KR', serif",
+          fontSize: 13, fontStyle: "italic", color: M.ink, lineHeight: 1.55,
+          marginBottom: 14,
+        }}>"{b.intro}"</div>
+
+        {/* 메트릭스 박스 (2칸) */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 14 }}>
+          <div style={{
+            background: M.beige, padding: "10px 12px", borderRadius: 10,
+            border: `1px solid ${M.beigeAlt}`,
+          }}>
+            <div style={{ fontSize: 10, color: M.muted, fontWeight: 700, marginBottom: 2 }}>연면적</div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: M.ink }}>{b.metrics?.gfa || "—"}</div>
+          </div>
+          <div style={{
+            background: M.beige, padding: "10px 12px", borderRadius: 10,
+            border: `1px solid ${M.beigeAlt}`,
+          }}>
+            <div style={{ fontSize: 10, color: M.muted, fontWeight: 700, marginBottom: 2 }}>관람</div>
+            <div style={{ fontSize: 14, fontWeight: 900, color: M.ink }}>{b.metrics?.visit || "—"}</div>
+          </div>
+        </div>
+
+        {/* 액션: 북마크 + 공유 + 자세히 */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", gap: 6 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 999,
+              background: M.beige, border: `1px solid ${M.beigeAlt}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer",
+            }}><MIcon name="bookmark" size={16} color={M.ink}/></div>
+            <div style={{
+              width: 36, height: 36, borderRadius: 999,
+              background: M.beige, border: `1px solid ${M.beigeAlt}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              cursor: "pointer",
+            }}><MIcon name="share" size={16} color={M.ink}/></div>
+          </div>
+          <MButton kind="primary" size="md" onClick={() => onNavigate("detail", b.id)}>
+            더 자세히 보기 →
+          </MButton>
+        </div>
+
+        {/* 외부 링크 (선택적) */}
+        <div style={{
+          marginTop: 12, paddingTop: 12,
+          borderTop: `1px solid ${M.beigeAlt}`,
+          display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap",
+        }}>
+          <span style={{ fontSize: 10, color: M.muted, fontWeight: 800,
+            letterSpacing: "0.1em", textTransform: "uppercase" }}>
+            EXTERNAL
+          </span>
+          <span style={{
+            padding: "5px 10px", borderRadius: 999, background: `${accent}14`,
+            color: accent, fontSize: 11, fontWeight: 700, cursor: "pointer",
+          }}>📍 MasilGround ↗</span>
+          <span style={{
+            padding: "5px 10px", borderRadius: 999, background: M.beige,
+            border: `1px solid ${M.beigeAlt}`,
+            color: M.ink, fontSize: 11, fontWeight: 700, cursor: "pointer",
+          }}>🔗 외부 자료 ↗</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- 메인 화면 ---------- */
 function HomeScreen({ route, onNavigate, t }) {
   const [selectedId, setSelectedId] = React.useState(BUILDINGS[0].id);
@@ -567,54 +761,36 @@ function HomeScreen({ route, onNavigate, t }) {
         </section>
       )}
 
-      {/* === MAP-PRIMARY 레이아웃 === */}
+      {/* === MAP-PRIMARY 레이아웃 (전체 지도 · 좌측 viewport · 우측 ver1 popup) === */}
       {layout === "mapPrimary" && (
-        <section style={{ position: "relative", height: "calc(100vh - 92px)", minHeight: 700, padding: "0 24px 24px" }}>
-          <div style={{ position: "absolute", inset: "0 24px 24px", borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg }}>
+        <section style={{
+          position: "relative",
+          height: "calc(100vh - 220px)",
+          minHeight: 620,
+          padding: "0 24px 24px",
+        }}>
+          {/* 전체 지도 */}
+          <div style={{
+            position: "absolute", inset: "0 24px 24px",
+            borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg,
+          }}>
             <MasilMap buildings={filtered} selectedId={selectedId} onSelect={setSelectedId} />
           </div>
 
-          {/* 플로팅 좌측 패널 */}
-          <div style={{
-            position: "absolute", top: 24, left: 56, width: 380,
-            background: M.cream, borderRadius: MR.cardLg, padding: 24,
-            boxShadow: MS.cardLg,
-          }}>
-            <MagCap color={M.terra} style={{ marginBottom: 10 }}>NOW EXPLORING · 전국</MagCap>
-            <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.1, margin: 0, color: M.ink, textWrap: "pretty" }}>
-              지도 위에서<br/>오늘 갈 곳을 골라요
-            </h2>
-            <p style={{ fontSize: 13, color: M.muted, lineHeight: 1.6, margin: "12px 0 16px", fontWeight: 500 }}>
-              핀을 눌러 건축물을 확인하고, 가까운 곳끼리 묶으면 하루 코스가 됩니다.
-            </p>
-            <Hairline label={`${filtered.length} RESULTS`} style={{ marginBottom: 12 }}/>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 360, overflow: "auto" }}>
-              {filtered.slice(0, 5).map((b) => (
-                <BuildingListCard key={b.id} b={b} selected={b.id === selectedId} onClick={() => setSelectedId(b.id)} variant="compact"/>
-              ))}
-            </div>
-          </div>
+          {/* 좌측: 현재 지도 영역에 보이는 건축물 리스트 */}
+          <ViewportPanel
+            buildings={filtered}
+            selectedId={selectedId}
+            onSelect={setSelectedId}/>
 
-          {/* 플로팅 우측 — 선택된 건물 큰 카드 */}
-          {selected && (
-            <div style={{
-              position: "absolute", top: 24, right: 56, width: 360,
-              background: M.cream, borderRadius: MR.cardLg,
-              boxShadow: MS.cardLg, overflow: "hidden",
-              cursor: "pointer",
-            }} onClick={() => onNavigate("detail", selected.id)}>
-              <ImgPlaceholder ratio="4/3" tone={selected.pinTone === "olive" ? "olive" : "beige"} caption={`${selected.name} 외관`} style={{ borderRadius: 0 }}/>
-              <div style={{ padding: 20 }}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 6 }}>
-                  <Serial color={selected.pinTone === "olive" ? M.olive : M.terra}>#{selected.no}</Serial>
-                  <MagCap>{selected.region}</MagCap>
-                </div>
-                <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, marginBottom: 4 }}>{selected.name}</div>
-                <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginBottom: 12 }}>{selected.architect} · {selected.year}</div>
-                <p style={{ fontSize: 13, lineHeight: 1.55, color: M.ink, fontWeight: 500, margin: "0 0 14px" }}>{selected.intro}</p>
-                <MButton kind="primary" size="md">자세히 보기 →</MButton>
-              </div>
-            </div>
+          {/* 우측: ver1 스타일 핀 팝업 카드 (선택 시) */}
+          {selected && filtered.some((x) => x.id === selectedId) && (
+            <PinPopupCard
+              b={selected}
+              position={filtered.findIndex((x) => x.id === selectedId) + 1}
+              total={filtered.length}
+              onClose={() => setSelectedId(null)}
+              onNavigate={onNavigate}/>
           )}
         </section>
       )}
@@ -653,7 +829,8 @@ function HomeScreen({ route, onNavigate, t }) {
         </>
       )}
 
-      {/* 컬렉션 프리뷰 밴드 — 모든 레이아웃 공통 */}
+      {/* 컬렉션 프리뷰 밴드 — split/editorial 에서만 (mapPrimary는 헤더-필터-지도-푸터 끝) */}
+      {layout !== "mapPrimary" && (
       <section style={{ padding: "32px 56px 64px", background: M.beigeAlt, borderTop: `1px solid ${M.beigeAlt}` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", marginBottom: 24 }}>
           <div>
@@ -708,6 +885,7 @@ function HomeScreen({ route, onNavigate, t }) {
           ))}
         </div>
       </section>
+      )}
 
       <MFooter />
     </MPage>
