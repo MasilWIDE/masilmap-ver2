@@ -494,9 +494,9 @@ function MasilHero({ onNavigate }) {
 function ViewportPanel({ buildings, selectedId, onSelect }) {
   return (
     <div style={{
-      position: "absolute", top: 24, left: 56, width: 380,
+      position: "absolute", top: 16, left: 48, width: 360,
       maxHeight: "calc(100% - 48px)",
-      background: M.cream, borderRadius: MR.cardLg, padding: 22,
+      background: M.cream, borderRadius: MR.cardLg, padding: 20,
       boxShadow: MS.cardLg,
       display: "flex", flexDirection: "column", gap: 12,
     }}>
@@ -546,9 +546,11 @@ function PinPopupCard({ b, position, total, onClose, onNavigate }) {
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
   return (
     <div style={{
-      position: "absolute", top: 24, right: 56, width: 380,
+      position: "absolute", top: 16, right: 48, width: 360,
+      maxHeight: "calc(100% - 32px)",
+      overflowY: "auto",
       background: M.cream, borderRadius: MR.cardLg,
-      boxShadow: MS.cardLg, overflow: "hidden",
+      boxShadow: MS.cardLg,
     }}>
       {/* 이미지 영역 */}
       <div style={{ position: "relative" }}>
@@ -726,8 +728,13 @@ function HomeScreen({ route, onNavigate, t }) {
         </section>
       )}
 
-      {/* 필터 */}
-      <div style={{ paddingBottom: 24 }}>
+      {/* 필터 — mapPrimary일 때 위/아래 여유 추가해서 nav랑 안 부딪치게 */}
+      <div style={{
+        paddingTop:    layout === "mapPrimary" ? 24 : 0,
+        paddingBottom: layout === "mapPrimary" ? 16 : 24,
+        borderBottom:  layout === "mapPrimary" ? `1px solid ${M.beigeAlt}` : "none",
+        marginBottom:  layout === "mapPrimary" ? 16 : 0,
+      }}>
         <FilterBar onFilteredChange={setFiltered} />
       </div>
 
@@ -765,13 +772,13 @@ function HomeScreen({ route, onNavigate, t }) {
       {layout === "mapPrimary" && (
         <section style={{
           position: "relative",
-          height: "calc(100vh - 220px)",
-          minHeight: 620,
-          padding: "0 24px 24px",
+          height: "calc(100vh - 260px)",
+          minHeight: 540,
+          padding: "0 24px 32px",
         }}>
           {/* 전체 지도 */}
           <div style={{
-            position: "absolute", inset: "0 24px 24px",
+            position: "absolute", inset: "0 24px 32px",
             borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg,
           }}>
             <MasilMap buildings={filtered} selectedId={selectedId} onSelect={setSelectedId} />
