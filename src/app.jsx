@@ -4,7 +4,7 @@
    ================================================================ */
 
 const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
-  "homeLayout":       "split",
+  "homeLayout":       "cover",
   "detailLayout":     "hero",
   "collectionLayout": "magazine"
 }/*EDITMODE-END*/;
@@ -145,11 +145,13 @@ function App() {
             value={t.homeLayout}
             onChange={(v) => { setTweak("homeLayout", v); if (route.name !== "home") navigate("home"); }}
             options={[
+              { value: "cover",      label: "표지" },
               { value: "split",      label: "Split" },
               { value: "mapPrimary", label: "Map" },
               { value: "editorial",  label: "잡지" },
             ]}/>
           <Hint>
+            {t.homeLayout === "cover"      && "매거진 표지 + 검색 + 이번 주 픽. 잡지 한 호를 펼치는 느낌."}
             {t.homeLayout === "split"      && "지도 좌 + 리스트 우. 가장 균형잡힌 기본형."}
             {t.homeLayout === "mapPrimary" && "지도가 풀스크린, 카드가 위에 떠있는 탐색 우선형."}
             {t.homeLayout === "editorial"  && "큰 헤로 + 카드 그리드 + 작은 지도. 매거진 톤."}

@@ -671,6 +671,294 @@ function PinPopupCard({ b, onClose, onNavigate }) {
   );
 }
 
+/* ---------- COVER 레이아웃: 매거진 표지 + 검색 + 픽 (홈 기본) ---------- */
+function CoverHomeLayout({ onNavigate }) {
+  const featuredCol = COLLECTIONS[0]; // 벽돌의 시간
+  const picks = ["kongkan", "buseoksa", "bonte"]
+    .map((id) => BUILDINGS.find((b) => b.id === id))
+    .filter(Boolean);
+  const featuredCourses = COURSES.slice(0, 2);
+
+  const submitSearch = (q) => {
+    if (window.__masilSearch && window.__masilSearch.setQuery) {
+      window.__masilSearch.setQuery(q);
+    }
+    onNavigate("buildings");
+  };
+
+  return (
+    <>
+      {/* === SECTION 1: 매거진 표지 (B) === */}
+      <section style={{ padding: "8px 56px 56px" }}>
+        <Hairline label={`MASILMAP · ${featuredCol.no} · ${featuredCol.issue.toUpperCase()}`} style={{ marginBottom: 28 }}/>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 48, alignItems: "stretch" }}>
+          {/* 좌측: 큰 표지 블록 */}
+          <div
+            onClick={() => onNavigate("collection", featuredCol.id)}
+            style={{
+              position: "relative",
+              borderRadius: MR.cardLg,
+              background: featuredCol.cover,
+              color: M.cream,
+              padding: "48px 44px",
+              minHeight: 480,
+              cursor: "pointer",
+              overflow: "hidden",
+              display: "flex", flexDirection: "column", justifyContent: "space-between",
+              boxShadow: MS.cardLg,
+            }}>
+            {/* 코너 모노 텍스트 */}
+            <div style={{
+              display: "flex", justifyContent: "space-between",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11, fontWeight: 600, letterSpacing: "0.14em",
+              color: "rgba(244,243,234,0.7)",
+            }}>
+              <span>MASILMAP · COLLECTION · {featuredCol.no}</span>
+              <span>{featuredCol.tag}</span>
+            </div>
+
+            {/* 표지 본문 */}
+            <div>
+              <div style={{
+                fontFamily: "'Noto Serif KR', serif",
+                fontSize: 18, opacity: 0.85, marginBottom: 14, fontWeight: 400,
+              }}>
+                a masilmap collection
+              </div>
+              <h1 style={{
+                fontSize: 96, fontWeight: 900,
+                letterSpacing: "-0.045em", lineHeight: 0.95,
+                margin: "0 0 18px", textWrap: "balance",
+              }}>{featuredCol.title}</h1>
+              <div style={{
+                fontFamily: "'Noto Serif KR', serif",
+                fontSize: 22, fontWeight: 500, opacity: 0.92,
+              }}>{featuredCol.subtitle}</div>
+            </div>
+
+            {/* 하단 메타 */}
+            <div style={{
+              paddingTop: 18,
+              borderTop: `1px solid rgba(244,243,234,0.25)`,
+              display: "flex", justifyContent: "space-between",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
+            }}>
+              <span>EDITOR · {featuredCol.editor}</span>
+              <span>{featuredCol.count} 곳 · {featuredCol.readTime}분</span>
+            </div>
+          </div>
+
+          {/* 우측: 에디터 노트 */}
+          <div style={{
+            background: M.cream,
+            borderRadius: MR.cardLg,
+            padding: "40px 32px",
+            boxShadow: MS.card,
+            display: "flex", flexDirection: "column", gap: 18,
+          }}>
+            <MagCap color={M.terra}>EDITOR'S NOTE</MagCap>
+            <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em" }}>
+              {featuredCol.issue}
+            </div>
+
+            <blockquote style={{
+              margin: 0, padding: 0,
+              fontFamily: "'Noto Serif KR', serif",
+              fontSize: 22, lineHeight: 1.55, color: M.ink,
+              fontWeight: 500, letterSpacing: "-0.005em",
+              textWrap: "pretty",
+            }}>
+              "{featuredCol.blurb}"
+            </blockquote>
+
+            <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
+              <Hairline style={{ marginBottom: 8 }}/>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 900, color: M.ink }}>{featuredCol.editor}</div>
+                  <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 2 }}>{featuredCol.editorRole}</div>
+                </div>
+                <MButton kind="primary" size="md" onClick={() => onNavigate("collection", featuredCol.id)}>
+                  이번 호 펼치기 →
+                </MButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* === SECTION 2: 검색 (A) === */}
+      <section style={{
+        padding: "56px 56px",
+        background: M.cream,
+        borderTop: `1px solid ${M.beigeAlt}`,
+        borderBottom: `1px solid ${M.beigeAlt}`,
+      }}>
+        <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
+          <MagCap color={M.terra} style={{ marginBottom: 14 }}>EXPLORE</MagCap>
+          <h2 style={{
+            fontSize: 40, fontWeight: 900,
+            letterSpacing: "-0.025em", lineHeight: 1.1,
+            color: M.ink, margin: "0 0 28px",
+            textWrap: "balance",
+          }}>
+            어디로 <span style={{ color: M.olive, fontWeight: 900 }}>마실</span> 다녀올까요?
+          </h2>
+
+          <SearchHero onSubmit={submitSearch}/>
+
+          <div style={{
+            marginTop: 18,
+            display: "flex", justifyContent: "center",
+            gap: 8, flexWrap: "wrap",
+            fontSize: 12, color: M.muted, fontWeight: 600,
+          }}>
+            <span>추천 검색:</span>
+            {["공간 사옥", "안도 다다오", "한옥", "미술관"].map((kw, i) => (
+              <span key={kw} onClick={() => submitSearch(kw)} style={{
+                color: M.terra, fontWeight: 700, cursor: "pointer",
+                padding: "0 4px",
+              }}>{kw}{i < 3 ? " ·" : ""}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* === SECTION 3: THIS WEEK 픽 === */}
+      <section style={{ padding: "56px 56px 32px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 24 }}>
+          <div>
+            <MagCap color={M.terra} style={{ marginBottom: 6 }}>THIS WEEK · 에디터 픽</MagCap>
+            <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>
+              이번 주의 세 건축
+            </h2>
+          </div>
+          <span onClick={() => onNavigate("buildings")} style={{
+            fontSize: 13, fontWeight: 800, color: M.terra, cursor: "pointer",
+          }}>전체 보기 →</span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          {picks.map((b) => (
+            <div key={b.id} onClick={() => onNavigate("detail", b.id)} style={{
+              borderRadius: MR.card, overflow: "hidden",
+              background: M.cream, boxShadow: MS.cardSm,
+              cursor: "pointer",
+            }}>
+              <ImgPlaceholder
+                ratio="4/3"
+                tone={b.pinTone === "olive" ? "olive" : "beige"}
+                caption={`${b.name} 외관`}
+                style={{ borderRadius: 0 }}/>
+              <div style={{ padding: 18 }}>
+                <MagCap>{b.region} · {b.style}</MagCap>
+                <div style={{ fontSize: 20, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", margin: "8px 0 4px" }}>
+                  {b.name}
+                </div>
+                <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>
+                  {b.architect} · {b.year}
+                </div>
+                <p style={{ fontSize: 13, color: M.ink, lineHeight: 1.55, margin: "12px 0 0", fontWeight: 500,
+                  display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2, overflow: "hidden",
+                }}>{b.intro}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* === SECTION 4: NEXT COURSE === */}
+      <section style={{ padding: "32px 56px 80px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 24 }}>
+          <div>
+            <MagCap color={M.olive} style={{ marginBottom: 6 }}>NEXT COURSE · 도슨트와 함께</MagCap>
+            <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>
+              다음 마실 코스
+            </h2>
+          </div>
+          <span onClick={() => onNavigate("course")} style={{
+            fontSize: 13, fontWeight: 800, color: M.terra, cursor: "pointer",
+          }}>전체 코스 →</span>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
+          {featuredCourses.map((c) => (
+            <div key={c.id} onClick={() => onNavigate("course", c.id)} style={{
+              borderRadius: MR.cardLg, overflow: "hidden",
+              background: M.cream, boxShadow: MS.cardSm,
+              cursor: "pointer",
+              display: "grid", gridTemplateColumns: "180px 1fr", minHeight: 200,
+            }}>
+              {/* 좌: 코스 표지 */}
+              <div style={{
+                background: c.cover, color: M.cream, padding: 18,
+                display: "flex", flexDirection: "column", justifyContent: "space-between",
+              }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em" }}>
+                  {c.no} · {c.type}
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 800, opacity: 0.85 }}>{c.buildings.length}곳</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, opacity: 0.7, marginTop: 4 }}>★ {c.rating}</div>
+                </div>
+              </div>
+
+              {/* 우: 코스 정보 */}
+              <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ fontSize: 19, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+                  {c.name}
+                </div>
+                <p style={{
+                  fontSize: 13, color: M.muted, lineHeight: 1.55, margin: 0, fontWeight: 500,
+                  display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2, overflow: "hidden",
+                }}>{c.blurb}</p>
+                <div style={{ marginTop: "auto", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                  <div style={{ fontSize: 11, color: M.muted, fontWeight: 700 }}>
+                    {c.duration} · {c.difficulty}
+                  </div>
+                  <div style={{ fontSize: 16, fontWeight: 900, color: M.terra }}>
+                    {c.price === 0 ? "무료" : `₩${c.price.toLocaleString()}`}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
+  );
+}
+
+/* ---------- SearchHero: cover 레이아웃의 큰 검색 박스 ---------- */
+function SearchHero({ onSubmit }) {
+  const [val, setVal] = React.useState("");
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); if (val.trim()) onSubmit(val.trim()); }}
+      style={{
+        display: "flex", alignItems: "center", gap: 10,
+        background: M.beige,
+        border: `1.5px solid ${M.beigeAlt}`,
+        borderRadius: 999,
+        padding: "8px 8px 8px 24px",
+        boxShadow: MS.card,
+      }}>
+      <MIcon name="search" size={18} color={M.muted}/>
+      <input
+        value={val} onChange={(e) => setVal(e.target.value)}
+        placeholder="건축물, 지역, 건축가, 키워드…"
+        style={{
+          flex: 1, border: "none", outline: "none", background: "transparent",
+          fontSize: 16, fontWeight: 600, color: M.ink, fontFamily: "inherit",
+          minWidth: 0, padding: "10px 0",
+        }}/>
+      <MButton kind="primary" size="lg">찾아보기 →</MButton>
+    </form>
+  );
+}
+
 /* ---------- 지도 페이지 전용 빠른 필터 (FastFive 톤) ---------- */
 const MAP_QUICK_FILTERS = [
   { id: "all",    label: "전체",       match: () => true },
@@ -737,11 +1025,16 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
         </section>
       )}
 
-      {/* 필터 바 — split / editorial 에서만. mapPrimary는 지도 위 오버레이 칩 사용 */}
-      {layout !== "mapPrimary" && (
+      {/* 필터 바 — split / editorial 에서만. mapPrimary / cover는 자체 UI 사용 */}
+      {(layout === "split" || layout === "editorial") && (
         <div style={{ paddingBottom: 24 }}>
           <FilterBar onFilteredChange={setFiltered} searchQuery={searchQuery}/>
         </div>
+      )}
+
+      {/* === COVER 레이아웃 (매거진 표지 + 검색 + 픽 · 새 기본 홈) === */}
+      {layout === "cover" && (
+        <CoverHomeLayout onNavigate={onNavigate}/>
       )}
 
       {/* === SPLIT 레이아웃 === */}
@@ -877,8 +1170,8 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
         </>
       )}
 
-      {/* 컬렉션 프리뷰 밴드 — split/editorial 에서만 (mapPrimary는 헤더-필터-지도-푸터 끝) */}
-      {layout !== "mapPrimary" && (
+      {/* 컬렉션 프리뷰 밴드 — split / editorial 에서만 (cover는 자체 큐레이션, mapPrimary는 풀맵) */}
+      {(layout === "split" || layout === "editorial") && (
       <section style={{ padding: "32px 56px 64px", background: M.beigeAlt, borderTop: `1px solid ${M.beigeAlt}` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", marginBottom: 24 }}>
           <div>
