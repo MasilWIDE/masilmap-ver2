@@ -9,11 +9,11 @@ function CourseIndex({ onNavigate }) {
     <MPage>
       <MasilNav route="course" onNavigate={onNavigate}/>
       <section style={{ padding: "48px 56px 32px" }}>
-        <Hairline label="MASILMAP / COURSES · 47 KEPT WALKS" style={{ marginBottom: 32 }}/>
+        <Hairline label={`MASILMAP / COURSES · ${COURSES.length} KEPT WALKS`} style={{ marginBottom: 32 }}/>
         <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 56, alignItems: "end" }}>
           <h1 style={{ fontSize: 72, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1, color: M.ink, margin: 0, textWrap: "balance" }}>
             오늘 걷기 좋은<br/>
-            <span style={{ color: M.olive, fontWeight: 900 }}>코스</span> 47가지
+            <span style={{ color: M.olive, fontWeight: 900 }}>코스</span> {COURSES.length}가지
           </h1>
           <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, lineHeight: 1.75, color: M.ink, margin: 0, textWrap: "pretty" }}>
             마실 코스는 동네 큐레이터와 건축사학자가 직접 걸어보고 묶은 워킹 가이드입니다. 도슨트가 있는 코스는 예약, 셀프 코스는 무료로 따라 걸으실 수 있어요.
@@ -27,7 +27,7 @@ function CourseIndex({ onNavigate }) {
             cursor: "pointer", boxShadow: MS.card, display: "flex",
           }}>
             <div style={{ width: 220, flexShrink: 0, background: c.cover, padding: 20, color: M.cream, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-              <MagCap color="rgba(255,248,236,0.7)">{c.no}</MagCap>
+              <MagCap color="rgba(255,248,236,0.7)">{c.type === "도슨트" ? "DOCENT" : "SELF"}</MagCap>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, opacity: 0.9 }}>{c.curator.name} 큐레이션</div>
                 <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.025em", marginTop: 4 }}>{c.buildings.length}곳</div>
@@ -162,7 +162,7 @@ function CourseScreen({ onNavigate, courseId }) {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 56, alignItems: "end" }}>
           <div>
-            <Serial color={M.terra} size={14}>{c.no} · {c.type === "도슨트" ? "도슨트 코스" : "셀프 코스"}</Serial>
+            <Serial color={M.terra} size={14}>{c.type === "도슨트" ? "도슨트 코스" : "셀프 코스"}</Serial>
             <h1 style={{ fontSize: 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, margin: "14px 0 0", color: M.ink, textWrap: "balance" }}>
               {c.name}
             </h1>

@@ -898,7 +898,7 @@ function CoverHomeLayout({ onNavigate }) {
                 display: "flex", flexDirection: "column", justifyContent: "space-between",
               }}>
                 <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em" }}>
-                  {c.no} · {c.type}
+                  {c.type === "도슨트" ? "DOCENT COURSE" : "SELF COURSE"}
                 </div>
                 <div>
                   <div style={{ fontSize: 13, fontWeight: 800, opacity: 0.85 }}>{c.buildings.length}곳</div>

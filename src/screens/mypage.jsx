@@ -111,7 +111,7 @@ function MyPageScreen({ onNavigate }) {
                     display: "grid", gridTemplateColumns: "auto 1fr auto auto", gap: 20, alignItems: "center",
                   }}>
                     <div style={{ width: 90, height: 90, background: c.cover, borderRadius: 16, padding: 12, color: M.cream, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                      <MagCap color="rgba(255,248,236,0.7)" style={{ fontSize: 9 }}>{c.no}</MagCap>
+                      <MagCap color="rgba(255,248,236,0.7)" style={{ fontSize: 9 }}>{c.type === "도슨트" ? "DOCENT" : "SELF"}</MagCap>
                       <div style={{ fontSize: 18, fontWeight: 900 }}>{c.buildings.length}곳</div>
                     </div>
                     <div>
@@ -182,7 +182,7 @@ function MyPageScreen({ onNavigate }) {
                   display: "flex",
                 }}>
                   <div style={{ width: 140, background: c.cover, padding: 16, color: M.cream, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                    <MagCap color="rgba(255,248,236,0.7)">{c.no}</MagCap>
+                    <MagCap color="rgba(255,248,236,0.7)">{c.type === "도슨트" ? "DOCENT" : "SELF"}</MagCap>
                     <div style={{ fontSize: 22, fontWeight: 900 }}>{c.buildings.length}곳</div>
                   </div>
                   <div style={{ padding: 16, flex: 1 }}>

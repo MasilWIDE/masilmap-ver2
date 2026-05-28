@@ -110,7 +110,7 @@ function BookingDocentScreen({ onNavigate, courseId }) {
       <StepBar active={1}/>
 
       <section style={{ padding: "32px 56px", maxWidth: 1200, margin: "0 auto" }}>
-        <Hairline label={`RESERVE · ${c.no}`} style={{ marginBottom: 24 }}/>
+        <Hairline label="RESERVE · 도슨트 예약" style={{ marginBottom: 24 }}/>
         <h1 style={{ fontSize: 48, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.05, color: M.ink, margin: 0, textWrap: "balance" }}>
           언제, 몇 분이서<br/>
           <span style={{ color: M.olive, fontWeight: 900 }}>마실</span> 다녀오실까요?
@@ -126,7 +126,7 @@ function BookingDocentScreen({ onNavigate, courseId }) {
           {/* 코스 요약 카드 */}
           <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 20, boxShadow: MS.cardSm, display: "flex", gap: 16 }}>
             <div style={{ width: 140, flexShrink: 0, background: c.cover, borderRadius: 16, padding: 14, color: M.cream, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-              <MagCap color="rgba(255,248,236,0.7)">{c.no}</MagCap>
+              <MagCap color="rgba(255,248,236,0.7)">{c.type === "도슨트" ? "DOCENT" : "SELF"}</MagCap>
               <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em" }}>{c.buildings.length}곳</div>
             </div>
             <div style={{ flex: 1 }}>
@@ -329,7 +329,7 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
             <MagCap>ORDER · 주문 요약</MagCap>
             <div style={{ marginTop: 14, display: "flex", gap: 16, alignItems: "center" }}>
               <div style={{ width: 80, height: 80, background: c.cover, borderRadius: 14, padding: 10, color: M.cream, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                <MagCap color="rgba(255,248,236,0.7)" style={{ fontSize: 9 }}>{c.no}</MagCap>
+                <MagCap color="rgba(255,248,236,0.7)" style={{ fontSize: 9 }}>{c.type === "도슨트" ? "DOCENT" : "SELF"}</MagCap>
                 <div style={{ fontSize: 16, fontWeight: 900 }}>{c.buildings.length}곳</div>
               </div>
               <div style={{ flex: 1 }}>
