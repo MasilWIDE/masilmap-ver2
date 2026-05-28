@@ -153,13 +153,14 @@ function Hairline({ label, color = M.beigeAlt, style = {} }) {
 
 /* striped image placeholder w/ caption + ratio */
 function ImgPlaceholder({ caption, ratio = "4/3", tone = "beige", style = {} }) {
+  /* Scholar palette tones — neutral cream, navy, gold */
   const tones = {
-    beige:  { bg: "#E5D6B8", stripe: "#D4C29E", text: "#7B6342" },
-    cream:  { bg: "#EAD9BD", stripe: "#D9C29B", text: "#7B6342" },
-    terra:  { bg: "#E8AE8C", stripe: "#D89472", text: "#6B2C18" },
-    olive:  { bg: "#B6C39A", stripe: "#9AAD7C", text: "#3B4A22" },
-    deep:   { bg: "#5A4332", stripe: "#48362A", text: "#E0CDB1" },
-    night:  { bg: "#1F2230", stripe: "#2A2D3D", text: "#D9C29B" },
+    beige:  { bg: "#E8E4DC", stripe: "#D4D0C5", text: "#5A5F70" },  /* neutral cream */
+    cream:  { bg: "#F4F3EA", stripe: "#DCD9CA", text: "#5A5F70" },  /* warm cream */
+    terra:  { bg: "#8A95A8", stripe: "#6B7484", text: "#FFFFFF" },  /* navy gradient */
+    olive:  { bg: "#E8D080", stripe: "#D3AC2B", text: "#3A3220" },  /* gold gradient */
+    deep:   { bg: "#1F2738", stripe: "#333D51", text: "#F4F3EA" },  /* deep navy */
+    night:  { bg: "#0F1622", stripe: "#1F2738", text: "#D3AC2B" },  /* black + gold */
   };
   const t = tones[tone] || tones.beige;
   return (

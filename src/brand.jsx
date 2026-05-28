@@ -8,27 +8,30 @@
    Locked on: 2026-05-24
    ================================================================ */
 
-/* ---------- 1. COLOR TOKENS ---------- */
+/* ---------- 1. COLOR TOKENS ---------- *
+   2026-05-29: Scholar palette — 오래된 금색으로 마감 처리한 양장본 느낌.
+   네이비(#333D51) / 골드(#D3AC2B) / 블루그레이(#CBD0D8) / 스칼라 크림(#F4F3EA).
+   변수명은 호환을 위해 유지 (terra=primary brand, olive=secondary). */
 const M = {
   /* surfaces */
-  beige:     "#FFFFFF",   /* primary background — page canvas (pure white) */
-  beigeAlt:  "#EFEAE0",   /* secondary surface — subtle warm divider on white */
-  cream:     "#FAF4E8",   /* card surface — slightly warm cream against white */
+  beige:     "#FFFFFF",   /* primary background — pure white page canvas */
+  beigeAlt:  "#CBD0D8",   /* secondary surface · dividers — cool blue-gray */
+  cream:     "#F4F3EA",   /* card surface — warm Scholar cream */
 
-  /* brand · terracotta (warmth, people, action) */
-  terra:     "#D26A4E",   /* primary brand — logo, CTA, headlines accent */
-  terraSoft: "#F0B997",   /* highlight — sun, glow, soft accent */
-  terraDeep: "#A4422A",   /* hover / pressed / dense accent */
+  /* brand · navy (primary — was terracotta) */
+  terra:     "#333D51",   /* primary brand — CTA, headlines, active state */
+  terraSoft: "#7A8497",   /* soft navy — highlight, hover */
+  terraDeep: "#1F2738",   /* deep navy — pressed, dense */
 
-  /* brand · olive (nature, neighborhood, calm) */
-  olive:     "#788B4A",   /* secondary brand — nature chips, tags */
-  oliveSoft: "#B6C39A",   /* hills, decorative */
-  oliveDeep: "#5A6B33",   /* tags, dense secondary */
+  /* brand · gold (secondary — was olive) */
+  olive:     "#D3AC2B",   /* secondary brand — accent, tag */
+  oliveSoft: "#E8D080",   /* light gold — decorative */
+  oliveDeep: "#9C7E1A",   /* deep gold — pressed */
 
   /* text */
-  ink:       "#3A2E22",   /* primary text */
-  muted:     "#8A7A65",   /* secondary text, captions */
-  faint:     "rgba(58,46,34,0.45)",
+  ink:       "#1F2738",   /* primary text — deep navy */
+  muted:     "#6B7484",   /* secondary text · captions */
+  faint:     "rgba(31,39,56,0.45)",
 };
 
 /* ---------- 2. TYPE TOKENS ---------- *
