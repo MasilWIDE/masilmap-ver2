@@ -288,17 +288,24 @@ function MTopNav({ active = "홈", items = ["홈", "지도", "이웃", "모임",
 
 /* ---------- 13. FOOTER (page bottom) ---------- */
 function MFooter() {
+  const isMobile = useMediaQuery("(max-width: 768px)");
   return (
     <div style={{
-      padding: "20px 48px 24px", borderTop: `1px solid ${M.beigeAlt}`,
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-      fontSize: 12, color: M.muted, fontWeight: 700, fontFamily: MT.family,
+      padding: isMobile ? "20px 20px 24px" : "20px 48px 24px",
+      borderTop: `1px solid ${M.beigeAlt}`,
+      display: "flex",
+      flexDirection: isMobile ? "column" : "row",
+      justifyContent: "space-between",
+      alignItems: isMobile ? "flex-start" : "center",
+      gap: isMobile ? 10 : 0,
+      fontSize: isMobile ? 11 : 12,
+      color: M.muted, fontWeight: 700, fontFamily: MT.family,
     }}>
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <MasilmapLogo size={16}/>
         <span>· 마실그라운드의 B2C 서비스</span>
       </div>
-      <span>© 2026 마실그라운드 — 우리 동네를 더 깊이 알아가는 친구 🏘️</span>
+      <span style={{ fontSize: isMobile ? 10 : 12 }}>© 2026 마실그라운드 — 우리 동네를 더 깊이 알아가는 친구 🏘️</span>
     </div>
   );
 }

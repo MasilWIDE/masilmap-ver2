@@ -5,28 +5,50 @@
 
 /* 코스 인덱스 (전체 코스 그리드 — 사이드 화면) */
 function CourseIndex({ onNavigate }) {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  const px = pageX(isMobile, isTablet);
   return (
     <MPage>
       <MasilNav route="course" onNavigate={onNavigate}/>
-      <section style={{ padding: "48px 56px 32px" }}>
-        <Hairline label={`MASILMAP / COURSES · ${COURSES.length} KEPT WALKS`} style={{ marginBottom: 32 }}/>
-        <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 56, alignItems: "end" }}>
-          <h1 style={{ fontSize: 72, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1, color: M.ink, margin: 0, textWrap: "balance" }}>
-            오늘 걷기 좋은<br/>
+      <section style={{ padding: `${isMobile ? 24 : 48}px ${px}px ${isMobile ? 20 : 32}px` }}>
+        <Hairline label={`MASILMAP / COURSES · ${COURSES.length} KEPT WALKS`} style={{ marginBottom: isMobile ? 18 : 32 }}/>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr",
+          gap: isMobile ? 16 : 56,
+          alignItems: "end",
+        }}>
+          <h1 style={{ fontSize: isMobile ? 36 : 72, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.05, color: M.ink, margin: 0, textWrap: "balance" }}>
+            오늘 걷기 좋은{isMobile ? " " : <br/>}
             <span style={{ color: M.olive, fontWeight: 900 }}>코스</span> {COURSES.length}가지
           </h1>
-          <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, lineHeight: 1.75, color: M.ink, margin: 0, textWrap: "pretty" }}>
+          <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 14 : 17, lineHeight: 1.7, color: M.ink, margin: 0, textWrap: "pretty" }}>
             마실 코스는 동네 큐레이터와 건축사학자가 직접 걸어보고 묶은 워킹 가이드입니다. 도슨트가 있는 코스는 예약, 셀프 코스는 무료로 따라 걸으실 수 있어요.
           </p>
         </div>
       </section>
-      <section style={{ padding: "0 56px 64px", display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
+      <section style={{
+        padding: `0 ${px}px 64px`,
+        display: "grid",
+        gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+        gap: 20,
+      }}>
         {COURSES.map((c) => (
           <div key={c.id} onClick={() => onNavigate("course", c.id)} style={{
             background: M.cream, borderRadius: MR.cardLg, overflow: "hidden",
-            cursor: "pointer", boxShadow: MS.card, display: "flex",
+            cursor: "pointer", boxShadow: MS.card,
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
           }}>
-            <div style={{ width: 220, flexShrink: 0, background: c.cover, padding: 20, color: M.cream, display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{
+              width: isMobile ? "100%" : 220,
+              flexShrink: 0,
+              background: c.cover, padding: 20, color: M.cream,
+              display: "flex", flexDirection: isMobile ? "row" : "column",
+              alignItems: isMobile ? "center" : "stretch",
+              justifyContent: "space-between",
+            }}>
               <MagCap color="rgba(255,248,236,0.7)">{c.type === "도슨트" ? "DOCENT" : "SELF"}</MagCap>
               <div>
                 <div style={{ fontSize: 14, fontWeight: 700, opacity: 0.9 }}>{c.curator.name} 큐레이션</div>

@@ -417,22 +417,34 @@ function CollectionFooter({ c, onNavigate }) {
 
 /* ---------- 컬렉션 인덱스 (전체 목록 페이지) ---------- */
 function CollectionIndex({ onNavigate, t }) {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  const px = pageX(isMobile, isTablet);
   return (
     <MPage>
       <MasilNav route="collection" onNavigate={onNavigate}/>
 
-      <section style={{ padding: "48px 56px 32px" }}>
-        <Hairline label="MASILMAP / 마실 저널 · 2026 SPRING · VOL.07" style={{ marginBottom: 32 }}/>
-        <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr", gap: 56, alignItems: "end" }}>
+      <section style={{ padding: `${isMobile ? 24 : 48}px ${px}px ${isMobile ? 20 : 32}px` }}>
+        <Hairline label="MASILMAP / 마실 저널 · 2026 SPRING · VOL.07" style={{ marginBottom: isMobile ? 18 : 32 }}/>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr",
+          gap: isMobile ? 16 : 56,
+          alignItems: "end",
+        }}>
           <div>
             <MagCap color={M.terra} style={{ marginBottom: 16 }}>EDITORIAL · 매 분기 발행</MagCap>
-            <h1 style={{ fontSize: 84, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 0.96, margin: 0, color: M.ink, textWrap: "balance" }}>
-              건축은 결국<br/>
+            <h1 style={{
+              fontSize: isMobile ? 36 : 84,
+              fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.05,
+              margin: 0, color: M.ink, textWrap: "balance",
+            }}>
+              건축은 결국{isMobile ? " " : <br/>}
               <span style={{ color: M.olive, fontWeight: 900 }}>걸어야</span> 알게 된다
             </h1>
           </div>
           <div>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, lineHeight: 1.75, color: M.ink, fontWeight: 400, margin: 0, textWrap: "pretty" }}>
+            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 14 : 17, lineHeight: 1.7, color: M.ink, fontWeight: 400, margin: 0, textWrap: "pretty" }}>
               마실 저널은 한국 건축을 한 호씩 천천히 모은 컬렉션입니다. 한 호의 분량은 보통 7곳에서 12곳 — 하루나 이틀이면 다 걷을 수 있는 거리에 묶여 있습니다.
             </p>
             <MetaRow items={[

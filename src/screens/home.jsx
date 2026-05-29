@@ -999,6 +999,8 @@ const MAP_QUICK_FILTERS = [
 
 /* ---------- 메인 화면 ---------- */
 function HomeScreen({ route, onNavigate, t, searchQuery }) {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
   const [selectedId, setSelectedId] = React.useState(BUILDINGS[0].id);
   const [filtered, setFiltered]     = React.useState(BUILDINGS);
   const [mapQuickFilter, setMapQuickFilter] = React.useState("all");
@@ -1097,26 +1099,23 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
       )}
 
       {/* === MAP-PRIMARY 레이아웃 (FastFive 톤 · 풀 지도 + 칩 오버레이 + 좌측 panel) === */}
-      {layout === "mapPrimary" && (() => {
-        const mpIsMobile = window.useIsMobile ? window.useIsMobile() : false;
-        const mpPx = mpIsMobile ? 12 : 24;
-        return (
+      {layout === "mapPrimary" && (
         <section style={{
           position: "relative",
-          height: mpIsMobile ? "calc(100vh - 130px)" : "calc(100vh - 180px)",
-          minHeight: mpIsMobile ? 480 : 620,
-          padding: `0 ${mpPx}px ${mpIsMobile ? 16 : 32}px`,
+          height: isMobile ? "calc(100vh - 130px)" : "calc(100vh - 180px)",
+          minHeight: isMobile ? 480 : 620,
+          padding: `0 ${isMobile ? 12 : 24}px ${isMobile ? 16 : 32}px`,
         }}>
           {/* 전체 지도 */}
           <div style={{
-            position: "absolute", inset: `0 ${mpPx}px ${mpIsMobile ? 16 : 32}px`,
+            position: "absolute", inset: `0 ${isMobile ? 12 : 24}px ${isMobile ? 16 : 32}px`,
             borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg,
           }}>
             <MasilMap buildings={mapFiltered} selectedId={selectedId} onSelect={setSelectedId} />
           </div>
 
           {/* 좌측 패널 컨테이너 — 모바일은 bottom sheet, 데스크탑은 left 슬라이드 */}
-          <div style={mpIsMobile ? {
+          <div style={isMobile ? {
             position: "absolute",
             left: 12, right: 12, bottom: 28,
             display: "flex", flexDirection: "column", gap: 10,
@@ -1132,27 +1131,27 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
               buildings={mapFiltered}
               selectedId={selectedId}
               onSelect={setSelectedId}
-              isMobile={mpIsMobile}/>
+              isMobile={isMobile}/>
 
             {selected && mapFiltered.some((x) => x.id === selectedId) && (
               <PinPopupCard
                 b={selected}
                 onClose={() => setSelectedId(null)}
                 onNavigate={onNavigate}
-                isMobile={mpIsMobile}/>
+                isMobile={isMobile}/>
             )}
           </div>
 
           {/* 상단 우측: 빠른 필터 칩 오버레이 (FastFive 톤) */}
           <div style={{
             position: "absolute",
-            top: mpIsMobile ? 12 : 20,
-            right: mpIsMobile ? 12 : 48,
-            left: mpIsMobile ? 12 : "auto",
+            top: isMobile ? 12 : 20,
+            right: isMobile ? 12 : 48,
+            left: isMobile ? 12 : "auto",
             display: "flex", gap: 8, zIndex: 5, flexWrap: "wrap",
-            justifyContent: mpIsMobile ? "flex-start" : "flex-end",
-            maxWidth: mpIsMobile ? "calc(100% - 24px)" : "60%",
-            overflowX: mpIsMobile ? "auto" : "visible",
+            justifyContent: isMobile ? "flex-start" : "flex-end",
+            maxWidth: isMobile ? "calc(100% - 24px)" : "60%",
+            overflowX: isMobile ? "auto" : "visible",
           }}>
             {MAP_QUICK_FILTERS.map((f) => {
               const on = f.id === mapQuickFilter;
@@ -1180,8 +1179,7 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
             })}
           </div>
         </section>
-        );
-      })()}
+      )}
 
       {/* === EDITORIAL 레이아웃 === */}
       {layout === "editorial" && (
