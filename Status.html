@@ -1,0 +1,1013 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>masilmap ver2 — 구현 현황 분석</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --navy:        #333D51;
+      --navy-deep:   #1F2738;
+      --gold:        #D3AC2B;
+      --gold-deep:   #9C7E1A;
+      --cream:       #F4F3EA;
+      --bg:          #FFFFFF;
+      --divider:     #CBD0D8;
+      --muted:       #6B7484;
+      --green:       #4D7B5C;
+      --red:         #B8513A;
+      --orange:      #C68E2E;
+      --gray:        #8A95A8;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: 'Pretendard', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--navy-deep);
+      line-height: 1.6;
+      font-size: 14px;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 64px 32px 96px;
+    }
+    h1 {
+      font-size: 44px; font-weight: 900;
+      letter-spacing: -0.03em; line-height: 1.05;
+      margin: 0 0 8px; color: var(--navy);
+    }
+    h2 {
+      font-size: 24px; font-weight: 900;
+      letter-spacing: -0.02em;
+      margin: 56px 0 16px;
+      color: var(--navy);
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--navy);
+    }
+    h3 {
+      font-size: 16px; font-weight: 800;
+      margin: 28px 0 10px;
+      color: var(--navy-deep);
+    }
+    p { margin: 10px 0; }
+    code, .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: var(--cream);
+      color: var(--navy);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+    .lede {
+      font-size: 15px;
+      color: var(--navy-deep);
+      max-width: 720px;
+      padding: 16px 20px;
+      background: var(--cream);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      margin: 0 0 24px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin: 12px 0 24px;
+      background: var(--bg);
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--divider);
+      vertical-align: top;
+    }
+    th {
+      background: var(--cream);
+      color: var(--navy);
+      font-weight: 800;
+      font-size: 11px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    td.path, td.code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--gold-deep);
+    }
+    td.center { text-align: center; }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .b-done    { background: rgba(77,123,92,0.14);  color: var(--green); }
+    .b-mock    { background: rgba(198,142,46,0.18); color: var(--orange); }
+    .b-todo    { background: rgba(184,81,58,0.14);  color: var(--red); }
+    .b-info    { background: rgba(107,116,132,0.18);color: var(--muted); }
+    .b-gold    { background: rgba(211,172,43,0.18); color: var(--gold-deep); }
+    .alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .alert-warn  { background: rgba(198,142,46,0.10); border-left: 3px solid var(--gold); }
+    .alert-error { background: rgba(184,81,58,0.08);  border-left: 3px solid var(--red); }
+    .alert-info  { background: rgba(107,116,132,0.10);border-left: 3px solid var(--muted); }
+    .alert strong { color: var(--navy); }
+    .legend {
+      display: inline-flex; gap: 8px; flex-wrap: wrap;
+      margin: 8px 0 16px;
+      font-size: 11px;
+    }
+    .toc {
+      background: var(--cream);
+      padding: 18px 24px;
+      border-radius: 10px;
+      margin-bottom: 32px;
+    }
+    .toc ol { margin: 6px 0; padding-left: 20px; }
+    .toc a { color: var(--navy); text-decoration: none; font-weight: 700; }
+    .toc a:hover { color: var(--gold-deep); text-decoration: underline; }
+    pre.code-block {
+      background: var(--cream);
+      padding: 14px 16px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      overflow-x: auto;
+      color: var(--navy-deep);
+      line-height: 1.5;
+      margin: 12px 0;
+    }
+    .footnote {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .small { font-size: 11px; color: var(--muted); }
+  </style>
+</head>
+<body>
+<main class="page">
+
+  <div class="meta">PROJECT STATUS · MASILMAP VER2 · 2026-05-29</div>
+  <h1>masilmap ver2 구현 현황 분석</h1>
+  <p class="lede">
+    masilmap ver2는 <strong>CDN 기반 React 18 + Babel standalone 정적 프로토타입</strong>입니다.
+    <strong>백엔드·DB·API가 존재하지 않으며</strong>, 모든 데이터는 <code>src/data.jsx</code>의
+    in-memory JavaScript fixture입니다. 본 문서는 실제 코드에 기반해 현재 구현 상태를 정리한 것이며,
+    아래 "미구현" 표시 항목은 디자인·UI만 시연되거나 코드에 존재하지 않는 기능을 가리킵니다.
+  </p>
+
+  <div class="legend">
+    <span class="badge b-done">✓ 구현완료</span>
+    <span class="badge b-mock">UI만 (저장 없음)</span>
+    <span class="badge b-todo">미구현</span>
+    <span class="badge b-info">참고</span>
+  </div>
+
+  <div class="toc">
+    <strong>목차</strong>
+    <ol>
+      <li><a href="#routes">전체 페이지 / 라우트 목록</a></li>
+      <li><a href="#auth">회원 등급 구조</a></li>
+      <li><a href="#content">글 관리</a></li>
+      <li><a href="#booking">예약 관리</a></li>
+      <li><a href="#schema">데이터 구조 (DB 스키마 대용)</a></li>
+      <li><a href="#api">API 엔드포인트 목록</a></li>
+      <li><a href="#state">전역 상태 관리</a></li>
+      <li><a href="#summary">전체 요약 매트릭스</a></li>
+    </ol>
+  </div>
+
+  <!-- ================================================== -->
+  <h2 id="routes">1. 전체 페이지 / 라우트 목록</h2>
+
+  <p>라우터: <code>src/app.jsx</code>의 switch 문 (line 39~80). state-based, URL 변경 없음.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>라우트</th>
+        <th>역할</th>
+        <th>구현 파일</th>
+        <th>상태</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>home</code></td>
+        <td>매거진 표지 + 검색 + 이번 주 픽 + 다음 코스 (4가지 layout 변형: cover / split / mapPrimary / editorial)</td>
+        <td class="path">src/screens/home.jsx</td>
+        <td><span class="badge b-done">UI 완성</span></td>
+      </tr>
+      <tr>
+        <td><code>buildings</code></td>
+        <td>건축물 인덱스 + 5-chip dropdown 필터 + Editor's Picks + 4×5 그리드 + 페이지네이션</td>
+        <td class="path">src/screens/buildings.jsx</td>
+        <td><span class="badge b-done">UI 완성</span></td>
+      </tr>
+      <tr>
+        <td><code>detail</code></td>
+        <td>건축물 상세 (3 layout: hero / sidebar / longform) + NetworkSection (관련 코스·컬렉션)</td>
+        <td class="path">src/screens/detail.jsx</td>
+        <td><span class="badge b-done">UI 완성</span></td>
+      </tr>
+      <tr>
+        <td><code>collection</code> (with id)</td>
+        <td>컬렉션 상세 (3 layout: magazine / index / bento)</td>
+        <td class="path">src/screens/collection.jsx</td>
+        <td><span class="badge b-done">UI 완성</span></td>
+      </tr>
+      <tr>
+        <td><code>collection</code> (no id)</td>
+        <td>컬렉션 인덱스 (CollectionIndex)</td>
+        <td class="path">src/screens/collection.jsx</td>
+        <td><span class="badge b-done">UI 완성</span></td>
+      </tr>
+      <tr>
+        <td><code>course</code> (with id)</td>
+        <td>코스 상세 (스탑 리스트 + 예약 정보)</td>
+        <td class="path">src/screens/course.jsx</td>
+        <td><span class="badge b-done">UI 완성</span></td>
+      </tr>
+      <tr>
+        <td><code>course</code> (no id)</td>
+        <td>코스 인덱스 (16개 코스 카드)</td>
+        <td class="path">src/screens/course.jsx</td>
+        <td><span class="badge b-done">UI 완성</span></td>
+      </tr>
+      <tr>
+        <td><code>booking-docent</code></td>
+        <td>도슨트 예약 1단계 (날짜·시간·인원 선택)</td>
+        <td class="path">src/screens/booking.jsx</td>
+        <td><span class="badge b-mock">UI만 · 저장 없음</span></td>
+      </tr>
+      <tr>
+        <td><code>booking-payment</code></td>
+        <td>도슨트 예약 2단계 (결제 · 토스 위젯 placeholder)</td>
+        <td class="path">src/screens/booking.jsx</td>
+        <td><span class="badge b-mock">UI만</span></td>
+      </tr>
+      <tr>
+        <td><code>booking-external</code></td>
+        <td>외부 공간 (숙박/식음/체험) 파트너 연결</td>
+        <td class="path">src/screens/booking.jsx</td>
+        <td><span class="badge b-mock">UI만</span></td>
+      </tr>
+      <tr>
+        <td><code>mypage</code></td>
+        <td>마이페이지 4 탭 (예약 내역·저장 건축물·저장 코스·팔로우)</td>
+        <td class="path">src/screens/mypage.jsx</td>
+        <td><span class="badge b-mock">UI만 · USER fixture 표시</span></td>
+      </tr>
+      <tr>
+        <td><code>upload-quick</code></td>
+        <td>건물 빠른 등록 (위치 핀 + 기본 정보)</td>
+        <td class="path">src/screens/upload.jsx</td>
+        <td><span class="badge b-mock">UI만 · 저장 없음</span></td>
+      </tr>
+      <tr>
+        <td><code>upload-deep</code></td>
+        <td>깊은 큐레이션 (사진·도면·인용·권리 게이트 4섹션)</td>
+        <td class="path">src/screens/upload.jsx</td>
+        <td><span class="badge b-mock">UI만</span></td>
+      </tr>
+      <tr>
+        <td><code>admin-content</code></td>
+        <td>관리자 콘텐츠 관리 (BUILDINGS 테이블 표시 + 필터)</td>
+        <td class="path">src/screens/admin.jsx</td>
+        <td><span class="badge b-mock">UI만 · 액션 없음</span></td>
+      </tr>
+      <tr>
+        <td><code>admin-stats</code></td>
+        <td>관리자 통계 (KPI · 월별 매출 차트 · 예약 표)</td>
+        <td class="path">src/screens/admin.jsx</td>
+        <td><span class="badge b-mock">UI만 · 고정 데이터</span></td>
+      </tr>
+      <tr>
+        <td><code>admin-rights</code></td>
+        <td>관리자 권리관리 (ASSETS 테이블 + 동의·상태 필터)</td>
+        <td class="path">src/screens/admin.jsx</td>
+        <td><span class="badge b-mock">UI만 · 액션 없음</span></td>
+      </tr>
+      <tr>
+        <td><code>login</code></td>
+        <td>로그인 (이메일/비번 · 소셜 K/N/G)</td>
+        <td class="path">src/screens/auth.jsx</td>
+        <td><span class="badge b-mock">UI만 · 클릭 시 isLoggedIn=true만</span></td>
+      </tr>
+      <tr>
+        <td><code>onboarding</code></td>
+        <td>4단계 가입 (가입폼 → 지역 → 관심 건축 → 첫 큐레이션)</td>
+        <td class="path">src/screens/auth.jsx</td>
+        <td><span class="badge b-mock">UI만 · 입력 저장 안 됨</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="footnote">
+    총 <strong>16개 라우트</strong>. 모든 화면이 React 컴포넌트로 렌더링되며,
+    화면 간 이동은 <code>onNavigate(name, id?, opts?)</code> 호출로 동작.
+  </p>
+
+  <!-- ================================================== -->
+  <h2 id="auth">2. 회원 등급 구조</h2>
+
+  <div class="alert alert-error">
+    <strong>⚠ 회원 등급 시스템은 미구현입니다.</strong>
+    현재 코드에는 등급(role/grade/tier) 정의도, 권한 매트릭스도, 등급별 라우트 가드도 없습니다.
+    인증은 단순한 <code>isLoggedIn</code> boolean 토글뿐입니다.
+  </div>
+
+  <h3>현재 코드에 실제로 존재하는 인증 관련 요소</h3>
+  <table>
+    <thead>
+      <tr><th>요소</th><th>타입 / 값</th><th>위치</th><th>역할</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>isLoggedIn</code></td>
+        <td>boolean (기본 false)</td>
+        <td class="path">src/app.jsx:14</td>
+        <td>전역 로그인 상태</td>
+      </tr>
+      <tr>
+        <td><code>window.__masilAuth</code></td>
+        <td>{ isLoggedIn, login(), logout() }</td>
+        <td class="path">src/app.jsx:25~34</td>
+        <td>MasilNav 등에서 읽음</td>
+      </tr>
+      <tr>
+        <td><code>USER</code> fixture</td>
+        <td>객체 1개 (민서/@minseo)</td>
+        <td class="path">src/data.jsx:920~931</td>
+        <td>mypage 표시용. 필드: name, handle, initial, color, joined, bio, visitedCount, savedBuildings, savedCourses, following, followers</td>
+      </tr>
+      <tr>
+        <td>큐레이터 <code>verified</code> flag</td>
+        <td>true/false</td>
+        <td class="path">src/data.jsx COURSES.curator</td>
+        <td>코스 큐레이터의 인증 여부 (UI 표시만)</td>
+      </tr>
+      <tr>
+        <td><code>auth.login()</code></td>
+        <td><code>setIsLoggedIn(true)</code></td>
+        <td class="path">src/app.jsx:28</td>
+        <td>로그인 버튼·소셜 버튼 클릭 시 호출</td>
+      </tr>
+      <tr>
+        <td><code>auth.logout()</code></td>
+        <td><code>setIsLoggedIn(false)</code> + mypage→home 리다이렉트</td>
+        <td class="path">src/app.jsx:29~33</td>
+        <td>nav의 "로그아웃" 클릭</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>nav에서 노출되는 권한 분기 (실제 구현)</h3>
+  <table>
+    <thead>
+      <tr><th>로그아웃 상태</th><th>로그인 상태</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>nav 5개: 홈 / 지도 / 건축물 / 코스 / 컬렉션<br/>우측: "로그인" + "마실 시작하기"</td>
+        <td>nav 6개: 위 + <strong>내 마실</strong><br/>우측: "로그아웃" + "내 마실 →"</td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="small">
+    파일: <span class="mono">src/shared.jsx MasilNav</span> · <span class="mono">window.__masilAuth</span> 읽음.
+    이게 현재 코드의 권한 분기 <strong>전부</strong>입니다.
+  </p>
+
+  <h3>미구현 항목 (스펙 정의 필요)</h3>
+  <table>
+    <thead><tr><th>항목</th><th>상태</th></tr></thead>
+    <tbody>
+      <tr><td>등급 정의 (일반/큐레이터/에디터/관리자 등)</td><td><span class="badge b-todo">미구현</span></td></tr>
+      <tr><td>권한 매트릭스 (등급 × 액션)</td><td><span class="badge b-todo">미구현</span></td></tr>
+      <tr><td>관리자 라우트(<code>admin-*</code>) 접근 제한</td><td><span class="badge b-todo">미구현 — 누구나 진입 가능</span></td></tr>
+      <tr><td>업로드 권한 분기 (자가 등록 vs. 큐레이터 검수)</td><td><span class="badge b-todo">미구현 — UI만 시연</span></td></tr>
+      <tr><td>인증 토큰 / 세션</td><td><span class="badge b-todo">미구현</span></td></tr>
+      <tr><td>비밀번호 정책 · 검증</td><td><span class="badge b-todo">미구현</span></td></tr>
+      <tr><td>소셜 로그인 OAuth 흐름</td><td><span class="badge b-todo">미구현 — 버튼 클릭 시 isLoggedIn만 토글</span></td></tr>
+    </tbody>
+  </table>
+
+  <!-- ================================================== -->
+  <h2 id="content">3. 글 관리</h2>
+
+  <div class="alert alert-warn">
+    <strong>"글"의 정의가 코드상 모호합니다.</strong> 현재 codebase에는 "포스트/게시글" 같은 범용 글 엔티티가 없고,
+    아래 4가지가 콘텐츠 단위입니다.
+  </div>
+
+  <h3>현재 콘텐츠 엔티티 (모두 fixture · src/data.jsx)</h3>
+  <table>
+    <thead>
+      <tr><th>엔티티</th><th>개수</th><th>fixture 변수</th><th>UI 노출</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>BUILDINGS</strong> (건축물)</td>
+        <td>21개</td>
+        <td class="code">BUILDINGS (data.jsx:7)</td>
+        <td>buildings 인덱스 · detail · 지도 · 컬렉션 · 코스 등 거의 모든 곳</td>
+      </tr>
+      <tr>
+        <td><strong>COLLECTIONS</strong> (매거진 컬렉션)</td>
+        <td>6개 (Vol.01~06)</td>
+        <td class="code">COLLECTIONS (data.jsx:496)</td>
+        <td>collection 인덱스/상세 · 홈 cover · 디테일 NetworkSection</td>
+      </tr>
+      <tr>
+        <td><strong>COURSES</strong> (도슨트/셀프 코스)</td>
+        <td>16개</td>
+        <td class="code">COURSES (data.jsx:691)</td>
+        <td>course 인덱스/상세 · booking · mypage · 디테일 NetworkSection</td>
+      </tr>
+      <tr>
+        <td><strong>ASSETS</strong> (자료 · 사진/도면/3D)</td>
+        <td>8개</td>
+        <td class="code">ASSETS (data.jsx:1000)</td>
+        <td>admin-rights 테이블에서만 표시</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CRUD 동작 상태</h3>
+  <table>
+    <thead>
+      <tr><th>동작</th><th>엔티티</th><th>UI</th><th>실제 동작</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Read</strong> (조회)</td>
+        <td>전체</td>
+        <td><span class="badge b-done">완료</span></td>
+        <td>fixture에서 <code>.find / .filter / .map</code>으로 읽어 렌더링</td>
+      </tr>
+      <tr>
+        <td><strong>Create</strong> (작성)</td>
+        <td>BUILDINGS</td>
+        <td><code>upload-quick</code>, <code>upload-deep</code> 화면</td>
+        <td><span class="badge b-todo">미구현</span> — 입력은 useState에 들어가지만 저장 로직 없음, 다음 단계 버튼만 작동</td>
+      </tr>
+      <tr>
+        <td><strong>Create</strong></td>
+        <td>COLLECTIONS / COURSES / ASSETS</td>
+        <td>—</td>
+        <td><span class="badge b-todo">미구현</span> · 작성 화면 자체 없음</td>
+      </tr>
+      <tr>
+        <td><strong>Update</strong> (수정)</td>
+        <td>전체</td>
+        <td>—</td>
+        <td><span class="badge b-todo">미구현</span> · 수정 화면/버튼 없음</td>
+      </tr>
+      <tr>
+        <td><strong>Delete</strong> (삭제)</td>
+        <td>전체</td>
+        <td>—</td>
+        <td><span class="badge b-todo">미구현</span> · 삭제 버튼 없음</td>
+      </tr>
+      <tr>
+        <td><strong>Save / Bookmark</strong></td>
+        <td>BUILDINGS, COURSES</td>
+        <td>북마크 아이콘 (PinPopupCard, 카드)</td>
+        <td><span class="badge b-todo">미구현</span> · 클릭해도 state 변경 없음</td>
+      </tr>
+      <tr>
+        <td><strong>Share</strong></td>
+        <td>전체</td>
+        <td>공유 아이콘</td>
+        <td><span class="badge b-todo">미구현</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>권한별 가능 액션 — 코드에 정의된 분기</h3>
+  <p>현재 코드 기준 <strong>권한별 분기는 존재하지 않습니다</strong>. 모든 사용자가 동일하게 모든 화면(admin 포함)에 접근 가능합니다.</p>
+
+  <h3>관련 API 엔드포인트</h3>
+  <p><span class="badge b-todo">미구현</span> — 백엔드 부재. <a href="#api">§6 API 엔드포인트</a> 참조.</p>
+
+  <!-- ================================================== -->
+  <h2 id="booking">4. 예약 관리</h2>
+
+  <h3>예약 데이터 구조 (BOOKINGS fixture · src/data.jsx:967)</h3>
+  <pre class="code-block">{
+  id:        "B2026-0418",     // 예약 번호 (사용자 노출)
+  courseId:  "bukchon",        // 코스 ID (COURSES.id 참조)
+  date:      "2026.06.15 (토)",// 문자열 (date 객체 아님)
+  time:      "10:00",
+  people:    2,
+  price:     64000,
+  status:    "예정"             // "예정" | "완료" (열거값은 코드상 자유)
+}</pre>
+  <p class="small">총 3건의 fixture가 있음 (B2026-0418, B2026-0301, B2025-1124).</p>
+
+  <h3>상태값 (코드에서 등장하는 문자열)</h3>
+  <table>
+    <thead><tr><th>값</th><th>의미</th><th>등장 위치</th></tr></thead>
+    <tbody>
+      <tr><td><code>"예정"</code></td><td>다가오는 예약</td><td>BOOKINGS fixture · mypage</td></tr>
+      <tr><td><code>"완료"</code></td><td>지난 예약</td><td>BOOKINGS fixture · mypage</td></tr>
+    </tbody>
+  </table>
+  <p class="alert alert-warn">
+    <strong>주의:</strong> 상태값 enum이 코드상 명시적으로 정의되어 있지 않습니다.
+    "예약대기", "확정", "취소", "환불" 같은 상태는 <strong>미정의</strong>입니다.
+    실제 백엔드 설계 시 enum 정의 필요.
+  </p>
+
+  <h3>예약 플로우 (3개 화면 단계)</h3>
+  <table>
+    <thead>
+      <tr><th>단계</th><th>화면</th><th>역할</th><th>다음 단계 트리거</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><code>booking-docent</code></td>
+        <td>코스 선택 → 날짜/시간/인원 → 가격 계산</td>
+        <td>"결제 진행" 버튼 → <code>booking-payment</code></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><code>booking-payment</code></td>
+        <td>결제 수단 선택 (토스 위젯 placeholder) + 약관 동의</td>
+        <td>"결제 완료" → 확정 화면 (같은 라우트 내 step state)</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><code>booking-external</code></td>
+        <td>외부 파트너 (숙박/식음/체험) 연결 — 옵션</td>
+        <td>외부 링크 (실제로는 비활성)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>처리 로직 — 실제로 동작하는 부분</h3>
+  <table>
+    <thead><tr><th>동작</th><th>실제 동작?</th><th>위치 / 비고</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>총액 계산</td>
+        <td><span class="badge b-done">완료</span></td>
+        <td><code>c.price × people</code> 클라이언트 계산. booking.jsx:105</td>
+      </tr>
+      <tr>
+        <td>달력 날짜 선택 state</td>
+        <td><span class="badge b-done">완료</span></td>
+        <td>booking.jsx Calendar 컴포넌트</td>
+      </tr>
+      <tr>
+        <td>예약번호 생성</td>
+        <td><span class="badge b-mock">UI만</span></td>
+        <td><code>B2026-{Math.random}</code> — 매 렌더마다 새로 생성. 저장 안 됨. booking.jsx:286</td>
+      </tr>
+      <tr>
+        <td>BOOKINGS fixture에 추가</td>
+        <td><span class="badge b-todo">미구현</span></td>
+        <td>fixture는 const, 런타임 추가 로직 없음</td>
+      </tr>
+      <tr>
+        <td>예약 취소 / 변경</td>
+        <td><span class="badge b-todo">미구현</span></td>
+        <td>버튼/로직 없음</td>
+      </tr>
+      <tr>
+        <td>결제 게이트웨이 연동</td>
+        <td><span class="badge b-todo">미구현</span></td>
+        <td>토스 위젯은 SVG placeholder</td>
+      </tr>
+      <tr>
+        <td>예약 알림 / 이메일</td>
+        <td><span class="badge b-todo">미구현</span></td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>관련 API 엔드포인트</h3>
+  <p><span class="badge b-todo">미구현</span> — 모든 예약 데이터가 클라이언트 메모리에만 존재. <a href="#api">§6 API 엔드포인트</a> 참조.</p>
+
+  <!-- ================================================== -->
+  <h2 id="schema">5. 데이터 구조 (DB 스키마 대용)</h2>
+
+  <div class="alert alert-error">
+    <strong>⚠ 실제 데이터베이스가 없습니다.</strong>
+    아래 구조는 <code>src/data.jsx</code>의 <strong>in-memory JavaScript const fixture</strong>이며,
+    이를 향후 백엔드 설계 시 참고용 스키마로 활용 가능합니다.
+  </div>
+
+  <h3>5-1. BUILDINGS (건축물) · 21건</h3>
+  <p>파일: <span class="mono">src/data.jsx:7</span></p>
+  <table>
+    <thead><tr><th>필드</th><th>타입</th><th>예시</th><th>비고</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string (PK)</td><td>"kongkan"</td><td>고유 식별자</td></tr>
+      <tr><td><code>no</code></td><td>string</td><td>"001"</td><td>내부 일련번호 (UI 노출 안 함)</td></tr>
+      <tr><td><code>name</code></td><td>string</td><td>"공간 사옥"</td><td>한글 이름</td></tr>
+      <tr><td><code>nameEn</code></td><td>string</td><td>"SPACE Group Building"</td><td>영문 이름</td></tr>
+      <tr><td><code>architect</code></td><td>string</td><td>"김수근"</td><td>건축가</td></tr>
+      <tr><td><code>year</code></td><td>number</td><td>1977</td><td>준공 연도</td></tr>
+      <tr><td><code>region</code></td><td>string</td><td>"서울 종로"</td><td>광역+구 형태. provinceIdOf()로 광역권 매핑</td></tr>
+      <tr><td><code>address</code></td><td>string</td><td>"서울 종로구 율곡로 83"</td><td>주소</td></tr>
+      <tr><td><code>type</code></td><td>string</td><td>"사무소·갤러리"</td><td>표시용 자유 텍스트</td></tr>
+      <tr><td><code>typeKey</code></td><td>enum string</td><td>"modern"</td><td>"hanok" / "modern" / "museum" / "religi" / "house"</td></tr>
+      <tr><td><code>useKey</code></td><td>enum string</td><td>"office-general"</td><td>USE_TYPES의 2차 id (FK)</td></tr>
+      <tr><td><code>style</code></td><td>string</td><td>"한국 모더니즘"</td><td>—</td></tr>
+      <tr><td><code>palette</code></td><td>hex string</td><td>"#333D51"</td><td>대표 색</td></tr>
+      <tr><td><code>intro</code></td><td>string</td><td>"담쟁이덩굴이…"</td><td>2~3줄 요약</td></tr>
+      <tr><td><code>longRead</code></td><td>string</td><td>"원서동 골목…"</td><td>본문 (5~10줄)</td></tr>
+      <tr><td><code>coord</code></td><td>[number, number]</td><td>[780, 320]</td><td>SVG 지도 좌표 (위경도 아님)</td></tr>
+      <tr><td><code>metrics</code></td><td>object</td><td>{rooms, floors, gfa, visit}</td><td>면적은 string "1,420㎡"</td></tr>
+      <tr><td><code>tags</code></td><td>string[]</td><td>["벽돌","1970s",…]</td><td>—</td></tr>
+      <tr><td><code>pinTone</code></td><td>enum string</td><td>"terra" / "olive"</td><td>지도 핀 색상</td></tr>
+      <tr><td><code>visited</code></td><td>number</td><td>1284</td><td>방문 카운트 (mock)</td></tr>
+      <tr><td><code>saved</code></td><td>number</td><td>312</td><td>저장 카운트 (mock)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5-2. USE_TYPES (용도 분류) · 1차 18개</h3>
+  <p>파일: <span class="mono">src/data.jsx:617</span> · 1차 → 2차 계층 구조</p>
+  <pre class="code-block">{ id: "culture", name: "문화 및 집회시설", children: [
+  { id: "art-museum",        name: "미술관" },
+  { id: "museum",            name: "박물관" },
+  { id: "exhibit-hall",      name: "전시장" },
+  { id: "performance",       name: "공연예술센터" },
+  { id: "culture-complex",   name: "복합문화시설" },
+  { id: "multipurpose-hall", name: "다목적홀" },
+]}</pre>
+  <p>역색인: <code>USE_TYPE_INDEX</code>(data.jsx:683) — 2차 id → 1차 id</p>
+
+  <h3>5-3. COLLECTIONS (매거진 컬렉션) · 6건</h3>
+  <table>
+    <thead><tr><th>필드</th><th>타입</th><th>예시</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string (PK)</td><td>"brick"</td></tr>
+      <tr><td><code>no</code></td><td>string</td><td>"Vol.01"</td></tr>
+      <tr><td><code>title</code></td><td>string</td><td>"벽돌의 시간"</td></tr>
+      <tr><td><code>subtitle</code></td><td>string</td><td>"한국 모더니즘 건축 8선"</td></tr>
+      <tr><td><code>editor</code></td><td>string</td><td>"이주영"</td></tr>
+      <tr><td><code>editorRole</code></td><td>string</td><td>"건축평론가"</td></tr>
+      <tr><td><code>issue</code></td><td>string</td><td>"2026 봄호"</td></tr>
+      <tr><td><code>cover</code></td><td>hex string</td><td>"#333D51"</td></tr>
+      <tr><td><code>blurb</code></td><td>string</td><td>2~3문장 요약</td></tr>
+      <tr><td><code>count</code></td><td>number</td><td>8</td></tr>
+      <tr><td><code>readTime</code></td><td>number (분)</td><td>14</td></tr>
+      <tr><td><code>buildings</code></td><td>string[] (FK)</td><td>["kongkan","boan","whanki"]</td></tr>
+      <tr><td><code>tag</code></td><td>enum string</td><td>"EDITORIAL" / "FEATURE" / "JOURNEY" / "TRAVEL" / "ESSAY" / "NIGHT"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5-4. COURSES (도슨트/셀프 코스) · 16건</h3>
+  <table>
+    <thead><tr><th>필드</th><th>타입</th><th>예시</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string (PK)</td><td>"bukchon"</td></tr>
+      <tr><td><code>no</code></td><td>string</td><td>"C-01" — 내부용, UI 노출 안 함</td></tr>
+      <tr><td><code>name</code></td><td>string</td><td>"북촌 골목…"</td></tr>
+      <tr><td><code>blurb</code></td><td>string</td><td>한 줄 요약</td></tr>
+      <tr><td><code>curator</code></td><td>object</td><td>{name, initial, role, color, verified}</td></tr>
+      <tr><td><code>rating, reviews</code></td><td>number</td><td>4.8, 134</td></tr>
+      <tr><td><code>visited, saved</code></td><td>number</td><td>—</td></tr>
+      <tr><td><code>distance, duration, elevation, difficulty</code></td><td>string</td><td>표시용 자유 텍스트</td></tr>
+      <tr><td><code>buildings</code></td><td>string[] (FK)</td><td>BUILDINGS.id 배열</td></tr>
+      <tr><td><code>type</code></td><td>enum string</td><td>"도슨트" / "셀프"</td></tr>
+      <tr><td><code>price</code></td><td>number</td><td>32000 (원, 0=무료)</td></tr>
+      <tr><td><code>hasDocent</code></td><td>boolean</td><td>true/false</td></tr>
+      <tr><td><code>schedule</code></td><td>string[]</td><td>["10:00","14:00","16:30"]</td></tr>
+      <tr><td><code>meetingPoint</code></td><td>string</td><td>"안국역 1번 출구"</td></tr>
+      <tr><td><code>cover</code></td><td>hex string</td><td>"#333D51"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5-5. BOOKINGS (예약) · 3건</h3>
+  <p>§4 예약 관리 참조. 필드: id, courseId, date, time, people, price, status</p>
+
+  <h3>5-6. ASSETS (콘텐츠 자료) · 8건</h3>
+  <p>파일: <span class="mono">src/data.jsx:1000</span> · admin-rights에서만 표시</p>
+  <table>
+    <thead><tr><th>필드</th><th>타입</th><th>예시 / 가능값</th></tr></thead>
+    <tbody>
+      <tr><td><code>id</code></td><td>string (PK)</td><td>"A-3201"</td></tr>
+      <tr><td><code>building</code></td><td>string (FK)</td><td>BUILDINGS.id</td></tr>
+      <tr><td><code>name</code></td><td>string (파일명)</td><td>"공간사옥_외관_가을_001.jpg"</td></tr>
+      <tr><td><code>type</code></td><td>enum string</td><td>"사진" / "도면" / "3D" / "다이어그램"</td></tr>
+      <tr><td><code>uploader</code></td><td>string</td><td>업로더 이름</td></tr>
+      <tr><td><code>owner</code></td><td>string</td><td>권리자 표기 (텍스트)</td></tr>
+      <tr><td><code>consent</code></td><td>enum string</td><td>"완료" / "대기" / "보류"</td></tr>
+      <tr><td><code>split</code></td><td>string</td><td>수익 분배 텍스트 ("유족 60% · 마실맵 40%")</td></tr>
+      <tr><td><code>status</code></td><td>enum string</td><td>"공개" / "대기" / "보류"</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5-7. USER (유저) · 1건</h3>
+  <p>파일: <span class="mono">src/data.jsx:920</span></p>
+  <pre class="code-block">{
+  name:           "민서",
+  handle:         "@minseo",
+  initial:        "민",
+  color:          "#D3AC2B",
+  joined:         "2024년 3월",
+  bio:            "걷는 속도로 도시를 보는 사람. 한옥과 콘크리트를 똑같이 좋아함.",
+  visitedCount:   23,
+  savedBuildings: 47,
+  savedCourses:   8,
+  following:      12,
+  followers:      38
+}</pre>
+  <p class="footnote">
+    1명만 정의됨. 등급/role 필드 없음.
+    실제 시스템에서는 <code>email</code>, <code>passwordHash</code>, <code>role</code>, <code>createdAt</code>, <code>provider</code>(local/kakao/naver/google), <code>verified</code>, <code>preferences</code> 등이 필요할 것.
+  </p>
+
+  <h3>5-8. REGIONS / TYPES / EXTERNAL_SPACES</h3>
+  <table>
+    <thead><tr><th>변수</th><th>타입 / 개수</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td><code>REGIONS</code></td><td>객체 배열 · 7개</td><td>광역 지역 목록 (서울/경기/강원/충청/전라/경상/제주). data.jsx:587</td></tr>
+      <tr><td><code>TYPES</code></td><td>객체 배열 · 6개</td><td>구 타입 분류 (전체/한옥·전통/근현대/미술관/종교/주택). data.jsx:597</td></tr>
+      <tr><td><code>EXTERNAL_SPACES</code></td><td>객체 배열 · 3개</td><td>외부 파트너 (보안스테이/산사다실/제주 워크숍). booking-external에서 사용. data.jsx:944</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5-9. 관계도 (참고)</h3>
+  <pre class="code-block">USER (1명)
+  └─ (가상) → BOOKINGS
+
+COLLECTIONS ──── 다대다 ──── BUILDINGS
+   (buildings: string[])         (id)
+
+COURSES ──── 다대다 ──── BUILDINGS
+   (buildings: string[])    (id)
+
+BOOKINGS ──── 일대일 ──── COURSES
+   (courseId: string)         (id)
+
+ASSETS ──── 다대일 ──── BUILDINGS
+   (building: string)         (id)
+
+BUILDINGS ──── 일대일 ──── USE_TYPES (children)
+   (useKey: string)              (id)</pre>
+
+  <!-- ================================================== -->
+  <h2 id="api">6. API 엔드포인트 목록</h2>
+
+  <div class="alert alert-error">
+    <strong>⚠ API 엔드포인트가 존재하지 않습니다.</strong>
+    <br/>
+    grep으로 <code>fetch(</code>, <code>axios</code>, <code>/api/</code> 패턴 검색 결과 <strong>0건</strong>.
+    백엔드 부재. 모든 데이터는 fixture를 직접 import.
+  </div>
+
+  <h3>향후 백엔드 설계 시 필요한 엔드포인트 (참고용 스펙)</h3>
+  <p>아래는 현재 화면이 요구하는 동작을 기준으로 <strong>추정한 권장 엔드포인트 목록</strong>입니다. 실제 코드에는 없습니다.</p>
+
+  <h4>인증 (Auth)</h4>
+  <table>
+    <thead><tr><th>Method</th><th>경로</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td>POST</td><td>/api/auth/login</td><td>이메일/비번 로그인</td></tr>
+      <tr><td>POST</td><td>/api/auth/signup</td><td>회원가입 (온보딩 step 1)</td></tr>
+      <tr><td>POST</td><td>/api/auth/logout</td><td>로그아웃</td></tr>
+      <tr><td>POST</td><td>/api/auth/oauth/{kakao|naver|google}</td><td>소셜 로그인</td></tr>
+      <tr><td>GET</td><td>/api/auth/me</td><td>현재 사용자</td></tr>
+      <tr><td>POST</td><td>/api/auth/onboarding</td><td>온보딩 결과 저장 (지역, 관심사)</td></tr>
+    </tbody>
+  </table>
+
+  <h4>건축물 / 컬렉션 / 코스 (콘텐츠 읽기)</h4>
+  <table>
+    <thead><tr><th>Method</th><th>경로</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td>/api/buildings</td><td>목록 + 필터 (region, useKey, area, floors, q)</td></tr>
+      <tr><td>GET</td><td>/api/buildings/:id</td><td>상세</td></tr>
+      <tr><td>GET</td><td>/api/buildings/:id/network</td><td>이 건축이 포함된 COURSES + COLLECTIONS</td></tr>
+      <tr><td>GET</td><td>/api/collections, /:id</td><td>목록/상세</td></tr>
+      <tr><td>GET</td><td>/api/courses, /:id</td><td>목록/상세</td></tr>
+    </tbody>
+  </table>
+
+  <h4>업로드 / 작성 (Create)</h4>
+  <table>
+    <thead><tr><th>Method</th><th>경로</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td>POST</td><td>/api/buildings</td><td>upload-quick / upload-deep 제출</td></tr>
+      <tr><td>POST</td><td>/api/assets</td><td>사진/도면 업로드 (multipart)</td></tr>
+      <tr><td>PATCH</td><td>/api/assets/:id/consent</td><td>권리 동의 상태 변경</td></tr>
+    </tbody>
+  </table>
+
+  <h4>예약 (Booking)</h4>
+  <table>
+    <thead><tr><th>Method</th><th>경로</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td>POST</td><td>/api/bookings</td><td>예약 생성 (booking-payment 완료 후)</td></tr>
+      <tr><td>GET</td><td>/api/bookings (?userId)</td><td>내 예약 목록</td></tr>
+      <tr><td>GET</td><td>/api/bookings/:id</td><td>예약 상세</td></tr>
+      <tr><td>PATCH</td><td>/api/bookings/:id/cancel</td><td>예약 취소</td></tr>
+      <tr><td>POST</td><td>/api/payment/toss/init</td><td>토스 결제 시작</td></tr>
+      <tr><td>POST</td><td>/api/payment/toss/confirm</td><td>토스 결제 확정 webhook</td></tr>
+    </tbody>
+  </table>
+
+  <h4>사용자 활동 (Save / Bookmark / Visit)</h4>
+  <table>
+    <thead><tr><th>Method</th><th>경로</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td>POST</td><td>/api/users/me/saves/buildings/:id</td><td>건축물 저장</td></tr>
+      <tr><td>DELETE</td><td>/api/users/me/saves/buildings/:id</td><td>건축물 저장 해제</td></tr>
+      <tr><td>POST</td><td>/api/users/me/visits/buildings/:id</td><td>방문 기록</td></tr>
+      <tr><td>GET</td><td>/api/users/me/dashboard</td><td>마이페이지 통합 데이터</td></tr>
+    </tbody>
+  </table>
+
+  <h4>관리자 (Admin)</h4>
+  <table>
+    <thead><tr><th>Method</th><th>경로</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td>/api/admin/stats</td><td>월별 매출, 코스별 예약 KPI</td></tr>
+      <tr><td>GET</td><td>/api/admin/assets</td><td>모든 ASSETS + 필터 (status, consent)</td></tr>
+      <tr><td>PATCH</td><td>/api/admin/buildings/:id</td><td>건축물 정보 수정</td></tr>
+      <tr><td>PATCH</td><td>/api/admin/assets/:id</td><td>자료 상태 변경 (공개/보류)</td></tr>
+    </tbody>
+  </table>
+
+  <h4>검색 / 기타</h4>
+  <table>
+    <thead><tr><th>Method</th><th>경로</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td>GET</td><td>/api/search?q=…</td><td>통합 검색 (현재는 클라이언트 필터로만 동작)</td></tr>
+    </tbody>
+  </table>
+
+  <p class="alert alert-info">
+    <strong>참고:</strong> 위 엔드포인트들은 모두 <strong>미구현</strong>이며, 코드상 존재하지 않습니다.
+    백엔드 설계 시작 시 본 표를 참고 명세로 사용하시면 됩니다.
+  </p>
+
+  <!-- ================================================== -->
+  <h2 id="state">7. 전역 상태 관리</h2>
+
+  <p>현재 클라이언트 사이드 상태 관리. <strong>모든 상태는 새로고침 시 초기화</strong>됩니다 (localStorage 사용 없음).</p>
+
+  <table>
+    <thead><tr><th>키</th><th>위치</th><th>역할</th></tr></thead>
+    <tbody>
+      <tr><td><code>route</code></td><td>App useState</td><td>{name, id} 현재 라우트</td></tr>
+      <tr><td><code>t</code> (tweaks)</td><td>App useTweaks</td><td>{homeLayout, detailLayout, collectionLayout} 레이아웃 변형</td></tr>
+      <tr><td><code>isLoggedIn</code></td><td>App useState</td><td>boolean</td></tr>
+      <tr><td><code>searchQuery</code></td><td>App useState</td><td>nav 검색창 입력값</td></tr>
+      <tr><td><code>window.__masilT</code></td><td>window 전역</td><td>= t (다른 컴포넌트에서 props 없이 읽음)</td></tr>
+      <tr><td><code>window.__masilAuth</code></td><td>window 전역</td><td>{isLoggedIn, login, logout}</td></tr>
+      <tr><td><code>window.__masilSearch</code></td><td>window 전역</td><td>{query, setQuery}</td></tr>
+    </tbody>
+  </table>
+  <p class="small">파일: <span class="mono">src/app.jsx:13~50</span></p>
+
+  <!-- ================================================== -->
+  <h2 id="summary">8. 전체 요약 매트릭스</h2>
+
+  <table>
+    <thead>
+      <tr><th>영역</th><th>UI 완성</th><th>실제 동작</th><th>저장 / 영속화</th><th>API</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>건축물 / 컬렉션 / 코스 조회</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-done">✓</span> (fixture에서 read)</td>
+        <td>—</td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>검색 (nav)</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-done">✓</span> (클라이언트 필터)</td>
+        <td>—</td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>필터 (5-chip dropdown)</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-done">✓</span> (클라이언트)</td>
+        <td>—</td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>NetworkSection (관련 코스·컬렉션)</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-done">✓</span></td>
+        <td>—</td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>로그인 / 로그아웃</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-mock">UI만 (boolean 토글)</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>온보딩 (4단계)</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-mock">UI만</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>예약 플로우 (3단계)</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-mock">UI만</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>건축물 업로드</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-mock">UI만</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>관리자 (콘텐츠/통계/권리)</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-mock">UI만 (액션 없음)</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>북마크 / 공유</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>회원 등급 / 권한</td>
+        <td>—</td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>결제 (토스)</td>
+        <td><span class="badge b-mock">placeholder만</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+        <td><span class="badge b-todo">✗</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>다음 단계 권장 우선순위</h3>
+  <ol>
+    <li><strong>회원 등급 스펙 정의</strong> — 일반/큐레이터/에디터/관리자 4단계 + 등급별 권한 매트릭스 (admin 라우트 가드, 업로드 단계 분기 등의 전제)</li>
+    <li><strong>BOOKINGS / USER 영속화</strong> — DB 스키마 확정 후 백엔드 신설. 토스 결제 webhook 우선</li>
+    <li><strong>ASSETS 권리 워크플로</strong> — admin-rights의 동의 상태 변경 액션이 실제 작동하도록 API 연결</li>
+    <li><strong>업로드 → 검수 큐</strong> — upload-deep 제출 시 ASSETS에 status=대기로 추가, admin에서 공개 전환</li>
+    <li><strong>북마크 / 방문 기록</strong> — USER 객체에 saves[] / visits[] 추가</li>
+    <li><strong>검색 백엔드</strong> — 현재 클라이언트 필터를 서버 풀텍스트 검색으로 전환</li>
+  </ol>
+
+  <hr style="border: none; border-top: 1px solid var(--divider); margin: 64px 0 32px;"/>
+
+  <p class="footnote">
+    본 문서는 <code>2026-05-29</code> 기준의 자동 분석입니다.
+    실제 코드와 차이가 있을 경우 코드를 우선합니다. 모든 파일 경로는 repo root <code>C:/Users/kimmm/OneDrive/claude/MasilMAP ver2/</code> 기준.
+    <br/>
+    참고: <a href="Manual.html" style="color: var(--gold-deep); font-weight: 700;">Manual.html</a> — 메뉴별 역할 안내서
+  </p>
+
+</main>
+</body>
+</html>
