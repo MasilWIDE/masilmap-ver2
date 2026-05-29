@@ -494,13 +494,16 @@ function MasilHero({ onNavigate }) {
 }
 
 /* ---------- ViewportPanel: 좌측 — 현재 지도 영역의 건축물 리스트 ---------- */
-function ViewportPanel({ buildings, selectedId, onSelect }) {
+function ViewportPanel({ buildings, selectedId, onSelect, isMobile = false }) {
   return (
     <div style={{
-      width: 360, height: "100%",
-      background: M.cream, borderRadius: MR.cardLg, padding: 20,
+      width: isMobile ? "100%" : 360,
+      height: isMobile ? "auto" : "100%",
+      maxHeight: isMobile ? "100%" : "none",
+      background: M.cream, borderRadius: MR.cardLg, padding: isMobile ? 14 : 20,
       boxShadow: MS.cardLg,
-      display: "flex", flexDirection: "column", gap: 12,
+      display: "flex", flexDirection: "column", gap: 10,
+      overflow: "hidden",
     }}>
       <div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
@@ -544,11 +547,13 @@ function ViewportPanel({ buildings, selectedId, onSelect }) {
 }
 
 /* ---------- PinPopupCard: 좌측 list 옆에 슬라이드 확장 (Naver/Google Maps 톤) ---------- */
-function PinPopupCard({ b, onClose, onNavigate }) {
+function PinPopupCard({ b, onClose, onNavigate, isMobile = false }) {
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
   return (
     <div style={{
-      width: 380, height: "100%",
+      width: isMobile ? "100%" : 380,
+      height: isMobile ? "auto" : "100%",
+      maxHeight: isMobile ? "70vh" : "100%",
       overflowY: "auto",
       background: M.cream, borderRadius: MR.cardLg,
       boxShadow: MS.cardLg,
@@ -681,6 +686,9 @@ function PinPopupCard({ b, onClose, onNavigate }) {
 
 /* ---------- COVER 레이아웃: 매거진 표지 + 검색 + 픽 (홈 기본) ---------- */
 function CoverHomeLayout({ onNavigate }) {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  const px = pageX(isMobile, isTablet);
   const featuredCol = COLLECTIONS[0]; // 벽돌의 시간
   const picks = ["kongkan", "buseoksa", "bonte"]
     .map((id) => BUILDINGS.find((b) => b.id === id))
@@ -697,10 +705,15 @@ function CoverHomeLayout({ onNavigate }) {
   return (
     <>
       {/* === SECTION 1: 매거진 표지 (B) === */}
-      <section style={{ padding: "8px 56px 56px" }}>
+      <section style={{ padding: `8px ${px}px ${isMobile ? 36 : 56}px` }}>
         <Hairline label={`MASILMAP · ${featuredCol.no} · ${featuredCol.issue.toUpperCase()}`} style={{ marginBottom: 28 }}/>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 48, alignItems: "stretch" }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1.5fr 1fr",
+          gap: isMobile ? 16 : 48,
+          alignItems: "stretch",
+        }}>
           {/* 좌측: 큰 표지 블록 */}
           <div
             onClick={() => onNavigate("collection", featuredCol.id)}
@@ -709,8 +722,8 @@ function CoverHomeLayout({ onNavigate }) {
               borderRadius: MR.cardLg,
               background: featuredCol.cover,
               color: M.cream,
-              padding: "48px 44px",
-              minHeight: 480,
+              padding: isMobile ? "32px 24px" : "48px 44px",
+              minHeight: isMobile ? 360 : 480,
               cursor: "pointer",
               overflow: "hidden",
               display: "flex", flexDirection: "column", justifyContent: "space-between",
@@ -736,7 +749,7 @@ function CoverHomeLayout({ onNavigate }) {
                 a masilmap collection
               </div>
               <h1 style={{
-                fontSize: 96, fontWeight: 900,
+                fontSize: isMobile ? 56 : 96, fontWeight: 900,
                 letterSpacing: "-0.045em", lineHeight: 0.95,
                 margin: "0 0 18px", textWrap: "balance",
               }}>{featuredCol.title}</h1>
@@ -800,7 +813,7 @@ function CoverHomeLayout({ onNavigate }) {
 
       {/* === SECTION 2: 검색 (A) === */}
       <section style={{
-        padding: "56px 56px",
+        padding: `${isMobile ? 36 : 56}px ${px}px`,
         background: M.cream,
         borderTop: `1px solid ${M.beigeAlt}`,
         borderBottom: `1px solid ${M.beigeAlt}`,
@@ -808,7 +821,7 @@ function CoverHomeLayout({ onNavigate }) {
         <div style={{ maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
           <MagCap color={M.terra} style={{ marginBottom: 14 }}>EXPLORE</MagCap>
           <h2 style={{
-            fontSize: 40, fontWeight: 900,
+            fontSize: isMobile ? 28 : 40, fontWeight: 900,
             letterSpacing: "-0.025em", lineHeight: 1.1,
             color: M.ink, margin: "0 0 28px",
             textWrap: "balance",
@@ -836,11 +849,11 @@ function CoverHomeLayout({ onNavigate }) {
       </section>
 
       {/* === SECTION 3: THIS WEEK 픽 === */}
-      <section style={{ padding: "56px 56px 32px" }}>
+      <section style={{ padding: `${isMobile ? 36 : 56}px ${px}px ${isMobile ? 20 : 32}px` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 24 }}>
           <div>
             <MagCap color={M.terra} style={{ marginBottom: 6 }}>THIS WEEK · 에디터 픽</MagCap>
-            <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>
+            <h2 style={{ fontSize: isMobile ? 22 : 28, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>
               이번 주의 세 건축
             </h2>
           </div>
@@ -849,7 +862,11 @@ function CoverHomeLayout({ onNavigate }) {
           }}>전체 보기 →</span>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
+          gap: 20,
+        }}>
           {picks.map((b) => (
             <div key={b.id} onClick={() => onNavigate("detail", b.id)} style={{
               borderRadius: MR.card, overflow: "hidden",
@@ -879,11 +896,11 @@ function CoverHomeLayout({ onNavigate }) {
       </section>
 
       {/* === SECTION 4: NEXT COURSE === */}
-      <section style={{ padding: "32px 56px 80px" }}>
+      <section style={{ padding: `${isMobile ? 20 : 32}px ${px}px ${isMobile ? 56 : 80}px` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 24 }}>
           <div>
             <MagCap color={M.olive} style={{ marginBottom: 6 }}>NEXT COURSE · 도슨트와 함께</MagCap>
-            <h2 style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>
+            <h2 style={{ fontSize: isMobile ? 22 : 28, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>
               다음 마실 코스
             </h2>
           </div>
@@ -892,7 +909,11 @@ function CoverHomeLayout({ onNavigate }) {
           }}>전체 코스 →</span>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 20 }}>
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(2, 1fr)",
+          gap: 20,
+        }}>
           {featuredCourses.map((c) => (
             <div key={c.id} onClick={() => onNavigate("course", c.id)} style={{
               borderRadius: MR.cardLg, overflow: "hidden",
@@ -1076,23 +1097,32 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
       )}
 
       {/* === MAP-PRIMARY 레이아웃 (FastFive 톤 · 풀 지도 + 칩 오버레이 + 좌측 panel) === */}
-      {layout === "mapPrimary" && (
+      {layout === "mapPrimary" && (() => {
+        const mpIsMobile = window.useIsMobile ? window.useIsMobile() : false;
+        const mpPx = mpIsMobile ? 12 : 24;
+        return (
         <section style={{
           position: "relative",
-          height: "calc(100vh - 180px)",
-          minHeight: 620,
-          padding: "0 24px 32px",
+          height: mpIsMobile ? "calc(100vh - 130px)" : "calc(100vh - 180px)",
+          minHeight: mpIsMobile ? 480 : 620,
+          padding: `0 ${mpPx}px ${mpIsMobile ? 16 : 32}px`,
         }}>
           {/* 전체 지도 */}
           <div style={{
-            position: "absolute", inset: "0 24px 32px",
+            position: "absolute", inset: `0 ${mpPx}px ${mpIsMobile ? 16 : 32}px`,
             borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg,
           }}>
             <MasilMap buildings={mapFiltered} selectedId={selectedId} onSelect={setSelectedId} />
           </div>
 
-          {/* 좌측 패널 컨테이너 — list + (선택시) detail 슬라이드 (Naver Maps 스타일) */}
-          <div style={{
+          {/* 좌측 패널 컨테이너 — 모바일은 bottom sheet, 데스크탑은 left 슬라이드 */}
+          <div style={mpIsMobile ? {
+            position: "absolute",
+            left: 12, right: 12, bottom: 28,
+            display: "flex", flexDirection: "column", gap: 10,
+            zIndex: 10,
+            maxHeight: "45%",
+          } : {
             position: "absolute",
             top: 20, left: 48, bottom: 52,
             display: "flex", alignItems: "stretch", gap: 12,
@@ -1101,21 +1131,28 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
             <ViewportPanel
               buildings={mapFiltered}
               selectedId={selectedId}
-              onSelect={setSelectedId}/>
+              onSelect={setSelectedId}
+              isMobile={mpIsMobile}/>
 
             {selected && mapFiltered.some((x) => x.id === selectedId) && (
               <PinPopupCard
                 b={selected}
                 onClose={() => setSelectedId(null)}
-                onNavigate={onNavigate}/>
+                onNavigate={onNavigate}
+                isMobile={mpIsMobile}/>
             )}
           </div>
 
           {/* 상단 우측: 빠른 필터 칩 오버레이 (FastFive 톤) */}
           <div style={{
-            position: "absolute", top: 20, right: 48,
+            position: "absolute",
+            top: mpIsMobile ? 12 : 20,
+            right: mpIsMobile ? 12 : 48,
+            left: mpIsMobile ? 12 : "auto",
             display: "flex", gap: 8, zIndex: 5, flexWrap: "wrap",
-            justifyContent: "flex-end", maxWidth: "60%",
+            justifyContent: mpIsMobile ? "flex-start" : "flex-end",
+            maxWidth: mpIsMobile ? "calc(100% - 24px)" : "60%",
+            overflowX: mpIsMobile ? "auto" : "visible",
           }}>
             {MAP_QUICK_FILTERS.map((f) => {
               const on = f.id === mapQuickFilter;
@@ -1143,7 +1180,8 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
             })}
           </div>
         </section>
-      )}
+        );
+      })()}
 
       {/* === EDITORIAL 레이아웃 === */}
       {layout === "editorial" && (

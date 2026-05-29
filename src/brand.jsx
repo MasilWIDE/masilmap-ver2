@@ -329,6 +329,32 @@ function MSectionHeader({ title, action = "전체 보기 →", size = "h2" }) {
   );
 }
 
+/* ---------- 16. 반응형 헬퍼 (useMediaQuery + isMobile/Tablet hooks) ---------- */
+function useMediaQuery(query) {
+  const [matches, setMatches] = React.useState(() => {
+    if (typeof window === "undefined" || !window.matchMedia) return false;
+    return window.matchMedia(query).matches;
+  });
+  React.useEffect(() => {
+    if (!window.matchMedia) return;
+    const mq = window.matchMedia(query);
+    const handler = (e) => setMatches(e.matches);
+    if (mq.addEventListener) {
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    } else {
+      mq.addListener(handler);
+      return () => mq.removeListener(handler);
+    }
+  }, [query]);
+  return matches;
+}
+const useIsMobile = () => useMediaQuery("(max-width: 768px)");
+const useIsTablet = () => useMediaQuery("(max-width: 1024px)");
+
+/* 페이지 좌우 패딩 (mobile 20 / tablet 32 / desktop 56) */
+const pageX = (isMobile, isTablet) => (isMobile ? 20 : isTablet ? 32 : 56);
+
 /* Export everything to window so all subsequent pages can import. */
 Object.assign(window, {
   M, MT, MR, MS, MSP,
@@ -336,4 +362,5 @@ Object.assign(window, {
   MButton, MNav, MChip, MCard,
   MAvatar, MAvatarStack, MIcon, MSearch,
   MTopNav, MFooter, MPage, MSectionHeader,
+  useMediaQuery, useIsMobile, useIsTablet, pageX,
 });

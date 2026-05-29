@@ -142,8 +142,13 @@ function BodyBlock({ block, style = {} }) {
    NetworkSectionInner = 내부 그리드만 (sidebar/longform처럼 부모가 이미 wrap한 경우) */
 function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
+  const isMobile = useIsMobile();
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }}>
+    <div style={{
+      display: "grid",
+      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+      gap: isMobile ? 20 : 32,
+    }}>
         {/* 좌: 코스 */}
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
@@ -261,7 +266,7 @@ function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
 function NetworkSection({ b, inCourses, inCollections, onNavigate }) {
   if (inCourses.length === 0 && inCollections.length === 0) return null;
   return (
-    <section style={{ padding: "48px 56px 32px", maxWidth: 1200, margin: "0 auto" }}>
+    <section style={{ padding: `48px ${px}px 32px`, maxWidth: 1200, margin: "0 auto" }}>
       <Hairline label="NETWORK · 이 건축이 등장하는 곳" style={{ marginBottom: 28 }}/>
       <NetworkSectionInner b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
     </section>
@@ -270,6 +275,9 @@ function NetworkSection({ b, inCourses, inCollections, onNavigate }) {
 
 /* ---------- DetailScreen ---------- */
 function DetailScreen({ route, onNavigate, buildingId, t }) {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  const px = pageX(isMobile, isTablet);
   const b = BUILDINGS.find((x) => x.id === buildingId) || BUILDINGS[0];
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
   const layout = t.detailLayout;
@@ -286,9 +294,9 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
         <MasilNav route={route} onNavigate={onNavigate} />
 
         {/* hero header */}
-        <section style={{ padding: "32px 56px 28px" }}>
+        <section style={{ padding: `32px ${px}px 28px` }}>
           <Hairline label={`PLACE · ${(b.region || "").toUpperCase()} · ${(b.typeKey || "").toUpperCase()}`} style={{ marginBottom: 24 }}/>
-          <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 56, alignItems: "end" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.4fr 1fr", gap: 56, alignItems: "end" }}>
             <div>
               <MagCap color={accent} style={{ marginBottom: 16 }}>
                 {b.region} · {b.style}
@@ -345,7 +353,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
         </section>
 
         {/* body + sidebar */}
-        <section style={{ padding: "32px 56px 64px", display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 64 }}>
+        <section style={{ padding: `32px ${px}px 64px`, display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.5fr 1fr", gap: 64 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <Hairline label="STORY" style={{ marginBottom: 4 }}/>
             <BodyBlock block={{ kind: "lead", text: b.longRead }} />
@@ -403,9 +411,9 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
         <NetworkSection b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
 
         {/* related */}
-        <section style={{ padding: "32px 56px 64px", background: M.beigeAlt }}>
+        <section style={{ padding: `32px ${px}px 64px`, background: M.beigeAlt }}>
           <Hairline label="RELATED PLACES · 비슷한 결의 건축" style={{ marginBottom: 24 }}/>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 20 }}>
             {related.map((r) => (
               <div key={r.id} onClick={() => onNavigate("detail", r.id)} style={{
                 background: M.cream, borderRadius: MR.card, padding: 14, cursor: "pointer", boxShadow: MS.cardSm,
@@ -442,7 +450,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
     return (
       <MPage>
         <MasilNav route={route} onNavigate={onNavigate} />
-        <section style={{ display: "grid", gridTemplateColumns: "240px 1fr", gap: 0, minHeight: "calc(100vh - 92px)" }}>
+        <section style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "240px 1fr", gap: 0, minHeight: "calc(100vh - 92px)" }}>
           {/* sticky sidebar */}
           <aside style={{
             position: "sticky", top: 92, alignSelf: "flex-start",
@@ -478,14 +486,14 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
           </aside>
 
           {/* main column */}
-          <main style={{ padding: "32px 56px 80px", maxWidth: 900 }}>
+          <main style={{ padding: `32px ${px}px 80px`, maxWidth: 900 }}>
             <section id="intro" style={{ marginBottom: 56 }}>
               <Hairline label="01 · OVERVIEW" style={{ marginBottom: 28 }}/>
               <MagCap color={accent} style={{ marginBottom: 14 }}>{b.region} · {b.style}</MagCap>
-              <h1 style={{ fontSize: 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, margin: 0, color: M.ink, textWrap: "balance" }}>{b.name}</h1>
+              <h1 style={{ fontSize: isMobile ? 36 : 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, margin: 0, color: M.ink, textWrap: "balance" }}>{b.name}</h1>
               <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, fontStyle: "italic", color: M.muted, marginTop: 10 }}>{b.nameEn}</div>
               <ImgPlaceholder ratio="16/9" tone={b.pinTone === "olive" ? "olive" : "beige"} caption={`${b.name} · 외관`} style={{ marginTop: 32 }}/>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginTop: 28 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 16, marginTop: 28 }}>
                 {[
                   { l: "건축가", v: b.architect },
                   { l: "준공",   v: b.year },
@@ -516,7 +524,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
             <section id="info" style={{ marginBottom: 56 }}>
               <Hairline label="04 · VISIT INFO" style={{ marginBottom: 28 }}/>
-              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 32 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.2fr 1fr", gap: 32 }}>
                 <MiniMap b={b}/>
                 <div>
                   <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "10px 18px", fontSize: 14 }}>
@@ -558,7 +566,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
             <section id="related" style={{ marginBottom: 56 }}>
               <Hairline label="07 · RELATED" style={{ marginBottom: 28 }}/>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
                 {related.map((r) => (
                   <div key={r.id} onClick={() => onNavigate("detail", r.id)} style={{ cursor: "pointer" }}>
                     <ImgPlaceholder ratio="4/3" tone={r.pinTone === "olive" ? "olive" : "beige"} caption={r.name}/>
@@ -582,7 +590,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
       <section style={{ maxWidth: 760, margin: "0 auto", padding: "64px 24px 24px", textAlign: "center" }}>
         <Serial color={accent} size={14}>마실맵 / 건축 노트</Serial>
-        <h1 style={{ fontSize: 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.04, margin: "20px 0 16px", color: M.ink, textWrap: "balance" }}>
+        <h1 style={{ fontSize: isMobile ? 36 : 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.04, margin: "20px 0 16px", color: M.ink, textWrap: "balance" }}>
           {b.name}
         </h1>
         <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 18, fontStyle: "italic", color: M.muted, marginBottom: 24 }}>{b.nameEn}</div>
@@ -644,7 +652,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
       <section style={{ padding: "32px 24px 64px", background: M.beigeAlt }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <Hairline label="다음 글 · NEXT READ" style={{ marginBottom: 24 }}/>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 20 }}>
             {related.map((r) => (
               <div key={r.id} onClick={() => onNavigate("detail", r.id)} style={{ background: M.cream, borderRadius: MR.card, padding: 14, cursor: "pointer", boxShadow: MS.cardSm }}>
                 <ImgPlaceholder ratio="4/3" tone={r.pinTone === "olive" ? "olive" : "beige"} caption={r.name}/>

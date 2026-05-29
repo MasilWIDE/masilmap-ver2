@@ -29,6 +29,95 @@
       from { opacity: 0; transform: translateX(-12px); }
       to   { opacity: 1; transform: translateX(0); }
     }
+    /* ============================================================
+       반응형 - 모바일(<=768) 보정 (inline style override via !important)
+       isMobile hook으로 처리되지 않은 잔여 화면(collection/course/
+       booking/mypage/upload/admin/auth) 일괄 보정.
+       ============================================================ */
+    @media (max-width: 768px) {
+      /* 페이지 좌우 패딩 56 -> 16 */
+      section[style*="56px 64px"],
+      section[style*="56px 32px"],
+      section[style*="56px 80px"],
+      section[style*="56px 56px"],
+      section[style*="56px 28px"],
+      section[style*="56px 24px"],
+      section[style*="56px 12px"],
+      section[style*="56px 16px"],
+      section[style*="padding: \"0 56px"],
+      div[style*="padding: \"20px 56px"],
+      div[style*="padding: \"22px 56px"],
+      div[style*="padding: \"32px 56px"] {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      /* 멀티-컬럼 그리드 -> 1단 */
+      div[style*='gridTemplateColumns: "repeat(3, 1fr)'],
+      div[style*='gridTemplateColumns: "repeat(4, 1fr)'],
+      div[style*='gridTemplateColumns: "repeat(5, 1fr)'],
+      div[style*='gridTemplateColumns: "1.4fr 1fr'],
+      div[style*='gridTemplateColumns: "1.5fr 1fr'],
+      div[style*='gridTemplateColumns: "1.6fr 1fr'],
+      div[style*='gridTemplateColumns: "1.2fr 1fr'],
+      div[style*='gridTemplateColumns: "1.15fr 1fr'],
+      div[style*='gridTemplateColumns: "1fr 1fr'],
+      section[style*='gridTemplateColumns: "1.5fr 1fr'],
+      section[style*='gridTemplateColumns: "1.2fr 1fr'],
+      section[style*='gridTemplateColumns: "1.15fr 1fr'],
+      section[style*='gridTemplateColumns: "repeat(3, 1fr)'],
+      section[style*='gridTemplateColumns: "1fr 1fr'] {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      /* "auto 1fr auto auto"같이 양옆 작은 셀이 있는 그리드: 위아래 풀기 */
+      div[style*='gridTemplateColumns: "auto 1fr'],
+      div[style*='gridTemplateColumns: "60px 1fr auto'],
+      div[style*='gridTemplateColumns: "100px 60px'],
+      div[style*='gridTemplateColumns: "60px 1.6fr'],
+      div[style*='gridTemplateColumns: "240px 1fr'],
+      div[style*='gridTemplateColumns: "220px 1fr'],
+      div[style*='gridTemplateColumns: "180px 1fr'],
+      div[style*='gridTemplateColumns: "140px 1fr'] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      /* 큰 헤드라인 폰트 다운스케일 */
+      h1[style*="fontSize: 96"], h1[style*="fontSize: 80"], h1[style*="fontSize: 72"],
+      h1[style*="fontSize: 64"], h1[style*="fontSize: 56"], h1[style*="fontSize: 48"] {
+        font-size: 32px !important;
+        line-height: 1.1 !important;
+      }
+      h2[style*="fontSize: 56"], h2[style*="fontSize: 48"], h2[style*="fontSize: 40"] {
+        font-size: 24px !important;
+        line-height: 1.15 !important;
+      }
+      h2[style*="fontSize: 32"], h2[style*="fontSize: 28"] {
+        font-size: 20px !important;
+      }
+      /* 사이드바 sticky -> 일반 흐름 */
+      aside[style*="position: \"sticky"], div[style*="position: \"sticky"][style*="top: 88"],
+      div[style*="position: \"sticky"][style*="top: 92"] {
+        position: static !important;
+      }
+      /* admin 사이드바 width */
+      aside[style*="width: 220"] {
+        width: 100% !important;
+      }
+      /* upload step 그리드 (deep record) */
+      div[style*='gridTemplateColumns: "200px 1fr'],
+      div[style*='gridTemplateColumns: "260px 1fr'] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      /* 가로 스크롤 방지 */
+      body, #root, .page { overflow-x: hidden; }
+    }
+    @media (max-width: 1024px) and (min-width: 769px) {
+      section[style*="56px"] { padding-left: 32px !important; padding-right: 32px !important; }
+      div[style*='gridTemplateColumns: "repeat(4, 1fr)'] {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
     /* scrollbar styling (Scholar palette) */
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: transparent; }

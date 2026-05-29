@@ -362,6 +362,9 @@ const inputStyle = {
 };
 
 function BuildingsIndexScreen({ onNavigate, searchQuery }) {
+  const isMobile = useIsMobile();
+  const isTablet = useIsTablet();
+  const px = pageX(isMobile, isTablet);
   // 페이지
   const [page, setPage] = React.useState(1);
 
@@ -466,11 +469,11 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
       <MasilNav route="buildings" onNavigate={onNavigate}/>
 
       {/* HERO 헤더 — 컴팩트 */}
-      <section style={{ padding: "24px 56px 12px" }}>
+      <section style={{ padding: `24px ${px}px 12px` }}>
         <Hairline label="ALL BUILDINGS · 526 PLACES" style={{ marginBottom: 16 }}/>
         <div style={{ display: "flex", alignItems: "end", justifyContent: "space-between", gap: 32, flexWrap: "wrap" }}>
           <h1 style={{
-            fontSize: 44, fontWeight: 900,
+            fontSize: isMobile ? 28 : 44, fontWeight: 900,
             letterSpacing: "-0.03em",
             lineHeight: 1.05, color: M.ink, margin: 0,
             textWrap: "balance",
@@ -490,7 +493,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
 
       {/* EDITOR'S PICKS — 1페이지에만 노출 */}
       {showPicks && (
-        <section style={{ padding: "16px 56px 28px" }}>
+        <section style={{ padding: `16px ${px}px 28px` }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
               <MagCap color={M.terra}>EDITOR'S PICKS · 2026 SPRING</MagCap>
@@ -506,7 +509,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
 
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)",
             gap: 20,
           }}>
             {picks.map((p) => (
@@ -528,10 +531,10 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
         borderBottom: `1px solid ${M.beigeAlt}`,
         boxShadow: "0 4px 12px rgba(58,46,34,0.04)",
       }}>
-        <div style={{ padding: "0 56px" }}>
+        <div style={{ padding: `0 ${px}px` }}>
           <Hairline label={`ALL · ${filtered.length} / ${BUILDINGS.length} PLACES${totalPages > 1 ? ` · PAGE ${safePage}/${totalPages}` : ""}`} />
         </div>
-        <section style={{ padding: "14px 56px 16px" }}>
+        <section style={{ padding: `14px ${px}px 16px` }}>
           <div style={{ display: "flex", gap: 10, alignItems: "center", justifyContent: "center", flexWrap: "wrap", position: "relative" }}>
 
             {/* === 프로젝트 === */}
@@ -695,7 +698,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
       </div>
 
       {/* 4-COL 그리드 (masilground 톤) · 20개/페이지 */}
-      <section style={{ padding: "32px 56px 64px" }}>
+      <section style={{ padding: `32px ${px}px 64px` }}>
         {filtered.length === 0 ? (
           <div style={{
             padding: "80px 0", textAlign: "center",
@@ -706,7 +709,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
         ) : (
           <div style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            gridTemplateColumns: isMobile ? "1fr" : isTablet ? "repeat(2, 1fr)" : "repeat(4, 1fr)",
             gap: "40px 24px",
           }}>
             {pageItems.map((b) => (

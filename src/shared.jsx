@@ -13,6 +13,10 @@
 function MasilNav({ route, onNavigate, items, variant = "default" }) {
   const t = window.__masilT || {};
   const auth = window.__masilAuth || { isLoggedIn: false, login: () => {}, logout: () => {} };
+  const isMobile = window.useIsMobile ? window.useIsMobile() : false;
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  // route 바뀌면 자동으로 drawer 닫기
+  React.useEffect(() => { setDrawerOpen(false); }, [route]);
 
   // 로그인 상태에 따라 메뉴 구성. 명시적 items 인자가 오면 그걸 우선.
   const navItems = items || (auth.isLoggedIn
@@ -46,6 +50,110 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
     return "홈";
   })();
 
+  // === MOBILE NAV ===
+  if (isMobile) {
+    const search = window.__masilSearch || { query: "", setQuery: () => {} };
+    return (
+      <header style={{
+        padding: "14px 20px",
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        borderBottom: variant === "bare" ? "none" : `1px solid ${M.beigeAlt}`,
+        background: M.beige,
+        position: "sticky", top: 0, zIndex: 50,
+      }}>
+        <div onClick={() => onNavigate("home")} style={{ cursor: "pointer" }}>
+          <MasilmapLogo size={22}/>
+        </div>
+        <button onClick={() => setDrawerOpen((o) => !o)} style={{
+          width: 40, height: 40, borderRadius: 10,
+          background: drawerOpen ? `${M.terra}14` : "transparent",
+          border: `1px solid ${M.beigeAlt}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          cursor: "pointer", padding: 0,
+        }} aria-label="메뉴">
+          <span style={{ fontSize: 20, color: M.ink, lineHeight: 1 }}>
+            {drawerOpen ? "×" : "☰"}
+          </span>
+        </button>
+
+        {drawerOpen && (
+          <div style={{
+            position: "fixed", top: 68, left: 0, right: 0, bottom: 0,
+            background: "rgba(31,39,56,0.4)", zIndex: 49,
+          }} onClick={() => setDrawerOpen(false)}>
+            <div onClick={(e) => e.stopPropagation()} style={{
+              background: M.beige,
+              padding: "20px 20px 32px",
+              borderBottom: `1px solid ${M.beigeAlt}`,
+              boxShadow: MS.cardLg,
+              maxHeight: "calc(100vh - 68px)",
+              overflowY: "auto",
+            }}>
+              {/* 검색 */}
+              <div style={{
+                display: "flex", alignItems: "center", gap: 8,
+                background: M.cream, padding: "12px 16px", borderRadius: 999,
+                boxShadow: MS.cardSm, marginBottom: 20,
+              }}>
+                <MIcon name="search" size={16} color={M.muted}/>
+                <input
+                  placeholder="건축물, 지역, 건축가…"
+                  value={search.query || ""}
+                  onChange={(e) => {
+                    search.setQuery(e.target.value);
+                    if (e.target.value && route !== "home" && route !== "buildings" && route !== "detail") {
+                      onNavigate("buildings");
+                      setDrawerOpen(false);
+                    }
+                  }}
+                  style={{
+                    border: "none", outline: "none", background: "transparent",
+                    fontSize: 14, fontWeight: 600, color: M.ink, fontFamily: "inherit",
+                    flex: 1, minWidth: 0,
+                  }}/>
+              </div>
+
+              {/* 메뉴 */}
+              <div style={{ display: "flex", flexDirection: "column", gap: 4, marginBottom: 20 }}>
+                {navItems.map((it) => {
+                  const on = it === activeLabel;
+                  return (
+                    <div key={it} onClick={() => handleClick(it)} style={{
+                      padding: "14px 16px", borderRadius: 12,
+                      fontSize: 15, fontWeight: 700,
+                      color: on ? M.terra : M.ink,
+                      background: on ? `${M.terra}14` : "transparent",
+                      cursor: "pointer",
+                    }}>{it}</div>
+                  );
+                })}
+              </div>
+
+              {/* 인증 */}
+              <div style={{
+                paddingTop: 16, borderTop: `1px solid ${M.beigeAlt}`,
+                display: "flex", gap: 10,
+              }}>
+                <div onClick={auth.isLoggedIn ? auth.logout : () => onNavigate("login")} style={{
+                  flex: 1, padding: "12px 16px", borderRadius: 999,
+                  border: `1px solid ${M.beigeAlt}`,
+                  fontSize: 13, fontWeight: 700, color: M.ink,
+                  textAlign: "center", cursor: "pointer",
+                }}>{auth.isLoggedIn ? "로그아웃" : "로그인"}</div>
+                {auth.isLoggedIn ? (
+                  <MButton kind="primary" size="md" onClick={() => onNavigate("mypage")} style={{ flex: 1, justifyContent: "center" }}>내 마실 →</MButton>
+                ) : (
+                  <MButton kind="primary" size="md" onClick={() => onNavigate("onboarding")} style={{ flex: 1, justifyContent: "center" }}>마실 시작하기</MButton>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+    );
+  }
+
+  // === DESKTOP NAV ===
   return (
     <header style={{
       padding: "22px 56px",
