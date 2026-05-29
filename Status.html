@@ -173,7 +173,7 @@
 <body>
 <main class="page">
 
-  <div class="meta">PROJECT STATUS · MASILMAP VER2 · 2026-05-29</div>
+  <div class="meta">PROJECT STATUS · MASILMAP VER2 · 2026-05-29 (UPDATED)</div>
   <h1>masilmap ver2 구현 현황 분석</h1>
   <p class="lede">
     masilmap ver2는 <strong>CDN 기반 React 18 + Babel standalone 정적 프로토타입</strong>입니다.
@@ -199,6 +199,7 @@
       <li><a href="#schema">데이터 구조 (DB 스키마 대용)</a></li>
       <li><a href="#api">API 엔드포인트 목록</a></li>
       <li><a href="#state">전역 상태 관리</a></li>
+      <li><a href="#responsive">반응형 시스템</a></li>
       <li><a href="#summary">전체 요약 매트릭스</a></li>
     </ol>
   </div>
@@ -895,7 +896,72 @@ BUILDINGS ──── 일대일 ──── USE_TYPES (children)
   <p class="small">파일: <span class="mono">src/app.jsx:13~50</span></p>
 
   <!-- ================================================== -->
-  <h2 id="summary">8. 전체 요약 매트릭스</h2>
+  <h2 id="responsive">8. 반응형 시스템</h2>
+
+  <p>2026-05-29에 추가된 모바일/태블릿 대응 인프라.</p>
+
+  <h3>useMediaQuery 훅 (brand.jsx)</h3>
+  <table>
+    <thead><tr><th>이름</th><th>쿼리 / 동작</th><th>위치</th></tr></thead>
+    <tbody>
+      <tr><td><code>useMediaQuery(query)</code></td><td>브라우저 미디어쿼리 매칭 boolean</td><td class="path">src/brand.jsx (window.matchMedia)</td></tr>
+      <tr><td><code>useIsMobile()</code></td><td><code>(max-width: 768px)</code></td><td class="path">src/brand.jsx</td></tr>
+      <tr><td><code>useIsTablet()</code></td><td><code>(max-width: 1024px)</code></td><td class="path">src/brand.jsx</td></tr>
+      <tr><td><code>pageX(isMobile, isTablet)</code></td><td>좌우 패딩 헬퍼 — mobile 20 / tablet 32 / desktop 56</td><td class="path">src/brand.jsx</td></tr>
+    </tbody>
+  </table>
+  <p class="small">모두 window 전역으로 노출되어 모든 screens에서 사용 가능.</p>
+
+  <h3>적용 영역 — Track A (hook 기반, 정밀 컴포넌트별)</h3>
+  <table>
+    <thead><tr><th>컴포넌트 / 화면</th><th>변경</th><th>위치</th></tr></thead>
+    <tbody>
+      <tr><td><strong>MasilNav</strong></td><td>모바일: 로고 + 햄버거. 클릭 시 드로워 슬라이드 (검색·메뉴·인증). 라우트 변경 시 자동 닫힘.</td><td class="path">src/shared.jsx</td></tr>
+      <tr><td><strong>MFooter</strong></td><td>모바일: column flex + 패딩/폰트 축소</td><td class="path">src/brand.jsx</td></tr>
+      <tr><td><strong>CoverHomeLayout</strong></td><td>표지 grid 1.5fr 1fr → 1fr, h1 96→56, 픽 3→1, 코스 2→1</td><td class="path">src/screens/home.jsx</td></tr>
+      <tr><td><strong>mapPrimary</strong></td><td>모바일: 좌측 패널 → 하단 시트 (left:12/right:12/bottom:28, maxHeight 45%)</td><td class="path">src/screens/home.jsx</td></tr>
+      <tr><td><strong>ViewportPanel / PinPopupCard</strong></td><td><code>isMobile</code> prop로 width 100% / 패딩 축소</td><td class="path">src/screens/home.jsx</td></tr>
+      <tr><td><strong>BuildingsIndexScreen</strong></td><td>그리드 4→2(tablet)→1(mobile), 픽 3→1, 헤로 폰트 44→28</td><td class="path">src/screens/buildings.jsx</td></tr>
+      <tr><td><strong>DetailScreen</strong></td><td>hero/sidebar/longform grid 모두 분기, h1 64→36, NetworkSection 1단</td><td class="path">src/screens/detail.jsx</td></tr>
+      <tr><td><strong>CourseIndex</strong></td><td>헤로 1.3fr 1fr → 1fr, h1 72→36, 코스 카드 flex row → column</td><td class="path">src/screens/course.jsx</td></tr>
+      <tr><td><strong>CollectionIndex</strong></td><td>헤로 1.3fr 1fr → 1fr, h1 84→36</td><td class="path">src/screens/collection.jsx</td></tr>
+    </tbody>
+  </table>
+
+  <h3>적용 영역 — Track B (CSS fallback, 잔여 화면)</h3>
+  <p>아직 hook 적용 안 된 화면들 — <code>collection 상세 / course 상세 / booking / mypage / upload / admin / auth</code> — 는 <code>index.html</code>의 <code>@media (max-width: 768px)</code> 룰로 일괄 보정합니다 (<code>!important</code> + attribute selector 패턴).</p>
+  <table>
+    <thead><tr><th>패턴</th><th>모바일 변환</th></tr></thead>
+    <tbody>
+      <tr><td>section/div의 <code>56px</code> 좌우 패딩</td><td>16px</td></tr>
+      <tr><td><code>repeat(2/3/4/5, 1fr)</code> 그리드</td><td>1fr</td></tr>
+      <tr><td><code>1.2 / 1.3 / 1.4 / 1.5 / 1.6 / 1.15fr 1fr</code></td><td>1fr</td></tr>
+      <tr><td><code>240px 1fr</code> 등 사이드바형 grid</td><td>1fr (stack)</td></tr>
+      <tr><td>h1 48~96px / h2 40~56px</td><td>h1 32px / h2 24px</td></tr>
+      <tr><td>position: sticky 사이드바</td><td>position: static</td></tr>
+      <tr><td>body overflow-x</td><td>hidden (안전망)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>브레이크포인트</h3>
+  <table>
+    <thead><tr><th>구간</th><th>너비</th><th>좌우 패딩</th><th>주요 그리드 동작</th></tr></thead>
+    <tbody>
+      <tr><td>Mobile</td><td>≤ 768px</td><td>20px (Track A) / 16px (Track B)</td><td>거의 모든 멀티칼럼 → 1단</td></tr>
+      <tr><td>Tablet</td><td>769–1024px</td><td>32px</td><td>4-col → 2-col</td></tr>
+      <tr><td>Desktop</td><td>≥ 1025px</td><td>56px (기본)</td><td>설계 그대로</td></tr>
+    </tbody>
+  </table>
+
+  <h3>남은 작업</h3>
+  <ul>
+    <li>booking / upload / admin 화면도 Track A로 정밀 전환 시 더 깔끔해짐 — 현재는 Track B(CSS !important)로 동작</li>
+    <li>이미지 placeholder 비율은 자동 (aspectRatio 사용중) — 모바일에서도 OK</li>
+    <li>드로워 가위 패턴(햄버거 × 닫기)은 ARIA 라벨만 있음, 추후 접근성 개선 가능</li>
+  </ul>
+
+  <!-- ================================================== -->
+  <h2 id="summary">9. 전체 요약 매트릭스</h2>
 
   <table>
     <thead>
@@ -985,6 +1051,13 @@ BUILDINGS ──── 일대일 ──── USE_TYPES (children)
         <td><span class="badge b-todo">✗</span></td>
         <td><span class="badge b-todo">✗</span></td>
         <td><span class="badge b-todo">✗</span></td>
+      </tr>
+      <tr>
+        <td>반응형 (모바일/태블릿)</td>
+        <td><span class="badge b-done">✓</span></td>
+        <td><span class="badge b-done">✓ (Track A + Track B)</span></td>
+        <td>—</td>
+        <td>—</td>
       </tr>
     </tbody>
   </table>
