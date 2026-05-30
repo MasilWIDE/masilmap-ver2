@@ -264,6 +264,7 @@ function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
 
 /* 풀 wrapper — hero/longform 등에서 단독 섹션으로 쓸 때 */
 function NetworkSection({ b, inCourses, inCollections, onNavigate }) {
+  const px = pageX(useIsMobile(), useIsTablet());
   if (inCourses.length === 0 && inCollections.length === 0) return null;
   return (
     <section style={{ padding: `48px ${px}px 32px`, maxWidth: 1200, margin: "0 auto" }}>
@@ -438,14 +439,17 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
   // === SIDEBAR (도큐먼트 톤, 좌측 TOC) ===
   if (layout === "sidebar") {
+    const mb = (window.mkBuildings ? mkBuildings().find((x) => x.id === b.id) : null) || null;
     const sections = [
-      { id: "intro", label: "01. 개요" },
-      { id: "story", label: "02. 이야기" },
+      { id: "intro",   label: "01. 개요" },
+      { id: "story",   label: "02. 이야기" },
       { id: "gallery", label: "03. 갤러리" },
-      { id: "info", label: "04. 방문 정보" },
-      { id: "notes",   label: "05. 방문 후기" },
-      { id: "network", label: "06. 등장하는 곳" },
-      { id: "related", label: "07. 비슷한 건축" },
+      { id: "info",    label: "04. 방문 정보" },
+      { id: "maps",    label: "05. 지도 · 예약" },
+      { id: "network", label: "06. 코스 · 컬렉션" },
+      { id: "notes",   label: "07. 방문 후기" },
+      { id: "more",    label: "08. 더 깊이 보기" },
+      { id: "related", label: "09. 비슷한 건축" },
     ];
     return (
       <MPage>
@@ -475,7 +479,6 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
                   borderBottom: i < sections.length - 1 ? `1px dashed ${M.beigeAlt}` : "none",
                 }}>
                   <span>{s.label}</span>
-                  <span style={{ color: M.muted, fontFamily: "'JetBrains Mono', monospace", fontSize: 10 }}>p.{(i+1).toString().padStart(2, "0")}</span>
                 </a>
               ))}
             </nav>
@@ -549,23 +552,42 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
               </div>
             </section>
 
+            {/* 05 · 지도 저장 · 예약 (지도 패널과 공통 모듈) */}
+            {mb && (
+              <section id="maps" style={{ marginBottom: 56 }}>
+                <Hairline label="05 · 지도 저장 · 예약" style={{ marginBottom: 28 }}/>
+                <div style={{ display: "grid", gridTemplateColumns: (isMobile || !mb.ext) ? "1fr" : "1fr 1fr", gap: 28, alignItems: "start" }}>
+                  <MKExtMapsModule b={mb}/>
+                  {mb.ext && <MKBookingModule b={mb} onNavigate={onNavigate}/>}
+                </div>
+              </section>
+            )}
+
+            {/* 06 · NETWORK · 코스 + 컬렉션 (sidebar: 자체 wrap 사용) */}
+            {(inCourses.length > 0 || inCollections.length > 0) && (
+              <section id="network" style={{ marginBottom: 56 }}>
+                <Hairline label="06 · 코스 · 컬렉션 · 이 건축이 등장하는 곳" style={{ marginBottom: 28 }}/>
+                <NetworkSectionInner b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
+              </section>
+            )}
+
             <section id="notes" style={{ marginBottom: 56 }}>
-              <Hairline label="05 · VISITOR NOTES" style={{ marginBottom: 28 }}/>
+              <Hairline label="07 · VISITOR NOTES" style={{ marginBottom: 28 }}/>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {SAMPLE_NOTES.map((n, i) => <VisitorNote key={i} {...n}/>)}
               </div>
             </section>
 
-            {/* NETWORK · 코스 + 컬렉션 (sidebar: 자체 wrap 사용) */}
-            {(inCourses.length > 0 || inCollections.length > 0) && (
-              <section id="network" style={{ marginBottom: 56 }}>
-                <Hairline label="06 · NETWORK · 이 건축이 등장하는 곳" style={{ marginBottom: 28 }}/>
-                <NetworkSectionInner b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
+            {/* 08 · 더 깊이 보기 — 외부 전문 정보 (마실지도는 핵심만) */}
+            {mb && (
+              <section id="more" style={{ marginBottom: 56 }}>
+                <Hairline label="08 · 더 깊이 보기 · 외부 전문 정보" style={{ marginBottom: 28 }}/>
+                <MKExtRefsModule b={mb}/>
               </section>
             )}
 
             <section id="related" style={{ marginBottom: 56 }}>
-              <Hairline label="07 · RELATED" style={{ marginBottom: 28 }}/>
+              <Hairline label="09 · RELATED" style={{ marginBottom: 28 }}/>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
                 {related.map((r) => (
                   <div key={r.id} onClick={() => onNavigate("detail", r.id)} style={{ cursor: "pointer" }}>

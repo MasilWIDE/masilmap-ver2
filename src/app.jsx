@@ -4,13 +4,15 @@
    ================================================================ */
 
 const DEFAULT_TWEAKS = /*EDITMODE-BEGIN*/{
-  "homeLayout":       "cover",
-  "detailLayout":     "hero",
+  "homeLayout":       "spotlight",
+  "detailLayout":     "sidebar",
   "collectionLayout": "magazine"
 }/*EDITMODE-END*/;
 
 function App() {
-  const [route, setRoute] = React.useState({ name: "home", id: null });
+  const role = window.__masilRole || "user";
+  const roleHome = { admin: "console-admin", tour: "console-tour", editor: "console-editor" }[role] || "home";
+  const [route, setRoute] = React.useState({ name: roleHome, id: null });
   const [t, setTweak] = useTweaks(DEFAULT_TWEAKS);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
@@ -77,6 +79,12 @@ function App() {
       screen = <LoginScreen onNavigate={navigate}/>; break;
     case "onboarding":
       screen = <OnboardingScreen onNavigate={navigate}/>; break;
+    case "console-admin":
+      screen = <AdminOverview onNavigate={navigate}/>; break;
+    case "console-tour":
+      screen = <TourConsole onNavigate={navigate}/>; break;
+    case "console-editor":
+      screen = <EditorConsole onNavigate={navigate}/>; break;
     default:
       screen = <HomeScreen route="home" onNavigate={navigate} t={t}/>;
   }
@@ -100,6 +108,9 @@ function App() {
     if (route.name === "admin-rights")     return "13 관리자 권리";
     if (route.name === "login")            return "14 로그인";
     if (route.name === "onboarding")       return "15 마실 시작하기 (온보딩)";
+    if (route.name === "console-admin")    return "역할 · 관리자 콘솔";
+    if (route.name === "console-tour")     return "역할 · 코스 운영자 콘솔";
+    if (route.name === "console-editor")   return "역할 · 에디터 콘솔";
     return route.name;
   })();
 
@@ -140,37 +151,25 @@ function App() {
           <NavRow active={route.name === "admin-rights"}  onClick={() => navigate("admin-rights")}>권리 태그·동의 관리</NavRow>
         </TweakSection>
 
-        <TweakSection label="홈 · 정보 위계">
+        <TweakSection label="홈 · 메인 페이지">
           <TweakRadio
             value={t.homeLayout}
             onChange={(v) => { setTweak("homeLayout", v); if (route.name !== "home") navigate("home"); }}
             options={[
+              { value: "spotlight",  label: "스포트라이트" },
+              { value: "mosaic",     label: "모자이크" },
+              { value: "mapPrimary", label: "지도" },
               { value: "cover",      label: "표지" },
-              { value: "split",      label: "Split" },
-              { value: "mapPrimary", label: "Map" },
               { value: "editorial",  label: "잡지" },
+              { value: "split",      label: "Split" },
             ]}/>
           <Hint>
+            {t.homeLayout === "spotlight"  && "★ 시네마틱 풀화면 히어로. 이번 주 한 곳을 영화 포스터처럼 크게. 가장 임팩트."}
+            {t.homeLayout === "mosaic"     && "★ 건축 사진 모자이크 월. 첫 화면에서 526곳의 밀도를 한눈에."}
+            {t.homeLayout === "mapPrimary" && "지도가 풀스크린, 사이드 도크로 탐색하는 지도 우선형."}
             {t.homeLayout === "cover"      && "매거진 표지 + 검색 + 이번 주 픽. 잡지 한 호를 펼치는 느낌."}
-            {t.homeLayout === "split"      && "지도 좌 + 리스트 우. 가장 균형잡힌 기본형."}
-            {t.homeLayout === "mapPrimary" && "지도가 풀스크린, 카드가 위에 떠있는 탐색 우선형."}
             {t.homeLayout === "editorial"  && "큰 헤로 + 카드 그리드 + 작은 지도. 매거진 톤."}
-          </Hint>
-        </TweakSection>
-
-        <TweakSection label="건축물 상세 · 정보 위계">
-          <TweakRadio
-            value={t.detailLayout}
-            onChange={(v) => { setTweak("detailLayout", v); if (route.name !== "detail") navigate("detail", "kongkan"); }}
-            options={[
-              { value: "hero",     label: "Hero" },
-              { value: "sidebar",  label: "사이드" },
-              { value: "longform", label: "에세이" },
-            ]}/>
-          <Hint>
-            {t.detailLayout === "hero"     && "큰 헤로 갤러리 + 본문 + 사이드 메타. 잡지 피처 톤."}
-            {t.detailLayout === "sidebar"  && "좌측 목차 사이드바 + 우측 도큐먼트 본문."}
-            {t.detailLayout === "longform" && "단일 컬럼 에세이. 이미지가 본문 사이로 흐름."}
+            {t.homeLayout === "split"      && "지도 좌 + 리스트 우. 가장 균형잡힌 기본형."}
           </Hint>
         </TweakSection>
 

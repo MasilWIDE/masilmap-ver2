@@ -25,7 +25,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
 
   const handleClick = (label) => {
     switch (label) {
-      case "홈":       return onNavigate("home", null, { homeLayout: "cover" });
+      case "홈":       return onNavigate("home", null, { homeLayout: "spotlight" });
       case "지도":     return onNavigate("home", null, { homeLayout: "mapPrimary" });
       case "건축물":   return onNavigate("buildings");
       case "코스":     return onNavigate("course");
@@ -42,8 +42,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
     if (route === "home") {
       if (t.homeLayout === "mapPrimary") return "지도";
       return "홈";
-    }
-    if (route === "course")      return "코스";
+    }    if (route === "course")      return "코스";
     if (route === "collection")  return "컬렉션";
     if (route === "mypage")      return "내 마실";
     if (route === "booking")     return "코스";

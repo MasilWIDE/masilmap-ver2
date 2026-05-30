@@ -242,6 +242,8 @@ function MIcon({ name, size = 20, color = M.ink, stroke = 1.8, style = {} }) {
     case "camera":    return (<svg {...wh}><path d="M3 8 L7 8 L9 5 L15 5 L17 8 L21 8 L21 19 L3 19 Z" {...p}/><circle cx="12" cy="13" r="3.5" {...p}/></svg>);
     case "edit":      return (<svg {...wh}><path d="M14 4 L20 10 L9 21 L3 21 L3 15 Z M13 5 L19 11" {...p}/></svg>);
     case "filter":    return (<svg {...wh}><path d="M3 5 L21 5 L14 13 L14 20 L10 18 L10 13 Z" {...p}/></svg>);
+    case "book":      return (<svg {...wh}><path d="M4 4 C4 4 7 3 9.5 4 C11 4.6 12 5.5 12 6.5 L12 20 C12 19 11 18.2 9.5 17.6 C7 16.6 4 17.5 4 17.5 Z M20 4 C20 4 17 3 14.5 4 C13 4.6 12 5.5 12 6.5 L12 20 C12 19 13 18.2 14.5 17.6 C17 16.6 20 17.5 20 17.5 Z" {...p}/></svg>);
+    case "external":  return (<svg {...wh}><path d="M14 4 L20 4 L20 10 M20 4 L11 13 M18 13 L18 19 C18 19.5 17.5 20 17 20 L5 20 C4.5 20 4 19.5 4 19 L4 7 C4 6.5 4.5 6 5 6 L11 6" {...p}/></svg>);
     default:          return null;
   }
 }

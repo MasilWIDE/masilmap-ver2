@@ -51,6 +51,19 @@ function mkExtMaps(b) {
   ];
 }
 
+/* ---------- 3b. 외부 전문 정보 링크 (마실지도는 핵심만, 깊이는 외부로) ----------
+   마실그라운드(자체 심화 아카이브) · 건축사사무소(공식) · 문헌/위키.
+   실제 전용 URL이 없으므로 검색·공식 도메인 기반 딥링크로 생성. */
+function mkExternalRefs(b) {
+  const q  = encodeURIComponent(`${b.name} ${b.architect || ""}`.trim());
+  const aq = encodeURIComponent(`${b.architect || ""} 건축`.trim());
+  return [
+    { id: "masil",  name: "마실그라운드",   desc: "마실이 직접 기록한 심화 아카이브 · 도면 · 인터뷰", tone: "olive", badge: "MASIL", href: `https://www.masilwide.com/?s=${q}` },
+    { id: "office", name: "건축사사무소",   desc: `${b.architect || "설계사"}의 공식 작품 정보`,         tone: "terra", badge: "OFFICIAL", href: `https://www.google.com/search?q=${aq}` },
+    { id: "ref",    name: "문헌 · 위키",    desc: "개요 · 연혁 · 도면 출처를 더 찾아보기",              tone: "terra", badge: "REF", href: `https://namu.wiki/Search?q=${q}` },
+  ];
+}
+
 /* ---------- 4. 큐레이션 렌즈 (지도 위 필터) ---------- */
 const MK_LENSES = [
   { id: "all",      label: "전체",      icon: "map",      test: () => true },
@@ -384,6 +397,6 @@ function MKClusterNode({ node, zoom, onClick, dark }) {
 Object.assign(window, {
   MK_CATS, MK_CAT_ORDER, MK_LENSES, MK_BASE, MK_HOME_VIEW,
   mkExtSpaceOf, mkCatOf, mkCatColor, mkCoursesOf, mkCollectionsOf, mkExtMaps,
-  mkBuildings, useMapSaved, MKGlyph,
+  mkExternalRefs, mkBuildings, useMapSaved, MKGlyph,
   mkViewBox, mkInView, mkClusters, MKDataMap, MKPinNode, MKClusterNode, MKGlyphSvg, HudBtn,
 });

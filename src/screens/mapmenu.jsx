@@ -259,6 +259,7 @@ function MKDetailPanel({ b, isSaved, onToggleSave, onBack, onNavigate, onPreview
           <MKBookingModule b={b} onNavigate={onNavigate}/>
           <MKCoursesModule b={b} onNavigate={onNavigate} onPreview={onPreviewCourse} activeCourseId={activeCourseId}/>
           <MKCollectionsModule b={b} onNavigate={onNavigate}/>
+          <MKExtRefsModule b={b}/>
 
           <button onClick={() => onNavigate && onNavigate("detail", b.id)} style={{
             width: "100%", padding: "13px 0", borderRadius: MR.pill, border: `1.5px solid ${M.ink}`,
@@ -532,7 +533,45 @@ function MKRouteToast({ course, onClose, bottom = 22 }) {
   );
 }
 
+/* ---------- 더 깊이 · 외부 전문 정보 (마실지도는 핵심만) ---------- */
+function MKExtRefsModule({ b }) {
+  const refs = mkExternalRefs(b);
+  return (
+    <div>
+      <MKModLabel>더 깊이 · 외부 전문 정보</MKModLabel>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        {refs.map((r) => {
+          const c = r.tone === "olive" ? M.olive : M.terra;
+          return (
+            <a key={r.id} href={r.href} target="_blank" rel="noreferrer" style={{
+              display: "flex", alignItems: "center", gap: 12, padding: "13px 15px", borderRadius: 14,
+              border: `1px solid ${M.beigeAlt}`, background: M.cream, textDecoration: "none",
+            }}>
+              <div style={{ flexShrink: 0, width: 40, height: 40, borderRadius: 10, background: `${c}16`,
+                display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <MIcon name="book" size={18} color={c}/>
+              </div>
+              <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: 13.5, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{r.name}</span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8.5, fontWeight: 700,
+                    letterSpacing: "0.1em", color: c, border: `1px solid ${c}44`, borderRadius: 5, padding: "1px 5px" }}>{r.badge}</span>
+                </div>
+                <span style={{ fontSize: 11.5, color: M.muted, fontWeight: 600, lineHeight: 1.45, textWrap: "pretty" }}>{r.desc}</span>
+              </div>
+              <span style={{ flexShrink: 0, color: M.muted, fontSize: 15, fontWeight: 700 }}>↗</span>
+            </a>
+          );
+        })}
+      </div>
+      <div style={{ fontSize: 10.5, color: M.muted, fontWeight: 600, marginTop: 9, lineHeight: 1.5 }}>
+        마실지도는 동네를 걷는 데 필요한 핵심만 담습니다. 도면·연혁 같은 전문 정보는 외부에서 이어보세요.
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, {
-  MKListCard, MKModLabel, MKExtMapsModule, MKBookingModule, MKCoursesModule, MKCollectionsModule,
+  MKListCard, MKModLabel, MKExtMapsModule, MKBookingModule, MKCoursesModule, MKCollectionsModule, MKExtRefsModule,
   MKDetailPanel, MapMenuLayout, MKCatChip, MKReSearch, MKRouteToast,
 });

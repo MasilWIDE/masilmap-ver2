@@ -1068,6 +1068,16 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
         <CoverHomeLayout onNavigate={onNavigate}/>
       )}
 
+      {/* === SPOTLIGHT 레이아웃 (시네마틱 히어로 · 임팩트) === */}
+      {layout === "spotlight" && (
+        <SpotlightHome onNavigate={onNavigate}/>
+      )}
+
+      {/* === MOSAIC 레이아웃 (건축 사진 모자이크 월) === */}
+      {layout === "mosaic" && (
+        <MosaicHome onNavigate={onNavigate}/>
+      )}
+
       {/* === SPLIT 레이아웃 === */}
       {layout === "split" && (
         <section style={{ padding: "0 56px 64px", display: "grid", gridTemplateColumns: "1.15fr 1fr", gap: 24, height: 720 }}>
