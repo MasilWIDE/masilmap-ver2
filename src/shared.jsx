@@ -78,7 +78,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
         {drawerOpen && (
           <div style={{
             position: "fixed", top: 68, left: 0, right: 0, bottom: 0,
-            background: "rgba(31,39,56,0.4)", zIndex: 49,
+            background: "rgba(31,39,56,0.4)", zIndex: 60,
           }} onClick={() => setDrawerOpen(false)}>
             <div onClick={(e) => e.stopPropagation()} style={{
               background: M.beige,

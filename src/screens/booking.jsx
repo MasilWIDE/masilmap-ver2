@@ -258,6 +258,8 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
   const [agree2, setAgree2] = React.useState(false);
   const people = 2;
   const total = c.price * people;
+  // 예약번호는 컴포넌트 마운트 시 한 번만 생성 (매 렌더마다 다른 값 방지)
+  const [bookingRef] = React.useState(() => `B2026-${Math.floor(Math.random()*9000+1000)}`);
 
   if (done) {
     return (
@@ -283,7 +285,7 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
           <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 32, boxShadow: MS.card, textAlign: "left" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 16 }}>
               <MagCap>예약 번호</MagCap>
-              <Serial color={M.terra} size={14}>B2026-{Math.floor(Math.random()*9000+1000)}</Serial>
+              <Serial color={M.terra} size={14}>{bookingRef}</Serial>
             </div>
             <Hairline style={{ marginBottom: 16 }}/>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 14 }}>

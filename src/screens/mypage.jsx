@@ -133,7 +133,7 @@ function MyPageScreen({ onNavigate }) {
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-end" }}>
                       {isUpcoming
-                        ? <span style={{ fontSize: 28, fontWeight: 900, color: M.terra, letterSpacing: "-0.02em" }}>D-{Math.floor(Math.random()*30+1)}</span>
+                        ? <span style={{ fontSize: 28, fontWeight: 900, color: M.terra, letterSpacing: "-0.02em" }}>D-{((bk.id || "").split("").reduce((a, ch) => a + ch.charCodeAt(0), 0) % 30) + 1}</span>
                         : <MagCap color={M.olive}>완료</MagCap>}
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>

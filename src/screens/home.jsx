@@ -270,15 +270,15 @@ function FilterBar({ onFilteredChange, searchQuery = "" }) {
   }, []);
 
   // 지역별 / 용도별 카운트
-  const provinceCounts = (() => {
+  const provinceCounts = React.useMemo(() => {
     const c = {};
     BUILDINGS.forEach((b) => { const id = provinceIdOf(b); if (id) c[id] = (c[id] || 0) + 1; });
     return c;
-  })();
-  const krTotal = Object.values(provinceCounts).reduce((a, b) => a + b, 0);
-  // 필터링
+  }, []); // BUILDINGS는 fixture라 변동 없음
+  const krTotal = React.useMemo(() => Object.values(provinceCounts).reduce((a, b) => a + b, 0), [provinceCounts]);
+  // 필터링 (useMemo로 stable ref)
   const q = (searchQuery || "").trim().toLowerCase();
-  const filtered = BUILDINGS.filter((b) => {
+  const filtered = React.useMemo(() => BUILDINGS.filter((b) => {
     if (q) {
       const hay = `${b.name} ${b.nameEn || ""} ${b.region} ${b.architect} ${b.style} ${(b.tags || []).join(" ")}`.toLowerCase();
       if (!hay.includes(q)) return false;
@@ -297,12 +297,12 @@ function FilterBar({ onFilteredChange, searchQuery = "" }) {
       if (f < floorsMin || f > floorsMax) return false;
     }
     return true;
-  });
+  }), [q, regions, uses, areaType, areaMin, areaMax, floorsType, floorsMin, floorsMax]);
 
-  // 부모에 필터 결과 통지
+  // 부모에 필터 결과 통지 (filtered ref 변화 시에만)
   React.useEffect(() => {
     if (onFilteredChange) onFilteredChange(filtered);
-  }, [searchQuery, regions, uses, areaType, areaMin, areaMax, floorsType, floorsMin, floorsMax]);
+  }, [filtered]);
 
   // 배지
   const regionBadge  = regions.size;
@@ -690,6 +690,7 @@ function CoverHomeLayout({ onNavigate }) {
   const isTablet = useIsTablet();
   const px = pageX(isMobile, isTablet);
   const featuredCol = COLLECTIONS[0]; // 벽돌의 시간
+  if (!featuredCol) return null; // 컬렉션 데이터 없을 때 안전 종료
   const picks = ["kongkan", "buseoksa", "bonte"]
     .map((id) => BUILDINGS.find((b) => b.id === id))
     .filter(Boolean);
@@ -1001,7 +1002,7 @@ const MAP_QUICK_FILTERS = [
 function HomeScreen({ route, onNavigate, t, searchQuery }) {
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
-  const [selectedId, setSelectedId] = React.useState(BUILDINGS[0].id);
+  const [selectedId, setSelectedId] = React.useState(BUILDINGS[0]?.id ?? null);
   const [filtered, setFiltered]     = React.useState(BUILDINGS);
   const [mapQuickFilter, setMapQuickFilter] = React.useState("all");
 
@@ -1009,7 +1010,7 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
   const layout = t.homeLayout;
 
   // 지도 페이지 전용 filtered (quickFilter + 상단 nav 검색어)
-  const mapFiltered = (() => {
+  const mapFiltered = React.useMemo(() => {
     const f = MAP_QUICK_FILTERS.find((x) => x.id === mapQuickFilter) || MAP_QUICK_FILTERS[0];
     const q = (searchQuery || "").trim().toLowerCase();
     return BUILDINGS.filter((b) => {
@@ -1020,7 +1021,7 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
       }
       return true;
     });
-  })();
+  }, [mapQuickFilter, searchQuery]);
 
   return (
     <MPage>

@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>masilmap — 한국 건축여행</title>
+  <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
+  <title>MasilMAP ver2</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Quicksand:wght@400;500;600;700&family=Noto+Serif+KR:wght@400;500;600;700;900&family=Pretendard:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -21,9 +22,104 @@
     }
     *, *::before, *::after { box-sizing: border-box; }
     button { font-family: inherit; }
-    /* prevent any inner element from blowing horizontal */
     img, svg { max-width: 100%; }
-    /* scrollbar styling */
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+    /* ============================================================
+       반응형 - 모바일(<=768) 보정.
+       React는 inline style을 kebab-case로 직렬화하고 숫자는 px 자동
+       추가. 따라서 셀렉터는 'grid-template-columns:' / 'font-size: 96px'
+       처럼 써야 매칭됨. (기존 'gridTemplateColumns:' 패턴은 dead code였음)
+       ============================================================ */
+    @media (max-width: 768px) {
+      /* 페이지 좌우 패딩 56px → 16px */
+      [style*="padding: 0 56px"],
+      [style*="padding:0 56px"],
+      [style*="padding: 32px 56px"],
+      [style*="padding: 24px 56px"],
+      [style*="padding: 20px 56px"],
+      [style*="padding: 22px 56px"],
+      [style*="padding: 48px 56px"],
+      [style*="padding: 56px 56px"],
+      [style*="padding: 14px 56px"],
+      [style*="padding: 16px 56px"],
+      [style*="padding: 8px 56px"] {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      /* 멀티-컬럼 그리드 → 1단 */
+      [style*="grid-template-columns: repeat(2,"],
+      [style*="grid-template-columns: repeat(3,"],
+      [style*="grid-template-columns: repeat(4,"],
+      [style*="grid-template-columns: repeat(5,"],
+      [style*="grid-template-columns: 1.2fr 1fr"],
+      [style*="grid-template-columns: 1.3fr 1fr"],
+      [style*="grid-template-columns: 1.4fr 1fr"],
+      [style*="grid-template-columns: 1.5fr 1fr"],
+      [style*="grid-template-columns: 1.6fr 1fr"],
+      [style*="grid-template-columns: 1.15fr 1fr"],
+      [style*="grid-template-columns: 1fr 1fr"] {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      /* 사이드바형 그리드 (고정폭 + 1fr) → stack */
+      [style*="grid-template-columns: 240px 1fr"],
+      [style*="grid-template-columns: 220px 1fr"],
+      [style*="grid-template-columns: 200px 1fr"],
+      [style*="grid-template-columns: 180px 1fr"],
+      [style*="grid-template-columns: 140px 1fr"],
+      [style*="grid-template-columns: 260px 1fr"],
+      [style*="grid-template-columns: 60px 1fr"],
+      [style*="grid-template-columns: 100px 60px"] {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      /* 큰 헤드라인 다운스케일 */
+      h1[style*="font-size: 96px"],
+      h1[style*="font-size: 84px"],
+      h1[style*="font-size: 80px"],
+      h1[style*="font-size: 72px"],
+      h1[style*="font-size: 64px"],
+      h1[style*="font-size: 56px"],
+      h1[style*="font-size: 48px"],
+      h1[style*="font-size: 44px"] {
+        font-size: 30px !important;
+        line-height: 1.1 !important;
+      }
+      h2[style*="font-size: 56px"],
+      h2[style*="font-size: 48px"],
+      h2[style*="font-size: 40px"] {
+        font-size: 22px !important;
+        line-height: 1.2 !important;
+      }
+      h2[style*="font-size: 32px"],
+      h2[style*="font-size: 28px"] {
+        font-size: 20px !important;
+      }
+      /* sticky 사이드바 풀기 */
+      aside[style*="position: sticky"],
+      [style*="position: sticky"][style*="top: 88"],
+      [style*="position: sticky"][style*="top: 92"] {
+        position: static !important;
+      }
+      aside[style*="width: 220"] { width: 100% !important; }
+      body, #root, .page { overflow-x: hidden; }
+    }
+    @media (max-width: 1024px) and (min-width: 769px) {
+      [style*="padding: 0 56px"],
+      [style*="padding: 32px 56px"],
+      [style*="padding: 24px 56px"],
+      [style*="padding: 48px 56px"] {
+        padding-left: 32px !important;
+        padding-right: 32px !important;
+      }
+      [style*="grid-template-columns: repeat(4,"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
     ::-webkit-scrollbar { width: 10px; height: 10px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #CBD0D8; border-radius: 999px; border: 2px solid #FFFFFF; }
@@ -33,9 +129,9 @@
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
+<script>window.__masilRole = "editor";</script>
 <body>
   <div id="root"></div>
-  <script>window.__masilRole = "editor";</script>
   <script type="text/babel" src="src/brand.jsx"></script>
   <script type="text/babel" src="src/symbols.jsx"></script>
   <script type="text/babel" src="src/tweaks-panel.jsx"></script>
