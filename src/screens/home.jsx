@@ -1098,87 +1098,9 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
         </section>
       )}
 
-      {/* === MAP-PRIMARY 레이아웃 (FastFive 톤 · 풀 지도 + 칩 오버레이 + 좌측 panel) === */}
+      {/* === MAP-PRIMARY 레이아웃 (Option A · 사이드 도크 — mapmenu.jsx) === */}
       {layout === "mapPrimary" && (
-        <section style={{
-          position: "relative",
-          height: isMobile ? "calc(100vh - 130px)" : "calc(100vh - 180px)",
-          minHeight: isMobile ? 480 : 620,
-          padding: `0 ${isMobile ? 12 : 24}px ${isMobile ? 16 : 32}px`,
-        }}>
-          {/* 전체 지도 */}
-          <div style={{
-            position: "absolute", inset: `0 ${isMobile ? 12 : 24}px ${isMobile ? 16 : 32}px`,
-            borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg,
-          }}>
-            <MasilMap buildings={mapFiltered} selectedId={selectedId} onSelect={setSelectedId} />
-          </div>
-
-          {/* 좌측 패널 컨테이너 — 모바일은 bottom sheet, 데스크탑은 left 슬라이드 */}
-          <div style={isMobile ? {
-            position: "absolute",
-            left: 12, right: 12, bottom: 28,
-            display: "flex", flexDirection: "column", gap: 10,
-            zIndex: 10,
-            maxHeight: "45%",
-          } : {
-            position: "absolute",
-            top: 20, left: 48, bottom: 52,
-            display: "flex", alignItems: "stretch", gap: 12,
-            zIndex: 10,
-          }}>
-            <ViewportPanel
-              buildings={mapFiltered}
-              selectedId={selectedId}
-              onSelect={setSelectedId}
-              isMobile={isMobile}/>
-
-            {selected && mapFiltered.some((x) => x.id === selectedId) && (
-              <PinPopupCard
-                b={selected}
-                onClose={() => setSelectedId(null)}
-                onNavigate={onNavigate}
-                isMobile={isMobile}/>
-            )}
-          </div>
-
-          {/* 상단 우측: 빠른 필터 칩 오버레이 (FastFive 톤) */}
-          <div style={{
-            position: "absolute",
-            top: isMobile ? 12 : 20,
-            right: isMobile ? 12 : 48,
-            left: isMobile ? 12 : "auto",
-            display: "flex", gap: 8, zIndex: 5, flexWrap: "wrap",
-            justifyContent: isMobile ? "flex-start" : "flex-end",
-            maxWidth: isMobile ? "calc(100% - 24px)" : "60%",
-            overflowX: isMobile ? "auto" : "visible",
-          }}>
-            {MAP_QUICK_FILTERS.map((f) => {
-              const on = f.id === mapQuickFilter;
-              const count = BUILDINGS.filter(f.match).length;
-              return (
-                <button key={f.id} onClick={() => setMapQuickFilter(f.id)} style={{
-                  display: "inline-flex", alignItems: "center", gap: 6,
-                  padding: "10px 18px", borderRadius: 999,
-                  background: on ? M.terra : M.cream,
-                  color: on ? M.cream : M.ink,
-                  border: `1px solid ${on ? M.terra : M.beigeAlt}`,
-                  fontSize: 13, fontWeight: 700,
-                  fontFamily: "inherit", cursor: "pointer",
-                  boxShadow: MS.cardSm,
-                  whiteSpace: "nowrap",
-                  transition: "all .15s",
-                }}>
-                  <span>{f.label}</span>
-                  <span style={{
-                    fontSize: 11, fontWeight: 800,
-                    opacity: on ? 0.85 : 0.5,
-                  }}>{count}</span>
-                </button>
-              );
-            })}
-          </div>
-        </section>
+        <MapMenuLayout onNavigate={onNavigate} searchQuery={searchQuery} isMobile={isMobile} />
       )}
 
       {/* === EDITORIAL 레이아웃 === */}

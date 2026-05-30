@@ -29,6 +29,8 @@
       from { opacity: 0; transform: translateX(-12px); }
       to   { opacity: 1; transform: translateX(0); }
     }
+    /* pin pulse */
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
     /* ============================================================
        반응형 - 모바일(<=768) 보정 (inline style override via !important)
        isMobile hook으로 처리되지 않은 잔여 화면(collection/course/
@@ -140,6 +142,10 @@
   <script type="text/babel" src="src/shared.jsx"></script>
   <script type="text/babel" src="src/data.jsx"></script>
   <script type="text/babel" src="src/screens/buildings.jsx"></script>
+  <!-- ▼▼ 지도 메뉴(Option A) — home.jsx 보다 먼저 로드해야 함 ▼▼ -->
+  <script type="text/babel" src="src/screens/mapmenu-engine.jsx"></script>
+  <script type="text/babel" src="src/screens/mapmenu.jsx"></script>
+  <!-- ▲▲ 추가 끝 ▲▲ -->
   <script type="text/babel" src="src/screens/home.jsx"></script>
   <script type="text/babel" src="src/screens/detail.jsx"></script>
   <script type="text/babel" src="src/screens/collection.jsx"></script>
