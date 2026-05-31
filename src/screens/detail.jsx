@@ -190,7 +190,6 @@ function BodyBlock({ block, style = {} }) {
       }}>
         <p style={{
           fontFamily: "'Noto Serif KR', serif",
-          fontStyle: "italic",
           fontSize: 22, fontWeight: 500,
           lineHeight: 1.5, color: M.ink, margin: 0,
           textWrap: "pretty",
@@ -414,7 +413,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
           <ImgPlaceholder ratio="21/9" tone={b.pinTone === "olive" ? "olive" : "beige"} caption={`${b.name} · 정면 외관 · ${b.year}`} style={{ borderRadius: MR.cardLg }}/>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "12px 4px 0" }}>
             <Serial>FIG. 01 · 01/05</Serial>
-            <span style={{ fontSize: 11, color: M.muted, fontWeight: 600, fontStyle: "italic" }}>사진 · 한지수, 2025</span>
+            <span style={{ fontSize: 11, color: M.muted, fontWeight: 600 }}>사진 · 한지수, 2025</span>
           </div>
         </section>
 
@@ -588,7 +587,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
             <section id="gallery" style={{ marginBottom: 56 }}>
               <Hairline label="03 · GALLERY" style={{ marginBottom: 28 }}/>
               <GalleryStrip b={b} count={5}/>
-              <div style={{ marginTop: 12, fontSize: 11, color: M.muted, fontStyle: "italic" }}>전체 14장 · 사진 · 한지수, 윤서경 외</div>
+              <div style={{ marginTop: 12, fontSize: 11, color: M.muted }}>전체 14장 · 사진 · 한지수, 윤서경 외</div>
             </section>
 
             <section id="info" style={{ marginBottom: 56 }}>

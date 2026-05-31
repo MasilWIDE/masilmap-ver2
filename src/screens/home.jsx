@@ -616,7 +616,7 @@ function PinPopupCard({ b, onClose, onNavigate, isMobile = false }) {
           padding: "12px 14px", borderRadius: 12,
           background: M.beige, border: `1px solid ${M.beigeAlt}`,
           fontFamily: "'Noto Serif KR', serif",
-          fontSize: 13, fontStyle: "italic", color: M.ink, lineHeight: 1.55,
+          fontSize: 13, color: M.ink, lineHeight: 1.55,
           marginBottom: 14,
         }}>"{b.intro}"</div>
 

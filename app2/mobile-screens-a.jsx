@@ -4,12 +4,7 @@
    app prop: { t, nav, st, act }  (mobile-app.jsx 참조)
    ================================================================ */
 
-/* 코스 진행률 계산 */
-function mxCourseProgress(course, doneStops) {
-  const tot = course.stops.length;
-  const done = course.stops.filter((s) => doneStops.has(`${course.id}:${s.id}`)).length;
-  return { done, tot, pct: Math.round((done / (tot || 1)) * 100), complete: tot > 0 && done === tot };
-}
+/* mxCourseProgress는 app2/mobile-data.jsx에서 정의·노출됨 (전역 사용) */
 
 /* ---------- 코스 카드 (홈/피드/탐색 공용) ---------- */
 function MXCourseCard({ course, app, compact }) {
@@ -421,4 +416,4 @@ function MXCreate({ app }) {
   );
 }
 
-Object.assign(window, { mxCourseProgress, MXCourseCard, MXHome, MXCourseDetail, MXCreate, MXNearbyEats });
+Object.assign(window, { MXCourseCard, MXHome, MXCourseDetail, MXCreate, MXNearbyEats });

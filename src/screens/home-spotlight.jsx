@@ -61,7 +61,7 @@ function SpotlightHome({ onNavigate }) {
             textShadow: "0 4px 40px rgba(0,0,0,0.4)" }}>
             {hero.name}
           </h1>
-          <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 16 : 21, fontStyle: "italic",
+          <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 16 : 21,
             color: "rgba(244,243,234,0.85)", margin: "16px 0 0", maxWidth: 640, lineHeight: 1.6, textWrap: "pretty" }}>
             {hero.intro}
           </p>

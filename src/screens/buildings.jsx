@@ -277,7 +277,6 @@ function UseFilterChip({ uses, setUses, open, onToggle }) {
           {(cat.children || []).length === 0 ? (
             <div style={{
               padding: "20px 8px", color: M.muted, fontSize: 12, fontWeight: 600,
-              fontStyle: "italic",
             }}>
               (현재 해당 건물 없음)
             </div>

@@ -248,7 +248,7 @@ function CourseScreen({ onNavigate, courseId }) {
       <section style={{ padding: "16px 56px 32px" }}>
         <Hairline label="ROUTE · 점선 경로" style={{ marginBottom: 16 }}/>
         <CourseRouteMap stops={stops}/>
-        <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", fontSize: 11, color: M.muted, fontWeight: 600, fontStyle: "italic" }}>
+        <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", fontSize: 11, color: M.muted, fontWeight: 600 }}>
           <span>지도는 실제 네이버·카카오 지도 SDK 연동 예정</span>
           <span>↑ 일러스트 목업</span>
         </div>

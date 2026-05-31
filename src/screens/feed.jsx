@@ -263,7 +263,7 @@ function ChannelScreen({ onNavigate, channelId }) {
   );
 }
 
-Object.assign(window, { ChannelScreen });
+/* FeedScreen·FeedChannelChip·ChannelScreen은 파일 상단 Object.assign에서 일괄 노출 (함수 호이스팅) */
 
 /* ================================================================
    발자취 — 채널이 다녀온 곳 (지도 + 장소). 지도 기반 SNS의 자랑 면.
