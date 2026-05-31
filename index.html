@@ -130,12 +130,26 @@
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <div id="__boot" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;font-family:'Pretendard',sans-serif;color:#6B7484;">
+      <div style="font-size:15px;font-weight:700;letter-spacing:-0.01em;">마실맵 불러오는 중…</div>
+      <div style="font-size:12px;">스크립트를 컴파일하고 있어요. 잠시만요.</div>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('error', function (e) {
+      var r = document.getElementById('__boot');
+      if (r) { r.innerHTML = '<div style="max-width:520px;padding:24px;text-align:center;font-family:Pretendard,sans-serif;color:#1F2738;"><div style="font-size:15px;font-weight:800;margin-bottom:8px;">불러오기 오류</div><div style="font-size:12px;color:#6B7484;line-height:1.6;word-break:break-all;">' + (e.message || e.error || '알 수 없는 오류') + '</div><div style="font-size:12px;color:#6B7484;margin-top:10px;">새로고침(Cmd/Ctrl+Shift+R)을 해보세요.</div></div>'; }
+    }, true);
+  </script>
   <script type="text/babel" src="src/brand.jsx"></script>
   <script type="text/babel" src="src/symbols.jsx"></script>
   <script type="text/babel" src="src/tweaks-panel.jsx"></script>
   <script type="text/babel" src="src/shared.jsx"></script>
   <script type="text/babel" src="src/data.jsx"></script>
+  <script type="text/babel" src="app2/mobile-data.jsx"></script>
+  <script type="text/babel" src="app2/shared-state.jsx"></script>
+  <script type="text/babel" src="src/taxonomy.jsx"></script>
   <script type="text/babel" src="src/screens/buildings.jsx"></script>
   <script type="text/babel" src="src/screens/mapmenu-engine.jsx"></script>
   <script type="text/babel" src="src/screens/mapmenu.jsx"></script>
@@ -144,6 +158,9 @@
   <script type="text/babel" src="src/screens/home.jsx"></script>
   <script type="text/babel" src="src/screens/detail.jsx"></script>
   <script type="text/babel" src="src/screens/collection.jsx"></script>
+  <script type="text/babel" src="src/screens/feed.jsx"></script>
+  <script type="text/babel" src="src/screens/tax-ui.jsx"></script>
+  <script type="text/babel" src="src/screens/walkcourse.jsx"></script>
   <script type="text/babel" src="src/screens/course.jsx"></script>
   <script type="text/babel" src="src/screens/booking.jsx"></script>
   <script type="text/babel" src="src/screens/mypage.jsx"></script>
@@ -151,6 +168,7 @@
   <script type="text/babel" src="src/screens/admin.jsx"></script>
   <script type="text/babel" src="src/screens/consoles.jsx"></script>
   <script type="text/babel" src="src/screens/auth.jsx"></script>
+  <script type="text/babel" src="src/screens/intro.jsx"></script>
   <script type="text/babel" src="src/app.jsx"></script>
 </body>
 </html>

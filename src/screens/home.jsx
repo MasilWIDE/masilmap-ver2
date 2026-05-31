@@ -450,11 +450,11 @@ function FilterBar({ onFilteredChange, searchQuery = "" }) {
 function MasilHero({ onNavigate }) {
   return (
     <section style={{ padding: "32px 56px 24px" }}>
-      <Hairline label={`ISSUE · 2026 SPRING · VOL.07`} style={{ marginBottom: 28 }}/>
+      <Hairline label={`마실맵 · 한국 건축 산책 가이드`} style={{ marginBottom: 28 }}/>
       <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 56, alignItems: "end" }}>
         <div>
           <MagCap color={M.terra} style={{ marginBottom: 16 }}>
-            마실맵 · 이번 주의 동네
+            마실맵 · 동네 산책
           </MagCap>
           <h1 style={{
             fontSize: 72, fontWeight: 900,
@@ -467,7 +467,7 @@ function MasilHero({ onNavigate }) {
           </h1>
           <div style={{ display: "flex", gap: 12, marginTop: 32, alignItems: "center" }}>
             <MButton kind="primary" size="lg" onClick={() => onNavigate("home")}>지도에서 둘러보기</MButton>
-            <MButton kind="outline" size="lg" onClick={() => onNavigate("collection")}>이번 호 컬렉션 →</MButton>
+            <MButton kind="outline" size="lg" onClick={() => onNavigate("collection")}>컬렉션 둘러보기 →</MButton>
           </div>
         </div>
         <div>
@@ -689,8 +689,10 @@ function CoverHomeLayout({ onNavigate }) {
   const isMobile = useIsMobile();
   const isTablet = useIsTablet();
   const px = pageX(isMobile, isTablet);
-  const featuredCol = COLLECTIONS[0]; // 벽돌의 시간
-  if (!featuredCol) return null; // 컬렉션 데이터 없을 때 안전 종료
+  const featuredCol = SERIES[0]; // 안도 타다오 시리즈
+  if (!featuredCol) return null; // 시리즈 데이터 없을 때 안전 종료
+  const featCourses = seriesCourses(featuredCol);
+  const featBuildings = seriesBuildingCount(featuredCol);
   const picks = ["kongkan", "buseoksa", "bonte"]
     .map((id) => BUILDINGS.find((b) => b.id === id))
     .filter(Boolean);
@@ -707,7 +709,7 @@ function CoverHomeLayout({ onNavigate }) {
     <>
       {/* === SECTION 1: 매거진 표지 (B) === */}
       <section style={{ padding: `8px ${px}px ${isMobile ? 36 : 56}px` }}>
-        <Hairline label={`MASILMAP · ${featuredCol.no} · ${featuredCol.issue.toUpperCase()}`} style={{ marginBottom: 28 }}/>
+        <Hairline label={`MASILMAP · SERIES · ${featuredCol.no}`} style={{ marginBottom: 28 }}/>
 
         <div style={{
           display: "grid",
@@ -737,8 +739,8 @@ function CoverHomeLayout({ onNavigate }) {
               fontSize: 11, fontWeight: 600, letterSpacing: "0.14em",
               color: "rgba(244,243,234,0.7)",
             }}>
-              <span>MASILMAP · COLLECTION · {featuredCol.no}</span>
-              <span>{featuredCol.tag}</span>
+              <span>MASILMAP · SERIES · {featuredCol.no}</span>
+              <span>{featuredCol.kind}</span>
             </div>
 
             {/* 표지 본문 */}
@@ -747,7 +749,7 @@ function CoverHomeLayout({ onNavigate }) {
                 fontFamily: "'Noto Serif KR', serif",
                 fontSize: 18, opacity: 0.85, marginBottom: 14, fontWeight: 400,
               }}>
-                a masilmap collection
+                a masilmap series
               </div>
               <h1 style={{
                 fontSize: isMobile ? 56 : 96, fontWeight: 900,
@@ -768,8 +770,8 @@ function CoverHomeLayout({ onNavigate }) {
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
             }}>
-              <span>EDITOR · {featuredCol.editor}</span>
-              <span>{featuredCol.count} 곳 · {featuredCol.readTime}분</span>
+              <span>{featCourses.length} 코스 · {featBuildings} 건축물</span>
+              <span>{featuredCol.kind}</span>
             </div>
           </div>
 
@@ -781,9 +783,9 @@ function CoverHomeLayout({ onNavigate }) {
             boxShadow: MS.card,
             display: "flex", flexDirection: "column", gap: 18,
           }}>
-            <MagCap color={M.terra}>EDITOR'S NOTE</MagCap>
+            <MagCap color={M.terra}>SERIES · {featuredCol.kind} 정복</MagCap>
             <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em" }}>
-              {featuredCol.issue}
+              {featCourses.length} 코스 · {featBuildings} 건축물
             </div>
 
             <blockquote style={{
@@ -793,18 +795,23 @@ function CoverHomeLayout({ onNavigate }) {
               fontWeight: 500, letterSpacing: "-0.005em",
               textWrap: "pretty",
             }}>
-              "{featuredCol.blurb}"
+              {featuredCol.intro}
             </blockquote>
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+              {featCourses.map((cc) => (
+                <span key={cc.id} style={{ padding: "6px 12px", borderRadius: 999, background: M.beige, border: `1px solid ${M.beigeAlt}`, fontSize: 12, fontWeight: 700, color: M.ink }}>{(cc.title || "").split(",")[0]}</span>
+              ))}
+            </div>
 
             <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: 6 }}>
               <Hairline style={{ marginBottom: 8 }}/>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                <div>
-                  <div style={{ fontSize: 15, fontWeight: 900, color: M.ink }}>{featuredCol.editor}</div>
-                  <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 2 }}>{featuredCol.editorRole}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "inline-flex", alignItems: "center", gap: 7, fontSize: 13, fontWeight: 800, color: M.olive }}>
+                  <MIcon name="sparkle" size={15} color={M.olive}/> {featuredCol.badge}
                 </div>
                 <MButton kind="primary" size="md" onClick={() => onNavigate("collection", featuredCol.id)}>
-                  이번 호 펼치기 →
+                  시리즈 정복하기 →
                 </MButton>
               </div>
             </div>
@@ -853,9 +860,9 @@ function CoverHomeLayout({ onNavigate }) {
       <section style={{ padding: `${isMobile ? 36 : 56}px ${px}px ${isMobile ? 20 : 32}px` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 24 }}>
           <div>
-            <MagCap color={M.terra} style={{ marginBottom: 6 }}>THIS WEEK · 에디터 픽</MagCap>
+            <MagCap color={M.terra} style={{ marginBottom: 6 }}>EDITOR'S PICK · 에디터 픽</MagCap>
             <h2 style={{ fontSize: isMobile ? 22 : 28, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>
-              이번 주의 세 건축
+              에디터가 고른 세 건축
             </h2>
           </div>
           <span onClick={() => onNavigate("buildings")} style={{
@@ -1147,14 +1154,14 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
         </>
       )}
 
-      {/* 컬렉션 프리뷰 밴드 — split / editorial 에서만 (cover는 자체 큐레이션, mapPrimary는 풀맵) */}
+      {/* 시리즈 프리뷰 밴드 — split / editorial 에서만 (cover는 자체 큐레이션, mapPrimary는 풀맵) */}
       {(layout === "split" || layout === "editorial") && (
       <section style={{ padding: "32px 56px 64px", background: M.beigeAlt, borderTop: `1px solid ${M.beigeAlt}` }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "end", marginBottom: 24 }}>
           <div>
-            <MagCap color={M.terra} style={{ marginBottom: 8 }}>EDITORS' PICK · 2026 SPRING</MagCap>
+            <MagCap color={M.terra} style={{ marginBottom: 8 }}>SERIES · 코스 정복</MagCap>
             <h2 style={{ fontSize: 40, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.1, margin: 0, color: M.ink }}>
-              이번 호 큐레이션
+              시리즈 정복
             </h2>
           </div>
           <span style={{ fontSize: 13, fontWeight: 800, color: M.terra, cursor: "pointer" }} onClick={() => onNavigate("collection")}>
@@ -1162,7 +1169,9 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
           </span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
-          {COLLECTIONS.slice(0, 3).map((c) => (
+          {SERIES.slice(0, 3).map((c) => {
+            const cc = seriesCourses(c);
+            return (
             <div key={c.id} onClick={() => onNavigate("collection", c.id)} style={{
               background: M.cream, borderRadius: MR.cardLg, overflow: "hidden",
               boxShadow: MS.cardSm, cursor: "pointer",
@@ -1178,7 +1187,7 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
                     color: M.cream, background: "rgba(255,248,236,0.15)",
                     padding: "5px 9px", borderRadius: 6,
                     border: `1px solid rgba(255,248,236,0.3)`,
-                  }}>{c.no} · {c.tag}</span>
+                  }}>{c.no} · {c.kind}</span>
                 </div>
                 <div>
                   <div style={{ fontSize: 28, fontWeight: 900, letterSpacing: "-0.025em", color: M.cream, lineHeight: 1.1 }}>{c.title}</div>
@@ -1186,21 +1195,20 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
                 </div>
               </div>
               <div style={{ padding: 20 }}>
-                <p style={{ fontSize: 13, color: M.ink, lineHeight: 1.6, margin: 0, fontWeight: 500, textWrap: "pretty" }}>{c.blurb}</p>
+                <p style={{ fontSize: 13, color: M.ink, lineHeight: 1.6, margin: 0, fontWeight: 500, textWrap: "pretty" }}>{c.intro}</p>
                 <Hairline style={{ margin: "16px 0 12px" }}/>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                   <div style={{ fontSize: 11, color: M.muted, fontWeight: 700 }}>
-                    <span>EDITOR · {c.editor}</span>
+                    <span>{cc.length} 코스 정복</span>
                   </div>
-                  <div style={{ display: "flex", gap: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>
-                    <span>{c.count} 곳</span>
-                    <span>·</span>
-                    <span>{c.readTime}분</span>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, color: M.olive, fontWeight: 800 }}>
+                    <MIcon name="sparkle" size={12} color={M.olive}/> {c.badge}
                   </div>
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </section>
       )}
@@ -1210,4 +1218,4 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
   );
 }
 
-Object.assign(window, { HomeScreen });
+Object.assign(window, { HomeScreen, MasilMap });

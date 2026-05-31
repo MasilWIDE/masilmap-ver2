@@ -183,38 +183,28 @@ function OnboardingScreen({ onNavigate }) {
   const [interests, setInterests] = React.useState([]);
 
   const back = () => (step > 1 ? setStep(step - 1) : onNavigate("home"));
-  const next = () => setStep((s) => Math.min(s + 1, 4));
+  const next = () => setStep((s) => Math.min(s + 1, 2));
 
-  const finish = () => {
+  const finish = (go) => {
     auth.login();
-    onNavigate("home");
+    onNavigate(go || "home");
   };
 
-  const toggleInterest = (id) => {
-    setInterests((arr) => arr.includes(id) ? arr.filter((x) => x !== id) : [...arr, id]);
-  };
-
-  /* ── 추천 컬렉션 (관심사 기반) ── */
-  const recommended = (() => {
-    if (interests.includes("modern"))  return COLLECTIONS.find((c) => c.id === "brick");
-    if (interests.includes("hanok"))   return COLLECTIONS.find((c) => c.id === "hanok");
-    if (interests.includes("museum"))  return COLLECTIONS.find((c) => c.id === "concrete");
-    return COLLECTIONS[0];
-  })();
+  const toggleInterest = () => {};
 
   return (
     <AuthShell onBack={back} backLabel={step === 1 ? "← 홈으로" : "← 이전 단계"}>
-      <StepIndicator current={step} total={4}/>
+      <StepIndicator current={step} total={2}/>
 
       {/* === STEP 1: 가입 === */}
       {step === 1 && (
         <>
           <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
-            잡지에 이름을<br/>
+            마실 명부에 이름을<br/>
             <span style={{ fontWeight: 900, color: M.olive }}>남겨주세요</span>.
           </h1>
           <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 28 }}>
-            먼저 계정을 만들어요. 다음 단계에서 마실 취향을 함께 정해볼게요.
+            계정만 만들면 바로 시작이에요. 취향 조사 같은 건 없어요 — 어디로 갈지는 그때그때 골라드릴게요.
           </p>
 
           <Field label="이름" placeholder="홍길동" value={name} onChange={setName}/>
@@ -251,146 +241,48 @@ function OnboardingScreen({ onNavigate }) {
         </>
       )}
 
-      {/* === STEP 2: 지역 선택 === */}
+      {/* === STEP 2: 환영 · 가볍게 시작 === */}
       {step === 2 && (
         <>
-          <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
-            어느 동네부터<br/>
-            <span style={{ fontWeight: 900, color: M.olive }}>마실</span> 다녀올까요?
-          </h1>
-          <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 28 }}>
-            지금 가장 가까운 동네 한 곳만 골라주세요. 나중에 더 추가할 수 있어요.
-          </p>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 28 }}>
-            {REGIONS.map((r) => {
-              const on = r.id === region;
-              return (
-                <div key={r.id} onClick={() => setRegion(r.id)} style={{
-                  padding: "18px 18px", borderRadius: MR.card,
-                  background: on ? M.terra : M.cream,
-                  color: on ? M.cream : M.ink,
-                  border: `1.5px solid ${on ? M.terra : "transparent"}`,
-                  cursor: "pointer",
-                  transition: "all .15s",
-                }}>
-                  <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.015em" }}>{r.name}</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, opacity: on ? 0.85 : 0.55, marginTop: 4 }}>
-                    {r.count}곳의 건축물
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          <MButton kind="primary" size="lg" onClick={next} style={{
-            width: "100%", justifyContent: "center",
-            opacity: region ? 1 : 0.5, pointerEvents: region ? "auto" : "none",
-          }}>
-            다음 → ({region ? REGIONS.find((r) => r.id === region).name : "지역 선택"})
-          </MButton>
-        </>
-      )}
-
-      {/* === STEP 3: 관심 건축 선택 === */}
-      {step === 3 && (
-        <>
-          <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
-            어떤 건축이<br/>
-            가장 <span style={{ fontWeight: 900, color: M.olive }}>끌리세요?</span>
-          </h1>
-          <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 24 }}>
-            여러 개 골라도 좋아요. 고른 취향에 맞춰 첫 큐레이션을 보내드릴게요.
-          </p>
-
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 28 }}>
-            {TYPES.filter((t) => t.id !== "all").map((t) => {
-              const on = interests.includes(t.id);
-              return (
-                <span key={t.id} onClick={() => toggleInterest(t.id)} style={{
-                  padding: "12px 18px", borderRadius: 999,
-                  fontSize: 14, fontWeight: 700,
-                  background: on ? M.terra : M.cream,
-                  color: on ? M.cream : M.ink,
-                  border: `1.5px solid ${on ? M.terra : M.beigeAlt}`,
-                  cursor: "pointer",
-                  transition: "all .15s",
-                  whiteSpace: "nowrap",
-                }}>
-                  {t.name}
-                  <span style={{ marginLeft: 8, opacity: 0.6, fontSize: 12 }}>{t.count}</span>
-                </span>
-              );
-            })}
-          </div>
-
-          <MButton kind="primary" size="lg" onClick={next} style={{
-            width: "100%", justifyContent: "center",
-            opacity: interests.length > 0 ? 1 : 0.5,
-            pointerEvents: interests.length > 0 ? "auto" : "none",
-          }}>
-            다음 → ({interests.length > 0 ? `${interests.length}개 선택` : "1개 이상 선택"})
-          </MButton>
-          <div style={{ marginTop: 12, textAlign: "center" }}>
-            <span onClick={next} style={{ fontSize: 12, color: M.muted, fontWeight: 700, cursor: "pointer" }}>
-              건너뛰기
-            </span>
-          </div>
-        </>
-      )}
-
-      {/* === STEP 4: 첫 큐레이션 선물 === */}
-      {step === 4 && (
-        <>
-          <MagCap color={M.terra} style={{ marginBottom: 8 }}>READY · 첫 큐레이션</MagCap>
+          <MagCap color={M.terra} style={{ marginBottom: 8 }}>WELCOME · 가입 완료</MagCap>
           <h1 style={{ fontSize: 38, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.12, color: M.ink, margin: "0 0 10px" }}>
             마실맵에 오신 걸<br/>
             <span style={{ fontWeight: 900, color: M.olive }}>환영해요</span>{name ? `, ${name}` : ""}.
           </h1>
-          <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 28 }}>
-            취향에 맞는 첫 번째 컬렉션을 골라뒀어요. 지금 바로 펼쳐볼까요?
+          <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, fontWeight: 500, marginBottom: 24 }}>
+            취향은 미리 안 정해도 돼요. 갈 때마다 그날 기분과 상황을 골라 추천받는 게 더 마실맵다워요.
           </p>
 
-          {recommended && (
-            <div style={{
-              borderRadius: MR.cardLg, overflow: "hidden",
-              boxShadow: MS.cardLg, marginBottom: 28,
-            }}>
-              <div style={{
-                height: 180, background: recommended.cover, position: "relative",
-                display: "flex", alignItems: "flex-end", padding: 22,
-              }}>
-                <span style={{
-                  position: "absolute", top: 14, left: 14,
-                  fontFamily: "'JetBrains Mono', monospace",
-                  fontSize: 10, fontWeight: 700, letterSpacing: "0.14em",
-                  color: M.cream, background: "rgba(255,248,236,0.15)",
-                  padding: "5px 9px", borderRadius: 6,
-                  border: `1px solid rgba(255,248,236,0.3)`,
-                }}>{recommended.no} · {recommended.tag}</span>
-                <div>
-                  <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: "-0.02em", color: M.cream, lineHeight: 1.1 }}>{recommended.title}</div>
-                  <div style={{ fontSize: 13, color: "rgba(255,248,236,0.8)", marginTop: 4, fontWeight: 600 }}>{recommended.subtitle}</div>
-                </div>
+          {/* 추천 흐름 미리보기 카드 */}
+          <div onClick={() => finish("home")} style={{
+            borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardLg, marginBottom: 22, cursor: "pointer",
+            background: M.terra, color: M.cream, padding: 24,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
+              <div style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,248,236,0.16)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <MIcon name="sparkle" size={20} color={M.olive}/>
               </div>
-              <div style={{ padding: 20, background: M.cream }}>
-                <p style={{ fontSize: 13, color: M.ink, lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
-                  {recommended.blurb}
-                </p>
-                <div style={{ marginTop: 12, display: "flex", justifyContent: "space-between", fontSize: 11, color: M.muted, fontWeight: 700 }}>
-                  <span>EDITOR · {recommended.editor}</span>
-                  <span>{recommended.count}곳 · {recommended.readTime}분</span>
-                </div>
-              </div>
+              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,248,236,0.8)" }}>FOR YOU</span>
             </div>
-          )}
+            <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 26, fontWeight: 900, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+              이번엔 어디로<br/>마실 갈까요?
+            </div>
+            <p style={{ fontSize: 13, color: "rgba(255,248,236,0.82)", fontWeight: 500, margin: "12px 0 0", lineHeight: 1.6 }}>
+              “아이랑”, “비 오는 날”, “노을·옥상”, “데이트”… 그날 상황만 고르면 걷기 좋은 코스를 바로 추천해 드려요.
+            </p>
+            <div style={{ marginTop: 18, display: "flex", flexWrap: "wrap", gap: 7 }}>
+              {MX_MOODS.slice(0, 4).map((m) => (
+                <span key={m.id} style={{ padding: "6px 12px", borderRadius: 999, border: "1px solid rgba(255,248,236,0.35)", fontSize: 12, fontWeight: 700 }}>{m.label}</span>
+              ))}
+            </div>
+          </div>
 
-          <MButton kind="primary" size="lg" onClick={finish} style={{ width: "100%", justifyContent: "center", marginBottom: 10 }}>
-            마실 시작하기 →
+          <MButton kind="primary" size="lg" onClick={() => finish("home")} style={{ width: "100%", justifyContent: "center", marginBottom: 10 }}>
+            추천받으러 가기 →
           </MButton>
           <div style={{ textAlign: "center" }}>
-            <span onClick={finish} style={{ fontSize: 12, color: M.muted, fontWeight: 700, cursor: "pointer" }}>
-              나중에 둘러볼게요
+            <span onClick={() => finish("home")} style={{ fontSize: 12, color: M.muted, fontWeight: 700, cursor: "pointer" }}>
+              그냥 둘러볼게요
             </span>
           </div>
         </>

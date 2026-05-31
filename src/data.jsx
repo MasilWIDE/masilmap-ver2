@@ -490,96 +490,64 @@ const BUILDINGS = [
   },
 ];
 
-const COLLECTIONS = [
+/* ---------- 시리즈 (코스를 묶어 정복하는 상위 단위) ----------
+   건축물 → 코스(걷기) → 시리즈(여러 코스를 주제로 묶어 정복).
+   읽는 에디토리얼 콘텐츠 없음. courses[]는 COURSES의 id.            */
+const SERIES = [
   {
-    id: "brick",
-    no: "Vol.01",
-    title: "벽돌의 시간",
-    subtitle: "한국 모더니즘 건축 8선",
-    editor: "이주영",
-    editorRole: "건축평론가",
-    issue: "2026 봄호",
-    cover: "#333D51",
-    blurb: "1960년대부터 90년대까지, 한국 건축가들이 벽돌이라는 가장 가난한 재료를 어떻게 시(詩)로 만들었는지에 대한 기록.",
-    count: 8,
-    readTime: 14,
-    buildings: ["kongkan", "boan", "whanki"],
-    tag: "EDITORIAL",
+    id: "ando",
+    no: "S.01",
+    title: "안도 타다오",
+    subtitle: "노출 콘크리트와 빛, 흩어진 세 곳",
+    kind: "건축가",
+    cover: "#4A4A4A",
+    intro: "제주에서 강원, 서울까지 흩어진 한 건축가의 콘크리트를 코스로 나눠 정복합니다.",
+    courses: ["jeju-bonte", "wonju-museum", "concrete"],
+    badge: "안도 정복자",
   },
   {
     id: "hanok",
-    no: "Vol.02",
-    title: "한옥, 다시 짓다",
-    subtitle: "21세기 한옥 프로젝트 12선",
-    editor: "박정현",
-    editorRole: "건축사학자",
-    issue: "2026 봄호",
+    no: "S.02",
+    title: "한옥, 천 년의 결",
+    subtitle: "목조 건축의 비례를 따라 걷는 길",
+    kind: "테마",
     cover: "#9C7E1A",
-    blurb: "옛 한옥의 형식을 그대로 두지 않고, 다시 쓰고 다시 짓는 사람들. 보존이 아닌 사용에 대한 이야기.",
-    count: 12,
-    readTime: 18,
-    buildings: ["buseoksa", "jongmyo"],
-    tag: "FEATURE",
+    intro: "부석사에서 안동, 종묘까지 — 전통 목조 건축을 잇는 코스 모음.",
+    courses: ["buseoksa", "andong-hanok", "jongmyo"],
+    badge: "한옥 순례자",
   },
   {
-    id: "concrete",
-    no: "Vol.03",
-    title: "콘크리트와 빛",
-    subtitle: "한국의 미술관 산책",
-    editor: "최은영",
-    editorRole: "큐레이터",
-    issue: "2026 봄호",
-    cover: "#6B6B6B",
-    blurb: "회색 한 가지 재료로도 빛은 매번 다르게 떨어진다. 한국에 지어진 콘크리트 미술관 일곱 곳을 천천히 걸었다.",
-    count: 7,
-    readTime: 22,
-    buildings: ["bonte", "leeum", "soeul"],
-    tag: "JOURNEY",
+    id: "seoul",
+    no: "S.03",
+    title: "서울 도심 종주",
+    subtitle: "사대문 안팎의 현대 건축을 가로지르다",
+    kind: "지역 종주",
+    cover: "#333D51",
+    intro: "북촌부터 강남, 동대문, 삼청동까지 — 서울의 건축을 네 코스로 종주합니다.",
+    courses: ["bukchon", "gangnam-modern", "ddp-night", "seoul-mmcas"],
+    badge: "서울 마스터",
   },
   {
-    id: "sea",
-    no: "Vol.04",
-    title: "바다 곁의 집들",
-    subtitle: "동해안 건축 여행",
-    editor: "김도윤",
-    editorRole: "여행 작가",
-    issue: "2026 봄호",
-    cover: "#2F4858",
-    blurb: "강릉부터 양양, 속초까지 — 동해를 마주 본 작은 미술관과 카페, 그리고 집들. 차로 닿을 수 있는 거리의 건축 여행.",
-    count: 9,
-    readTime: 16,
-    buildings: ["soeul"],
-    tag: "TRAVEL",
-  },
-  {
-    id: "alley",
-    no: "Vol.05",
-    title: "도시의 틈",
-    subtitle: "골목 건축 다시 보기",
-    editor: "한지수",
-    editorRole: "도시연구자",
-    issue: "2025 겨울호",
+    id: "museum",
+    no: "S.04",
+    title: "미술관 순례",
+    subtitle: "건축이 곧 작품인 미술관들",
+    kind: "테마",
     cover: "#5A6B7A",
-    blurb: "큰 건축물이 아닌, 골목과 골목 사이에 끼어 있는 작은 집들. 도시를 만드는 진짜 재료에 대하여.",
-    count: 11,
-    readTime: 12,
-    buildings: ["boan"],
-    tag: "ESSAY",
+    intro: "용인 백남준부터 광주 ACC, 강릉 솔숲까지 — 전국의 미술관 건축을 정복합니다.",
+    courses: ["yongin-media", "gwangju-acc", "gangneung-sea", "yanggu-park"],
+    badge: "미술관 순례자",
   },
   {
-    id: "night",
-    no: "Vol.06",
-    title: "밤의 건축",
-    subtitle: "야간 개장하는 공간들",
-    editor: "윤서경",
-    editorRole: "사진가",
-    issue: "2025 겨울호",
-    cover: "#1F2738",
-    blurb: "해가 진 뒤에야 본래의 얼굴이 드러나는 건축들. 동대문에서 한강까지, 서울의 야경 건축 8선.",
-    count: 8,
-    readTime: 10,
-    buildings: ["ddp", "leeum"],
-    tag: "NIGHT",
+    id: "regen",
+    no: "S.05",
+    title: "다시 쓰는 건축",
+    subtitle: "산업유산과 옛 터의 두 번째 삶",
+    kind: "재료·시대",
+    cover: "#4A5570",
+    intro: "정수장이 공원이 되고 도청이 광장이 되는 — 재생 건축의 길.",
+    courses: ["hangang-industrial", "gwangju-acc", "seoul-mmcas"],
+    badge: "재생 탐험가",
   },
 ];
 
@@ -1008,4 +976,18 @@ const ASSETS = [
   { id: "A-3208", building: "boan",    name: "보안여관_재현_도면.dwg",       type: "도면",      uploader: "마실맵", owner: "마실맵",          consent: "완료", split: "100%",                       status: "공개" },
 ];
 
-Object.assign(window, { BUILDINGS, COLLECTIONS, REGIONS, TYPES, USE_TYPES, USE_TYPE_INDEX, COURSES, EXTERNAL_SPACES, USER, BOOKINGS, ASSETS });
+/* ---------- 시리즈 파생 헬퍼 ---------- */
+function seriesCourses(s) {
+  return (s.courses || []).map((id) => COURSES.find((c) => c.id === id)).filter(Boolean);
+}
+function seriesBuildingCount(s) {
+  const ids = new Set();
+  seriesCourses(s).forEach((c) => (c.buildings || []).forEach((b) => ids.add(b)));
+  return ids.size;
+}
+/* 이 건축물이 등장하는 시리즈 (코스 경유 역참조) */
+function seriesForBuilding(bid) {
+  return SERIES.filter((s) => seriesCourses(s).some((c) => (c.buildings || []).includes(bid)));
+}
+
+Object.assign(window, { BUILDINGS, SERIES, seriesCourses, seriesBuildingCount, seriesForBuilding, REGIONS, TYPES, USE_TYPES, USE_TYPE_INDEX, COURSES, EXTERNAL_SPACES, USER, BOOKINGS, ASSETS });

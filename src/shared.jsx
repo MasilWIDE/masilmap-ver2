@@ -14,14 +14,13 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
   const t = window.__masilT || {};
   const auth = window.__masilAuth || { isLoggedIn: false, login: () => {}, logout: () => {} };
   const isMobile = window.useIsMobile ? window.useIsMobile() : false;
+  const isTablet = window.useIsTablet ? window.useIsTablet() : false;
   const [drawerOpen, setDrawerOpen] = React.useState(false);
   // route 바뀌면 자동으로 drawer 닫기
   React.useEffect(() => { setDrawerOpen(false); }, [route]);
 
   // 로그인 상태에 따라 메뉴 구성. 명시적 items 인자가 오면 그걸 우선.
-  const navItems = items || (auth.isLoggedIn
-    ? ["홈", "지도", "건축물", "코스", "컬렉션", "내 마실"]
-    : ["홈", "지도", "건축물", "코스", "컬렉션"]);
+  const navItems = items || ["홈", "지도", "건축물", "코스", "시리즈"];
 
   const handleClick = (label) => {
     switch (label) {
@@ -29,9 +28,11 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
       case "지도":     return onNavigate("home", null, { homeLayout: "mapPrimary" });
       case "건축물":   return onNavigate("buildings");
       case "코스":     return onNavigate("course");
+      case "시리즈":
       case "컬렉션":
       case "저널":     return onNavigate("collection");
       case "내 마실":  return onNavigate("mypage");
+      case "피드":     return onNavigate("feed");
       default:         return onNavigate("home");
     }
   };
@@ -43,8 +44,9 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
       if (t.homeLayout === "mapPrimary") return "지도";
       return "홈";
     }    if (route === "course")      return "코스";
-    if (route === "collection")  return "컬렉션";
+    if (route === "collection")  return "시리즈";
     if (route === "mypage")      return "내 마실";
+    if (route === "feed")        return "피드";
     if (route === "booking")     return "코스";
     return "홈";
   })();
@@ -60,7 +62,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
         background: M.beige,
         position: "sticky", top: 0, zIndex: 50,
       }}>
-        <div onClick={() => onNavigate("home")} style={{ cursor: "pointer" }}>
+        <div onClick={() => onNavigate("home", null, { homeLayout: "spotlight" })} style={{ cursor: "pointer" }}>
           <MasilmapLogo size={22}/>
         </div>
         <button onClick={() => setDrawerOpen((o) => !o)} style={{
@@ -142,7 +144,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
                 {auth.isLoggedIn ? (
                   <MButton kind="primary" size="md" onClick={() => onNavigate("mypage")} style={{ flex: 1, justifyContent: "center" }}>내 마실 →</MButton>
                 ) : (
-                  <MButton kind="primary" size="md" onClick={() => onNavigate("onboarding")} style={{ flex: 1, justifyContent: "center" }}>마실 시작하기</MButton>
+                  <MButton kind="primary" size="md" onClick={() => onNavigate("intro")} style={{ flex: 1, justifyContent: "center", background: M.olive, color: M.terraDeep }}>마실 시작하기</MButton>
                 )}
               </div>
             </div>
@@ -162,8 +164,8 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
       position: "sticky", top: 0, zIndex: 50,
       backdropFilter: "blur(6px)",
     }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 36 }}>
-        <div onClick={() => onNavigate("home")} style={{ cursor: "pointer" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 22, minWidth: 0 }}>
+        <div onClick={() => onNavigate("home", null, { homeLayout: "spotlight" })} style={{ cursor: "pointer", flexShrink: 0 }}>
           <MasilmapLogo size={26} />
         </div>
         <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
@@ -188,8 +190,9 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
           })}
         </div>
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, background: M.cream, padding: "10px 16px", borderRadius: 999, boxShadow: MS.cardSm, minWidth: 240 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flexShrink: 0 }}>
+        {!isTablet && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, background: M.cream, padding: "10px 16px", borderRadius: 999, boxShadow: MS.cardSm, flex: "0 1 200px", minWidth: 140 }}>
           <MIcon name="search" size={16} color={M.muted} />
           <input
             placeholder="건축물, 지역, 건축가…"
@@ -214,15 +217,19 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
             }}>×</span>
           )}
         </div>
+        )}
         <span
           onClick={auth.isLoggedIn ? auth.logout : () => onNavigate("login")}
           style={{ fontSize: 13, color: M.ink, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap" }}>
           {auth.isLoggedIn ? "로그아웃" : "로그인"}
         </span>
         {auth.isLoggedIn ? (
-          <MButton kind="primary" size="md" onClick={() => onNavigate("mypage")}>내 마실 →</MButton>
+          <>
+            <MButton kind="primary" size="md" onClick={() => onNavigate("feed")} style={{ background: M.olive, color: M.terraDeep }}>피드</MButton>
+            <MButton kind="primary" size="md" onClick={() => onNavigate("mypage")}>내 마실 →</MButton>
+          </>
         ) : (
-          <MButton kind="primary" size="md" onClick={() => onNavigate("onboarding")}>마실 시작하기</MButton>
+          <MButton kind="primary" size="md" onClick={() => onNavigate("intro")} style={{ background: M.olive, color: M.terraDeep }}>마실 시작하기</MButton>
         )}
       </div>
     </header>
@@ -341,6 +348,46 @@ function Serial({ children, size = 13, color }) {
   );
 }
 
+/* ================================================================
+   코스 완주(정복) 상태 — localStorage 영속 + 컴포넌트 간 동기화.
+   시리즈 진행률·도장·뱃지가 모두 이 상태를 읽는다.
+   ================================================================ */
+const MASIL_DONE_KEY = "masil_done_courses_v1";
+function masilLoadDone() {
+  try {
+    const raw = localStorage.getItem(MASIL_DONE_KEY);
+    if (raw == null) return new Set(["jongmyo", "ddp-night"]); // 데모 시드: 첫 방문에 살아있어 보이도록
+    return new Set(JSON.parse(raw));
+  } catch (e) { return new Set(); }
+}
+function masilSaveDone(set) {
+  try { localStorage.setItem(MASIL_DONE_KEY, JSON.stringify([...set])); } catch (e) {}
+}
+function useDoneCourses() {
+  const [done, setDone] = React.useState(masilLoadDone);
+  React.useEffect(() => {
+    const h = () => setDone(masilLoadDone());
+    window.addEventListener("masil-done-change", h);
+    return () => window.removeEventListener("masil-done-change", h);
+  }, []);
+  const toggle = (id) => setDone((prev) => {
+    const next = new Set(prev);
+    next.has(id) ? next.delete(id) : next.add(id);
+    masilSaveDone(next);
+    window.dispatchEvent(new Event("masil-done-change"));
+    return next;
+  });
+  const setOne = (id, val) => setDone((prev) => {
+    const next = new Set(prev);
+    val ? next.add(id) : next.delete(id);
+    masilSaveDone(next);
+    window.dispatchEvent(new Event("masil-done-change"));
+    return next;
+  });
+  return { done, toggle, setOne };
+}
+
 Object.assign(window, {
   MasilNav, MagCap, Hairline, ImgPlaceholder, MetaRow, Serial,
+  useDoneCourses, masilLoadDone,
 });

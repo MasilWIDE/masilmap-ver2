@@ -1,6 +1,6 @@
 /* ================================================================
    masilmap · 지도 메뉴 (Option A · 사이드 도크) — ENGINE
-   실데이터(BUILDINGS / EXTERNAL_SPACES / COURSES / COLLECTIONS)에서
+   실데이터(BUILDINGS / EXTERNAL_SPACES / COURSES / SERIES)에서
    파생 정보를 만들고, 탈색 데이터맵(팬·줌·클러스터)을 그린다.
 
    브랜드 토큰만 사용 (M / MT / MR / MS, MIcon). Scholar 팔레트:
@@ -36,9 +36,9 @@ function mkCatOf(b) {
 }
 function mkCatColor(cat) { return cat.tone === "olive" ? M.olive : M.terra; }
 
-/* ---------- 2. 코스 / 컬렉션 역참조 ---------- */
+/* ---------- 2. 코스 / 시리즈 역참조 ---------- */
 function mkCoursesOf(b)     { return (window.COURSES || []).filter((c) => (c.buildings || []).includes(b.id)); }
-function mkCollectionsOf(b) { return (window.COLLECTIONS || []).filter((c) => (c.buildings || []).includes(b.id)); }
+function mkCollectionsOf(b) { return window.seriesForBuilding ? window.seriesForBuilding(b.id) : []; }
 
 /* ---------- 3. 외부 지도 딥링크 (후발주자 전략) ----------
    사용자가 이미 쓰던 네이버·카카오·구글 지도에서 바로 보고 저장. */

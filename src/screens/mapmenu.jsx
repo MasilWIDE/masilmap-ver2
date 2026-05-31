@@ -177,12 +177,12 @@ function MKCoursesModule({ b, onNavigate, onPreview, activeCourseId }) {
   );
 }
 
-/* ---------- 수록 컬렉션 (있을 때만) ---------- */
+/* ---------- 수록 시리즈 (있을 때만) ---------- */
 function MKCollectionsModule({ b, onNavigate }) {
   if (!b.collections.length) return null;
   return (
     <div>
-      <MKModLabel>수록된 컬렉션 · {b.collections.length}</MKModLabel>
+      <MKModLabel>수록된 시리즈 · {b.collections.length}</MKModLabel>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
         {b.collections.map((c) => (
           <div key={c.id} onClick={() => onNavigate && onNavigate("collection", c.id)} style={{
@@ -278,7 +278,9 @@ function MKDetailPanel({ b, isSaved, onToggleSave, onBack, onNavigate, onPreview
    ================================================================ */
 function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
   const all = React.useMemo(() => mkBuildings(), []);
-  const [lens, setLens] = React.useState("all");
+  const sh = useMasilShared();
+  const txStore = sh.s;
+  const [tx, setTx] = React.useState(() => txEmptyState());
   const [cat, setCat] = React.useState("all");
   const [selectedId, setSelectedId] = React.useState(null);
   const [hoveredId, setHovered] = React.useState(null);
@@ -289,17 +291,17 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
   const [saved, toggleSave] = useMapSaved();
   const [sheetOpen, setSheetOpen] = React.useState(false); // 모바일 보텀시트
 
-  const lensDef = MK_LENSES.find((l) => l.id === lens);
   const q = (searchQuery || "").trim().toLowerCase();
 
-  // 필터 (렌즈 + 카테고리 + 검색어) — 핀 표시용 (전체 지도 대상)
+  // 필터 (통합 분류 렌즈·양식·지역·연도·태그 + 유형 + 검색어) — 핀 표시용
+  const txState = { ...tx, q };
+  const allowed = React.useMemo(
+    () => new Set(txFilter(all, txState, txStore).map((b) => b.id)),
+    [tx, q, txStore, all]
+  );
   const matchFilters = (b) => {
-    if (lensDef && lensDef.test && !lensDef.test(b)) return false;
+    if (!allowed.has(b.id)) return false;
     if (cat !== "all" && b.cat.id !== cat) return false;
-    if (q) {
-      const hay = `${b.name} ${b.nameEn || ""} ${b.region} ${b.architect} ${b.style} ${(b.tags || []).join(" ")}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
     return true;
   };
   const pinItems = all.filter(matchFilters);
@@ -347,33 +349,19 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
           boxShadow: MS.cardSm, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
         }}><MIcon name="location" size={17} color={M.terra}/></button>
       </div>
-      {/* 큐레이션 렌즈 */}
-      <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 2 }}>
-        {MK_LENSES.map((l) => {
-          const on = l.id === lens;
-          return (
-            <button key={l.id} onClick={() => setLens(l.id)} style={{
-              flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 13px", borderRadius: 999,
-              cursor: "pointer", background: on ? M.terra : M.beige, color: on ? M.cream : M.ink,
-              border: on ? "none" : `1px solid ${M.beigeAlt}`, fontSize: 12.5, fontWeight: 800, fontFamily: MT.family, whiteSpace: "nowrap",
-            }}>
-              <MIcon name={l.icon} size={14} color={on ? M.cream : M.terra}/>{l.label}
-            </button>
-          );
-        })}
-      </div>
-      {/* 카테고리 (사용자 정의 분류) */}
-      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", color: M.muted, marginRight: 2 }}>유형</span>
-        <MKCatChip on={cat === "all"} onClick={() => setCat("all")} label="전체"/>
-        {MK_CAT_ORDER.map((k) => (
-          <MKCatChip key={k} on={cat === k} onClick={() => setCat(k)} cat={MK_CATS[k]} label={MK_CATS[k].label}/>
-        ))}
-        <button title="분류 직접 만들기 (운영자 정의)" style={{
-          display: "inline-flex", alignItems: "center", gap: 4, padding: "6px 10px", borderRadius: 999, cursor: "pointer",
-          border: `1px dashed ${M.muted}`, background: "transparent", color: M.muted, fontSize: 11.5, fontWeight: 800, fontFamily: MT.family,
-        }}><MIcon name="plus" size={12} color={M.muted}/>분류 추가</button>
-      </div>
+      {/* 통합 분류: 렌즈 칩 + 상세 필터 펼침 (유형 포함) */}
+      <TxFilterBar state={tx} setState={setTx} store={txStore} total={all.length} shown={pinItems.length}
+        extraPanel={(
+          <div style={{ marginTop: 18 }}>
+            <TxGroupLabel>유형 · 무엇을 하나</TxGroupLabel>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
+              <MKCatChip on={cat === "all"} onClick={() => setCat("all")} label="전체"/>
+              {MK_CAT_ORDER.map((k) => (
+                <MKCatChip key={k} on={cat === k} onClick={() => setCat(k)} cat={MK_CATS[k]} label={MK_CATS[k].label}/>
+              ))}
+            </div>
+          </div>
+        )}/>
     </div>
   );
 
@@ -421,17 +409,8 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
       <section style={{ position: "relative", height: "calc(100vh - 124px)", minHeight: 480 }}>
         <div style={{ position: "absolute", inset: 0 }}>{mapEl}</div>
         {/* 상단 렌즈 */}
-        <div style={{ position: "absolute", top: 12, left: 12, right: 12, display: "flex", gap: 6, overflowX: "auto" }}>
-          {MK_LENSES.map((l) => {
-            const on = l.id === lens;
-            return (
-              <button key={l.id} onClick={() => setLens(l.id)} style={{
-                flexShrink: 0, display: "inline-flex", alignItems: "center", gap: 5, padding: "8px 12px", borderRadius: 999, cursor: "pointer",
-                background: on ? M.terra : "rgba(255,255,255,0.94)", color: on ? M.cream : M.ink, border: "none",
-                fontSize: 12, fontWeight: 800, fontFamily: MT.family, whiteSpace: "nowrap", boxShadow: MS.cardSm,
-              }}><MIcon name={l.icon} size={13} color={on ? M.cream : M.terra}/>{l.label}</button>
-            );
-          })}
+        <div style={{ position: "absolute", top: 12, left: 12, right: 12 }}>
+          <TxLensChips state={tx} setState={setTx} store={txStore}/>
         </div>
         {/* 이 지역 다시 검색 */}
         {moved && (

@@ -9,6 +9,7 @@ const ADMIN_NAV = [
   { id: "admin-content", label: "콘텐츠 관리",   icon: "home",    count: 526 },
   { id: "admin-stats",   label: "예약·매출",      icon: "calendar", count: null },
   { id: "admin-rights",  label: "권리 관리",      icon: "bookmark", count: 47 },
+  { id: "admin-taxonomy", label: "분류·태그 관리", icon: "sparkle", count: null },
   { id: "admin-users",   label: "사용자",         icon: "users",   count: 2480, disabled: true },
 ];
 
@@ -118,7 +119,7 @@ function AdminContentScreen({ onNavigate }) {
         {[
           { id: "buildings", label: "건축물", count: BUILDINGS.length },
           { id: "courses",   label: "코스",    count: COURSES.length },
-          { id: "collections", label: "컬렉션", count: COLLECTIONS.length },
+          { id: "collections", label: "시리즈", count: SERIES.length },
         ].map((t) => {
           const on = tab === t.id;
           return (
@@ -591,4 +592,133 @@ function AdminRightsScreen({ onNavigate }) {
   );
 }
 
-Object.assign(window, { AdminContentScreen, AdminStatsScreen, AdminRightsScreen });
+Object.assign(window, { AdminContentScreen, AdminStatsScreen, AdminRightsScreen, AdminTaxonomyScreen });
+
+/* ================================================================
+   #12  분류·태그 관리 (운영자) — 폴크소노미 정리 + 렌즈 승격 + 어워드
+   ================================================================ */
+function AdminTaxonomyScreen({ onNavigate }) {
+  const sh = useMasilShared();
+  const tags = txAllTags(sh.s);
+  const lenses = txLenses(sh.s);
+  const promoted = sh.s.promotedLenses || [];
+  const banned = new Set(sh.s.bannedTags || []);
+  const awardIds = new Set(sh.s.awardIds || []);
+
+  const [mergeFrom, setMergeFrom] = React.useState("");
+  const [mergeTo, setMergeTo] = React.useState("");
+
+  return (
+    <AdminShell active="admin-taxonomy" onNavigate={onNavigate}>
+      <AdminTopBar
+        subtitle="TAXONOMY · TAGS · LENSES"
+        title="분류·태그 관리"
+        action={<span style={{ fontSize: 12.5, color: M.muted, fontWeight: 700 }}>방문자 태그는 {window.TAG_PUBLIC_MIN || 2}표 이상이면 공개돼요</span>}/>
+
+      <div style={{ padding: 32, display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 24, alignItems: "start" }}>
+        {/* 좌: 태그 목록 + 병합/금지/승격 */}
+        <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 22 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 16 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 900, color: M.ink, margin: 0 }}>태그 <span style={{ color: M.muted }}>· {tags.length}</span></h3>
+            <span style={{ fontSize: 12, color: M.muted, fontWeight: 700 }}>건물 수 기준 정렬</span>
+          </div>
+
+          {/* 병합 도구 */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: 12, background: M.beige, borderRadius: 14, marginBottom: 16, flexWrap: "wrap" }}>
+            <select value={mergeFrom} onChange={(e) => setMergeFrom(e.target.value)} style={adminSelStyle}>
+              <option value="">합칠 태그</option>
+              {tags.map((t) => <option key={t.tag} value={t.tag}>#{t.tag} ({t.count})</option>)}
+            </select>
+            <MIcon name="chevron" size={14} color={M.muted}/>
+            <select value={mergeTo} onChange={(e) => setMergeTo(e.target.value)} style={adminSelStyle}>
+              <option value="">남길 태그</option>
+              {tags.map((t) => <option key={t.tag} value={t.tag}>#{t.tag} ({t.count})</option>)}
+            </select>
+            <MButton kind="primary" size="sm" onClick={() => { if (mergeFrom && mergeTo) { sh.mergeTags(mergeFrom, mergeTo); setMergeFrom(""); setMergeTo(""); } }}>병합</MButton>
+          </div>
+
+          {/* 태그 리스트 */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 460, overflowY: "auto" }}>
+            {tags.map((t) => {
+              const isLens = promoted.some((l) => l.tag === t.tag);
+              return (
+                <div key={t.tag} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "#fff", borderRadius: 12, border: `1px solid ${M.beigeAlt}` }}>
+                  <span style={{ fontSize: 14, fontWeight: 800, color: M.ink, whiteSpace: "nowrap" }}># {t.tag}</span>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 700, whiteSpace: "nowrap" }}>{t.count}곳</span>
+                  <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
+                    <AdminMiniBtn active={isLens} onClick={() => isLens ? sh.demoteLens("tag-" + t.tag) : sh.promoteLens(t.tag, t.tag)}>
+                      {isLens ? "✓ 렌즈" : "렌즈 승격"}
+                    </AdminMiniBtn>
+                    <AdminMiniBtn onClick={() => sh.banTag(t.tag)}>숨김</AdminMiniBtn>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* 숨긴 태그 */}
+          {banned.size > 0 && (
+            <div style={{ marginTop: 16, paddingTop: 14, borderTop: `1px solid ${M.beigeAlt}` }}>
+              <div style={{ fontSize: 12, fontWeight: 800, color: M.muted, marginBottom: 8 }}>숨긴 태그 · {banned.size}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {[...banned].map((t) => (
+                  <span key={t} onClick={() => sh.unbanTag(t)} style={{ cursor: "pointer", fontSize: 12, fontWeight: 700, color: M.muted, padding: "5px 10px", borderRadius: 999, background: M.beige, textDecoration: "line-through" }}># {t} ↩</span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* 우: 렌즈 + 어워드 */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 22 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 900, color: M.ink, margin: "0 0 4px" }}>공개 렌즈</h3>
+            <p style={{ fontSize: 12.5, color: M.muted, fontWeight: 600, margin: "0 0 14px", lineHeight: 1.5 }}>지도·리스트 맨 위에 뜨는 프리셋. 태그를 승격하면 여기 추가돼요.</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {lenses.map((L) => {
+                const isPromoted = promoted.some((p) => p.id === L.id);
+                return (
+                  <div key={L.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "#fff", borderRadius: 12, border: `1px solid ${M.beigeAlt}` }}>
+                    <MIcon name={L.icon} size={14} color={M.olive}/>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: M.ink, whiteSpace: "nowrap" }}>{L.label}</span>
+                    {!isPromoted && <span style={{ fontSize: 10.5, fontWeight: 700, color: M.faint, fontFamily: "'JetBrains Mono', monospace" }}>기본</span>}
+                    {isPromoted && <span onClick={() => sh.demoteLens(L.id)} style={{ marginLeft: "auto", fontSize: 12, fontWeight: 800, color: M.terra, cursor: "pointer" }}>제거</span>}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 22 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 900, color: M.ink, margin: "0 0 4px" }}>어워드 지정</h3>
+            <p style={{ fontSize: 12.5, color: M.muted, fontWeight: 600, margin: "0 0 14px", lineHeight: 1.5 }}>“어워드” 렌즈에 노출할 건물을 직접 지정해요.</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, maxHeight: 300, overflowY: "auto" }}>
+              {(window.BUILDINGS || []).map((b) => {
+                const on = awardIds.has(b.id);
+                return (
+                  <label key={b.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10, cursor: "pointer", background: on ? `${M.olive}14` : "transparent" }}>
+                    <input type="checkbox" checked={on} onChange={() => sh.toggleAward(b.id)} style={{ accentColor: M.olive, width: 16, height: 16 }}/>
+                    <span style={{ fontSize: 13.5, fontWeight: 700, color: M.ink }}>{b.name}</span>
+                    <span style={{ marginLeft: "auto", fontSize: 11, color: M.muted, fontWeight: 600 }}>{b.region}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+    </AdminShell>
+  );
+}
+const adminSelStyle = { padding: "8px 12px", borderRadius: 10, border: `1px solid ${M.beigeAlt}`, background: "#fff", fontSize: 12.5, fontWeight: 700, color: M.ink, fontFamily: "inherit", cursor: "pointer" };
+function AdminMiniBtn({ active, onClick, children }) {
+  return (
+    <button onClick={onClick} style={{
+      padding: "5px 11px", borderRadius: 999, cursor: "pointer", fontSize: 11.5, fontWeight: 800, fontFamily: "inherit",
+      background: active ? M.olive : "#fff", color: active ? M.terraDeep : M.ink,
+      border: `1.5px solid ${active ? M.olive : M.beigeAlt}`, whiteSpace: "nowrap",
+    }}>{children}</button>
+  );
+}
+
+Object.assign(window, { AdminTaxonomyScreen });

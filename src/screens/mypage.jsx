@@ -8,11 +8,122 @@ function MyPageScreen({ onNavigate }) {
   const savedB = BUILDINGS.slice(0, 6);
   const savedC = COURSES.slice(0, 3);
 
+  // 마실 앱과 공유되는 상태 (채널 · 따라걷기 진행 · 정복 배지)
+  const sh = useMasilShared();
+  const done = sh.done;
+  const curCh = mxChannel(sh.s.currentChannelId);
+  const myChannels = MX_ACCOUNT.channels.map(mxChannel);
+  const walking = MX_COURSES.filter((c) => sh.myCoursesSet.has(c.id));
+
   return (
     <MPage>
       <MasilNav route="mypage" onNavigate={onNavigate}/>
 
-      {/* 프로필 헤더 */}
+      {/* === 마실 앱 연동: 채널 · 정복 배지 · 따라 걷기 === */}
+      <section style={{ padding: "40px 56px 8px" }}>
+        <Hairline label="MY MASIL · 마실 앱과 연동" style={{ marginBottom: 24 }}/>
+
+        {/* 현재 채널 + 계정 채널 전환 */}
+        <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 24, marginBottom: 28 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap" }}>
+            <div style={{ width: 64, height: 64, borderRadius: "50%", background: curCh.color, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, fontWeight: 900, flexShrink: 0 }}>{curCh.name[0]}</div>
+            <div style={{ flex: 1, minWidth: 180 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 22, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em" }}>{curCh.name}</span>
+                {curCh.official && <MIcon name="sparkle" size={14} color={M.olive}/>}
+              </div>
+              <div style={{ fontSize: 13, color: M.muted, fontWeight: 600, marginTop: 2 }}>{curCh.handle} · {curCh.cat} · 팔로워 {curCh.followers.toLocaleString()}</div>
+            </div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {myChannels.map((ch) => {
+                const on = ch.id === curCh.id;
+                return (
+                  <button key={ch.id} onClick={() => sh.setChannel(ch.id)} style={{
+                    display: "inline-flex", alignItems: "center", gap: 8, padding: "8px 12px", borderRadius: 999, cursor: "pointer",
+                    background: on ? M.terra : "#fff", color: on ? "#fff" : M.ink, border: `1.5px solid ${on ? M.terra : M.beigeAlt}`, fontSize: 13, fontWeight: 800 }}>
+                    <span style={{ width: 22, height: 22, borderRadius: "50%", background: ch.color, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 900 }}>{ch.name[0]}</span>
+                    {ch.name}{on && " ✓"}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 14, lineHeight: 1.6, textWrap: "pretty" }}>
+            한 계정으로 여러 채널을 운영해요. 팔로워에게는 <b style={{ color: M.ink }}>채널만</b> 보이고 실명·소속은 비공개입니다. 채널·진행 상태는 마실 앱과 실시간으로 공유돼요.
+          </div>
+        </div>
+
+        {/* 정복 배지 */}
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
+          <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>정복 배지</h2>
+          <a href="Masil App.html" style={{ fontSize: 12.5, fontWeight: 800, color: M.olive, textDecoration: "none" }}>마실 앱에서 걷기 →</a>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
+          {MX_BADGES.map((b) => {
+            const bp = mxBadgeProgress(b, done);
+            return (
+              <div key={b.id} style={{ background: bp.got ? b.color : M.cream, color: bp.got ? "#fff" : M.ink, borderRadius: MR.cardLg, padding: 18, border: `1px solid ${bp.got ? b.color : M.beigeAlt}` }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ width: 40, height: 40, borderRadius: "50%", background: bp.got ? "rgba(255,255,255,0.18)" : M.beige, display: "flex", alignItems: "center", justifyContent: "center", border: bp.got ? "2px solid rgba(255,255,255,0.5)" : "none" }}>
+                    <MIcon name="sparkle" size={20} color={bp.got ? "#fff" : M.beigeAlt}/>
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 800, opacity: bp.got ? 0.9 : 1, color: bp.got ? "#fff" : M.muted }}>{bp.done}/{bp.tot}</span>
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 900, marginTop: 12, letterSpacing: "-0.01em" }}>{b.name}</div>
+                <div style={{ fontSize: 11.5, fontWeight: 600, marginTop: 4, opacity: bp.got ? 0.85 : 1, color: bp.got ? "rgba(255,255,255,0.85)" : M.muted, lineHeight: 1.4 }}>{b.desc}</div>
+                {!bp.got && (
+                  <div style={{ marginTop: 10, height: 6, borderRadius: 999, background: "#E7E3D2", overflow: "hidden" }}>
+                    <div style={{ width: `${Math.round(bp.done / bp.tot * 100)}%`, height: "100%", background: M.olive, borderRadius: 999 }}/>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 걷는 중인 코스 (따라 걷기 진행) */}
+        {walking.length > 0 && (
+          <>
+            <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 16px" }}>걷는 중인 코스</h2>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16, marginBottom: 8 }}>
+              {walking.map((c) => {
+                const pr = mxCourseProgress(c, done);
+                const ch = mxChannel(c.channelId);
+                return (
+                  <div key={c.id} onClick={() => onNavigate("walkcourse", c.id)} style={{ cursor: "pointer", display: "flex", gap: 16, alignItems: "center", background: "#fff", borderRadius: MR.cardLg, padding: 16, boxShadow: MS.cardSm, border: `1px solid ${M.cream}` }}>
+                    <div style={{ width: 64, height: 64, borderRadius: 16, background: c.cover, color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <span style={{ fontSize: 18, fontWeight: 900 }}>{pr.complete ? "★" : `${pr.done}/${pr.tot}`}</span>
+                      <span style={{ fontSize: 9, fontWeight: 700, opacity: 0.8, marginTop: 2 }}>방문</span>
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: 17, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.title}</div>
+                      <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, margin: "2px 0 10px" }}>{ch.name} · {c.distance} · {c.duration}</div>
+                      <div style={{ height: 8, borderRadius: 999, background: "#E7E3D2", overflow: "hidden" }}>
+                        <div style={{ width: `${pr.pct}%`, height: "100%", background: pr.complete ? M.olive : c.cover, borderRadius: 999 }}/>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
+
+        {/* 가볼 곳 — 팔로우한 채널 발자취에서 담은 장소 */}
+        {(sh.s.savedPlaces || []).length > 0 && (
+          <div style={{ marginTop: 24 }}>
+            <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 6px" }}>가볼 곳</h2>
+            <p style={{ fontSize: 13, color: M.muted, fontWeight: 500, margin: "0 0 14px" }}>팔로우한 채널이 다녀온 곳에서 담아둔 장소예요.</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {(sh.s.savedPlaces || []).map((name, i) => (
+                <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "8px 14px", borderRadius: 999, background: "#fff", border: `1px solid ${M.beigeAlt}`, fontSize: 13, fontWeight: 700, color: M.ink }}>
+                  <MIcon name="bookmark" size={12} color={M.olive}/>{name}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
       <section style={{ padding: "40px 56px 24px" }}>
         <Hairline label={`MY MAP · 가입 ${USER.joined}`} style={{ marginBottom: 32 }}/>
         <div style={{ display: "grid", gridTemplateColumns: "auto 1fr auto", gap: 32, alignItems: "center" }}>
