@@ -297,56 +297,57 @@ function TourConsole({ onNavigate }) {
    에디터 콘솔
    ================================================================ */
 function EditorConsole({ onNavigate }) {
-  const collections = (window.COLLECTIONS || []);
+  const collections = (window.SERIES || []);
+  const sc = window.seriesCourses || (() => []);
   const drafts = [
-    { title: "콘크리트가 빛을 다루는 법", status: "초안", words: 1240, updated: "2일 전" },
-    { title: "다시 짓는 한옥, 그 다음", status: "검토", words: 2380, updated: "5일 전" },
-    { title: "도시의 빈틈, 산업유산의 두 번째 삶", status: "초안", words: 860, updated: "1주 전" },
+    { title: "안도 타다오 · 부산 코스 추가 검토", status: "편성중", courses: 2, updated: "2일 전" },
+    { title: "한옥, 천 년의 결 · 경주 코스 후보", status: "검토", courses: 3, updated: "5일 전" },
+    { title: "다시 쓰는 건축 · 인천 코스 편성", status: "편성중", courses: 1, updated: "1주 전" },
   ];
   return (
     <ConsoleShell role="editor" active="console-editor" onNavigate={onNavigate}>
-      <ConsoleTopBar role="editor" subtitle="EDITORIAL" title="컬렉션 · 매거진"
-        action={<MButton kind="primary" size="md" onClick={() => onNavigate("upload-deep")} icon={<MIcon name="edit" size={14} color={M.cream}/>}>새 컬렉션</MButton>}/>
+      <ConsoleTopBar role="editor" subtitle="CURATION" title="시리즈 · 큐레이션"
+        action={<MButton kind="primary" size="md" onClick={() => onNavigate("upload-deep")} icon={<MIcon name="edit" size={14} color={M.cream}/>}>새 시리즈</MButton>}/>
       <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 28 }}>
         <ConsoleKPIs items={[
-          { label: "발행 컬렉션", value: String(collections.length || 6), delta: "+2" },
-          { label: "초안",        value: "3", delta: null },
-          { label: "이번 호",     value: "Vol.07", delta: null },
+          { label: "발행 시리즈", value: String(collections.length || 5), delta: "+1" },
+          { label: "편성 대기",   value: "3", delta: null },
+          { label: "누적 정복자", value: "1.2K", delta: "+18%" },
           { label: "총 조회수",   value: "12.4K", delta: "+22%" },
         ]}/>
 
         <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 24 }}>
-          {/* 내 컬렉션 */}
+          {/* 내 시리즈 */}
           <div>
-            <SectionHead action="전체 →" onAction={() => onNavigate("collection")}>MY COLLECTIONS · 내 컬렉션</SectionHead>
+            <SectionHead action="전체 →" onAction={() => onNavigate("collection")}>MY SERIES · 내 시리즈</SectionHead>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               {collections.slice(0, 4).map((c) => (
                 <div key={c.id} onClick={() => onNavigate("collection", c.id)} style={{ cursor: "pointer", background: M.cream, borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.cardSm }}>
                   <div style={{ aspectRatio: "16/9", background: c.cover, position: "relative" }}>
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15,18,28,0.55), transparent 60%)" }}/>
                     <div style={{ position: "absolute", left: 12, bottom: 10, right: 12 }}>
-                      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>{c.no} · {c.tag}</div>
+                      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>{c.no} · {c.kind}</div>
                       <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", marginTop: 2 }}>{c.title}</div>
                     </div>
                   </div>
                   <div style={{ padding: "10px 13px 13px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 11.5, color: M.muted, fontWeight: 700 }}>{c.editor} · {c.count}곳</span>
+                    <span style={{ fontSize: 11.5, color: M.muted, fontWeight: 700 }}>{c.kind} · {sc(c).length}코스</span>
                     <span style={{ fontSize: 11.5, fontWeight: 800, color: M.terra }}>편집 →</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          {/* 매거진 글 (초안) */}
+          {/* 코스 편성 대기 */}
           <div>
-            <SectionHead action="새 글 →" onAction={() => onNavigate("upload-deep")}>DRAFTS · 매거진 글</SectionHead>
+            <SectionHead action="새 시리즈 →" onAction={() => onNavigate("upload-deep")}>QUEUE · 코스 편성 대기</SectionHead>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {drafts.map((d, i) => (
                 <div key={i} onClick={() => onNavigate("upload-deep")} style={{ background: M.cream, borderRadius: MR.card, padding: 14, boxShadow: MS.cardSm, cursor: "pointer" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontSize: 10.5, fontWeight: 800, padding: "3px 9px", borderRadius: 999,
                       background: d.status === "검토" ? `${M.olive}22` : `${M.terra}14`, color: d.status === "검토" ? M.oliveDeep : M.terra }}>{d.status}</span>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>{d.words} words</span>
+                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>{d.courses} 코스</span>
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em", lineHeight: 1.3, textWrap: "pretty" }}>{d.title}</div>
                   <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 6 }}>수정 {d.updated}</div>

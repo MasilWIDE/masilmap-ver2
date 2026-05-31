@@ -63,15 +63,20 @@ function GalleryStrip({ b, count = 5, tones = ["beige", "deep", "olive", "terra"
   );
 }
 
-/* visitor note (community signal) */
-function VisitorNote({ name, color, time, text }) {
+/* visitor note (community signal) — 채널 명의로 작성 (실명·소속 비공개) */
+function VisitorNote({ channelId, time, text }) {
+  const ch = (window.mxChannel ? mxChannel(channelId) : null) || { name: "마실러", color: M.terra, handle: "", official: false };
   return (
     <div style={{ padding: 16, background: M.beige, borderRadius: MR.card, display: "flex", gap: 12 }}>
-      <MAvatar initial={name[0]} color={color} size={32}/>
+      <MAvatar initial={ch.name[0]} color={ch.color} size={32}/>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
-          <span style={{ fontSize: 13, fontWeight: 800, color: M.ink }}>{name}</span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>{time}</span>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, minWidth: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 800, color: M.ink }}>{ch.name}</span>
+            {ch.official && <MIcon name="sparkle" size={11} color={M.olive}/>}
+            {ch.handle && <span style={{ fontSize: 11, color: M.faint, fontWeight: 600 }}>{ch.handle}</span>}
+          </span>
+          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600, whiteSpace: "nowrap" }}>{time}</span>
         </div>
         <p style={{ fontSize: 13, lineHeight: 1.6, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>{text}</p>
       </div>
@@ -79,10 +84,70 @@ function VisitorNote({ name, color, time, text }) {
   );
 }
 
+/* 후기 컴포저 — 현재 활동 채널 명의로 작성됨을 명시 */
+function NoteComposer() {
+  const sh = useMasilShared();
+  const auth = window.__masilAuth || { isLoggedIn: false };
+  const ch = mxChannel(sh.s.currentChannelId);
+  if (!auth.isLoggedIn) {
+    return (
+      <div style={{ padding: 16, background: M.cream, borderRadius: MR.card, border: `1px dashed ${M.beigeAlt}`, fontSize: 13, color: M.muted, fontWeight: 600, textAlign: "center" }}>
+        로그인하면 채널 명의로 후기를 남길 수 있어요.
+      </div>
+    );
+  }
+  return (
+    <div style={{ padding: 14, background: M.cream, borderRadius: MR.card, border: `1px solid ${M.beigeAlt}` }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <MAvatar initial={ch.name[0]} color={ch.color} size={30}/>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontSize: 12.5, fontWeight: 800, color: M.ink, display: "inline-flex", alignItems: "center", gap: 4 }}>
+            {ch.name}{ch.official && <MIcon name="sparkle" size={10} color={M.olive}/>}
+            <span style={{ fontSize: 11, color: M.muted, fontWeight: 600 }}>채널로 작성</span>
+          </div>
+          <div style={{ fontSize: 11, color: M.faint, fontWeight: 600, marginTop: 1 }}>실명·소속은 공개되지 않아요</div>
+        </div>
+        <MButton kind="primary" size="sm">후기 남기기</MButton>
+      </div>
+    </div>
+  );
+}
+
+/* 건축물 태그 — 통합 분류(원천 + 방문자 폴크소노미) + 태그 추가 */
+function BuildingTagsBlock({ b }) {
+  const sh = useMasilShared();
+  const auth = window.__masilAuth || { isLoggedIn: false };
+  const tags = txBuildingTags(b, sh.s);
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 }}>
+        <span style={{ fontSize: 13, fontWeight: 800, color: M.ink }}>태그 <span style={{ color: M.muted, fontWeight: 600 }}>· 사람들이 본 이 곳</span></span>
+        <span style={{ fontSize: 11, color: M.faint, fontWeight: 600 }}>누구나 추가할 수 있어요</span>
+      </div>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+        {tags.length === 0 && <span style={{ fontSize: 13, color: M.muted, fontWeight: 600 }}>아직 태그가 없어요. 첫 태그를 달아보세요.</span>}
+        {tags.map((t) => (
+          <span key={t.tag} style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 13px", borderRadius: 999, background: M.beige, border: `1px solid ${M.beigeAlt}`, fontSize: 13, fontWeight: 700, color: M.ink }}>
+            # {t.tag}
+            {t.source !== "base" && t.votes > 1 && <span style={{ fontSize: 11, color: M.olive, fontWeight: 800 }}>+{t.votes}</span>}
+          </span>
+        ))}
+      </div>
+      {auth.isLoggedIn ? (
+        <TxTagAdder building={b} store={sh.s} onAdd={(id, tag) => sh.addTag(id, tag)}/>
+      ) : (
+        <div style={{ padding: "12px 16px", background: M.cream, borderRadius: 999, border: `1px dashed ${M.beigeAlt}`, fontSize: 12.5, color: M.muted, fontWeight: 600, textAlign: "center" }}>
+          로그인하면 이 곳에 태그를 달 수 있어요
+        </div>
+      )}
+    </div>
+  );
+}
+
 const SAMPLE_NOTES = [
-  { name: "지은",  color: "#333D51", time: "2일 전",  text: "비 오는 날 회랑을 따라 끝까지 걸어봤는데, 비례가 더 또렷이 느껴졌어요. 사람이 거의 없어서 더 좋았습니다." },
-  { name: "도현",  color: "#D3AC2B", time: "1주 전",  text: "오후 4시쯤 빛이 가장 좋다고 들어서 그 시간에 맞춰 갔습니다. 카페에서 천천히 시간 보내기 좋아요." },
-  { name: "수아",  color: "#9C7E1A", time: "2주 전",  text: "주차가 어렵다는 후기가 많아서 대중교통으로 갔는데, 마지막 200m 골목길이 더 인상적이었어요." },
+  { channelId: "seochon",  time: "2일 전",  text: "비 오는 날 회랑을 따라 끝까지 걸어봤는데, 비례가 더 또렷이 느껴졌어요. 사람이 거의 없어서 더 좋았습니다." },
+  { channelId: "noeul",    time: "1주 전",  text: "오후 4시쯤 빛이 가장 좋다고 들어서 그 시간에 맞춰 갔습니다. 카페에서 천천히 시간 보내기 좋아요." },
+  { channelId: "concrete", time: "2주 전",  text: "주차가 어렵다는 후기가 많아서 대중교통으로 갔는데, 마지막 200m 골목길이 더 인상적이었어요." },
 ];
 
 const SAMPLE_BODY = [
@@ -204,14 +269,14 @@ function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
           )}
         </div>
 
-        {/* 우: 컬렉션 */}
+        {/* 우: 시리즈 */}
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
-            <MagCap color={accent}>컬렉션 · {inCollections.length}</MagCap>
+            <MagCap color={accent}>시리즈 · {inCollections.length}</MagCap>
             {inCollections.length > 0 && (
               <span onClick={() => onNavigate("collection")} style={{
                 fontSize: 11, fontWeight: 800, color: M.muted, cursor: "pointer",
-              }}>전체 컬렉션 →</span>
+              }}>전체 시리즈 →</span>
             )}
           </div>
 
@@ -221,7 +286,7 @@ function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
               background: M.cream, border: `1px dashed ${M.beigeAlt}`,
               fontSize: 12, color: M.muted, fontWeight: 600, textAlign: "center",
             }}>
-              아직 이 건축이 포함된 컬렉션이 없습니다
+              아직 이 건축이 속한 시리즈가 없습니다
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -241,7 +306,7 @@ function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
                     <div style={{ fontSize: 10, fontWeight: 800, opacity: 0.8, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em" }}>
                       {c.no}
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 900, marginTop: 2 }}>{c.count}곳</div>
+                    <div style={{ fontSize: 16, fontWeight: 900, marginTop: 2 }}>{(c.courses || []).length}코스</div>
                   </div>
                   <div style={{ minWidth: 0 }}>
                     <div style={{ fontSize: 14, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em",
@@ -249,7 +314,7 @@ function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
                       {c.title}
                     </div>
                     <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 4 }}>
-                      {c.editor} · {c.readTime}분
+                      {c.kind} · {c.badge}
                     </div>
                   </div>
                   <div style={{ fontSize: 13, fontWeight: 900, color: accent }}>↗</div>
@@ -283,7 +348,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
   const accent = b.pinTone === "olive" ? M.olive : M.terra;
   const layout = t.detailLayout;
   const related = BUILDINGS.filter((x) => x.id !== b.id && x.typeKey === b.typeKey).slice(0, 3);
-  const inCollections = COLLECTIONS.filter((c) => c.buildings.includes(b.id));
+  const inCollections = seriesForBuilding(b.id);
   const inCourses     = COURSES.filter((c) => c.buildings.includes(b.id));
   // 호환용 (기존 inCollection 참조 코드)
   const inCollection  = inCollections[0];
@@ -332,8 +397,8 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
                 { label: "연면적", value: b.metrics.gfa },
                 { label: "관람", value: b.metrics.visit },
               ]} style={{ marginBottom: 20 }}/>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 20 }}>
-                {b.tags.map((tag) => <MChip key={tag} color={M.ink} size="sm">{tag}</MChip>)}
+              <div style={{ marginBottom: 24 }}>
+                <BuildingTagsBlock b={b}/>
               </div>
               <div style={{ display: "flex", gap: 8 }}>
                 <MButton kind="primary" size="md" icon={<MIcon name="bookmark" size={14} color={M.cream}/>}>저장</MButton>
@@ -379,25 +444,26 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
               ]} style={{ marginTop: 8 }}/>
             </div>
 
-            <Hairline label="ALSO IN THIS COLLECTION"/>
+            <Hairline label="ALSO IN THIS SERIES"/>
             {inCollection && (
               <div onClick={() => onNavigate("collection", inCollection.id)} style={{
                 padding: 18, borderRadius: MR.card,
                 background: inCollection.cover, color: M.cream,
                 cursor: "pointer",
               }}>
-                <MagCap color="rgba(255,248,236,0.7)" style={{ marginBottom: 8 }}>{inCollection.no} · {inCollection.tag}</MagCap>
+                <MagCap color="rgba(255,248,236,0.7)" style={{ marginBottom: 8 }}>{inCollection.no} · {inCollection.kind}</MagCap>
                 <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.1 }}>{inCollection.title}</div>
                 <div style={{ fontSize: 13, marginTop: 4, opacity: 0.85, fontWeight: 600 }}>{inCollection.subtitle}</div>
                 <div style={{ marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 600 }}>
-                  <span>{inCollection.count} 곳 · {inCollection.readTime}분</span>
-                  <span>읽기 →</span>
+                  <span>{(inCollection.courses || []).length} 코스 · {inCollection.badge}</span>
+                  <span>정복 →</span>
                 </div>
               </div>
             )}
 
             <div>
               <Hairline label="VISITOR NOTES" style={{ marginBottom: 14 }}/>
+              <div style={{ marginBottom: 12 }}><NoteComposer/></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {SAMPLE_NOTES.map((n, i) => <VisitorNote key={i} {...n}/>)}
               </div>
@@ -446,7 +512,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
       { id: "gallery", label: "03. 갤러리" },
       { id: "info",    label: "04. 방문 정보" },
       { id: "maps",    label: "05. 지도 · 예약" },
-      { id: "network", label: "06. 코스 · 컬렉션" },
+      { id: "network", label: "06. 코스 · 시리즈" },
       { id: "notes",   label: "07. 방문 후기" },
       { id: "more",    label: "08. 더 깊이 보기" },
       { id: "related", label: "09. 비슷한 건축" },
@@ -566,13 +632,19 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
             {/* 06 · NETWORK · 코스 + 컬렉션 (sidebar: 자체 wrap 사용) */}
             {(inCourses.length > 0 || inCollections.length > 0) && (
               <section id="network" style={{ marginBottom: 56 }}>
-                <Hairline label="06 · 코스 · 컬렉션 · 이 건축이 등장하는 곳" style={{ marginBottom: 28 }}/>
+                <Hairline label="06 · 코스 · 시리즈 · 이 건축이 등장하는 곳" style={{ marginBottom: 28 }}/>
                 <NetworkSectionInner b={b} inCourses={inCourses} inCollections={inCollections} onNavigate={onNavigate}/>
               </section>
             )}
 
+            <section style={{ marginBottom: 56 }}>
+              <Hairline label="07 · 태그 · 사용자 분류" style={{ marginBottom: 28 }}/>
+              <BuildingTagsBlock b={b}/>
+            </section>
+
             <section id="notes" style={{ marginBottom: 56 }}>
-              <Hairline label="07 · VISITOR NOTES" style={{ marginBottom: 28 }}/>
+              <Hairline label="08 · VISITOR NOTES" style={{ marginBottom: 28 }}/>
+              <div style={{ marginBottom: 16 }}><NoteComposer/></div>
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {SAMPLE_NOTES.map((n, i) => <VisitorNote key={i} {...n}/>)}
               </div>
@@ -649,6 +721,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
         <BodyBlock block={SAMPLE_BODY[4]}/>
 
         <Hairline label="VISITOR NOTES" style={{ margin: "40px 0 20px" }}/>
+        <div style={{ marginBottom: 12 }}><NoteComposer/></div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {SAMPLE_NOTES.map((n, i) => <VisitorNote key={i} {...n}/>)}
         </div>

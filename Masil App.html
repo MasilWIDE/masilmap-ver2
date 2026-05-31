@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>마실맵 — 채널·코스 앱 (rel3)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet" />
+  <style>
+    html, body, #root { margin: 0; padding: 0; width: 100%; min-height: 100%; }
+    body {
+      font-family: 'Pretendard', system-ui, sans-serif;
+      background: #ECEEF1;
+      color: #1F2738;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    button { font-family: inherit; }
+    img, svg { max-width: 100%; }
+    input::placeholder { color: #9aa0ab; }
+    @keyframes mxFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes mxUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes mxPop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    /* 폰 안쪽 스크롤바 숨김 (모바일 느낌) */
+    #root *::-webkit-scrollbar { width: 0; height: 0; }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- 브랜드 토큰 + 아이콘 (M / MT / MR / MS / MIcon / PinHouse) -->
+  <script type="text/babel" src="src/brand.jsx"></script>
+
+  <!-- 디바이스 프레임 + Tweaks 셸 -->
+  <script type="text/babel" src="app2/ios-frame.jsx"></script>
+  <script type="text/babel" src="app2/tweaks-panel.jsx"></script>
+
+  <!-- 앱 데이터 + UI + 화면 -->
+  <script type="text/babel" src="app2/mobile-data.jsx"></script>
+  <script type="text/babel" src="app2/shared-state.jsx"></script>
+  <script type="text/babel" src="app2/mobile-ui.jsx"></script>
+  <script type="text/babel" src="app2/mobile-screens-a.jsx"></script>
+  <script type="text/babel" src="app2/mobile-screens-b.jsx"></script>
+  <script type="text/babel" src="app2/mobile-app.jsx"></script>
+</body>
+</html>

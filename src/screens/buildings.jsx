@@ -373,6 +373,9 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
   const toggleMenu = (k) => setOpenMenu((cur) => (cur === k ? null : k));
 
   // 필터 state
+  const sh = useMasilShared();
+  const txStore = sh.s;
+  const [tx, setTx] = React.useState(() => txEmptyState());
   const [projects, setProjects] = React.useState(new Set(["building"]));     // 기본 건축물
   const [regions, setRegions]   = React.useState(new Set());                  // 지역 키 set
   const [uses, setUses]         = React.useState(new Set());                  // typeKey set
@@ -389,7 +392,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
   const onChangeFloors  = ()   => { setPage(1); };
 
   // 검색어 바뀌면 첫 페이지로
-  React.useEffect(() => { setPage(1); }, [searchQuery]);
+  React.useEffect(() => { setPage(1); }, [searchQuery, tx]);
 
   // dropdown 외부 클릭 시 닫기
   React.useEffect(() => {
@@ -418,28 +421,10 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
   })();
   const krTotal = Object.values(provinceCounts).reduce((a, b) => a + b, 0);
 
-  // 필터링
+  // 필터링 — 통합 분류 엔진(렌즈·양식·지역·연대·태그·검색)
   const q = (searchQuery || "").trim().toLowerCase();
-  const filtered = BUILDINGS.filter((b) => {
-    if (q) {
-      const hay = `${b.name} ${b.nameEn || ""} ${b.region} ${b.architect} ${b.style} ${(b.tags || []).join(" ")}`.toLowerCase();
-      if (!hay.includes(q)) return false;
-    }
-    if (regions.size > 0) {
-      const id = provinceIdOf(b);
-      if (!id || !regions.has(id)) return false;
-    }
-    if (uses.size > 0 && !uses.has(b.useKey)) return false;
-    if (areaType === "gfa") {
-      const g = parseGfa(b.metrics?.gfa);
-      if (g < areaMin || g > areaMax) return false;
-    }
-    if (floorsType === "above") {
-      const f = b.metrics?.floors || 0;
-      if (f < floorsMin || f > floorsMax) return false;
-    }
-    return true;
-  });
+  const txState = { ...tx, q };
+  const filtered = txFilter(BUILDINGS, txState, txStore);
 
   // 페이지네이션
   const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
@@ -486,7 +471,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
             color: M.muted, fontWeight: 500, margin: 0,
             maxWidth: 340, textWrap: "pretty",
           }}>
-            526곳을 카테고리·지역·시대로 펼쳐 두었습니다. 매월 에디터가 새 픽을 고릅니다.
+            526곳을 카테고리·지역·시대로 펼쳐 두었습니다. 에디터가 수시로 새 픽을 고릅니다.
           </p>
         </div>
       </section>
@@ -496,9 +481,9 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
         <section style={{ padding: `16px ${px}px 28px` }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
-              <MagCap color={M.terra}>EDITOR'S PICKS · 2026 SPRING</MagCap>
+              <MagCap color={M.terra}>EDITOR'S PICKS</MagCap>
               <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", margin: 0, color: M.ink }}>
-                이번 호의 세 건축
+                에디터가 고른 세 건축
               </h2>
             </div>
             <span style={{ fontSize: 12, color: M.terra, fontWeight: 800, cursor: "pointer" }}
@@ -534,166 +519,9 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
         <div style={{ padding: `0 ${px}px` }}>
           <Hairline label={`ALL · ${filtered.length} / ${BUILDINGS.length} PLACES${totalPages > 1 ? ` · PAGE ${safePage}/${totalPages}` : ""}`} />
         </div>
-        <section style={{ padding: `14px ${px}px 16px` }}>
-          <div style={{ display: "flex", gap: 10, alignItems: "center", justifyContent: "center", flexWrap: "wrap", position: "relative" }}>
-
-            {/* === 프로젝트 === */}
-            <FilterChip label="프로젝트" badge={projectBadge}
-              open={openMenu === "project"} onToggle={() => toggleMenu("project")}
-              icon="map" width={240}>
-              <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>
-                카테고리 선택
-              </div>
-              <CheckRow checked={projects.has("building")}
-                onChange={() => {/* always on for this page */}} disabled
-                dot={M.terra}
-                label="건축물 (현재 페이지)"/>
-              <CheckRow checked={false} disabled dot="#F0A0A0" label="인테리어"/>
-              <CheckRow checked={false} disabled dot="#4A5570" label="계획안"/>
-              <CheckRow checked={false} disabled dot={M.olive}     label="여행지"/>
-              <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>
-                ※ 다른 카테고리는 준비중
-              </div>
-            </FilterChip>
-
-            {/* === 지역 === */}
-            <FilterChip label="지역" badge={regionBadge}
-              open={openMenu === "region"} onToggle={() => toggleMenu("region")}
-              icon="location" width={320}>
-              {/* 한국 섹션 */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
-                <span style={{ fontSize: 12, color: M.ink, fontWeight: 800 }}>🇰🇷 한국</span>
-                <span style={{ fontSize: 11, color: M.muted, fontWeight: 700 }}>{krTotal}곳</span>
-              </div>
-              {KR_PROVINCES.map((p) => (
-                <CheckRow key={p.id}
-                  checked={regions.has(p.id)}
-                  onChange={() => toggleSet(regions, p.id, setRegions)}
-                  label={p.name}
-                  count={provinceCounts[p.id] || 0}/>
-              ))}
-
-              {/* 국제 섹션 */}
-              <div style={{
-                marginTop: 14, paddingTop: 12,
-                borderTop: `1px solid ${M.beigeAlt}`,
-                display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6,
-              }}>
-                <span style={{ fontSize: 12, color: M.ink, fontWeight: 800 }}>🌏 국제</span>
-                <span style={{ fontSize: 10, color: M.terra, fontWeight: 800 }}>준비중</span>
-              </div>
-              {INTL_COUNTRIES.map((c) => (
-                <CheckRow key={c.id}
-                  checked={false} disabled
-                  label={`${c.flag} ${c.name}`}/>
-              ))}
-              <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>
-                ※ 국제 건축은 큐레이션 준비중입니다
-              </div>
-
-              {regions.size > 0 && (
-                <div onClick={() => { setRegions(new Set()); setPage(1); }} style={{
-                  marginTop: 10, padding: "8px 0", textAlign: "center",
-                  fontSize: 12, fontWeight: 700, color: M.terra,
-                  cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
-                }}>모두 해제</div>
-              )}
-            </FilterChip>
-
-            {/* === 용도 (1차 → 2차 hierarchical) === */}
-            <UseFilterChip uses={uses} setUses={setUses}
-              open={openMenu === "use"} onToggle={() => toggleMenu("use")}/>
-
-            {/* === 면적 === */}
-            <FilterChip label="면적" badge={areaBadge}
-              open={openMenu === "area"} onToggle={() => toggleMenu("area")}
-              icon="filter" width={300}>
-              <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>
-                면적 종류
-              </div>
-              <div style={{ marginBottom: 14 }}>
-                <RadioRow value="site"  current={areaType} onChange={setAreaType} label="대지면적"/>
-                <RadioRow value="floor" current={areaType} onChange={setAreaType} label="건축면적"/>
-                <RadioRow value="gfa"   current={areaType} onChange={setAreaType} label="연면적"/>
-              </div>
-              <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>
-                범위 (㎡)
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 8, alignItems: "center" }}>
-                <input type="number" value={areaMin} min={0} max={areaMax}
-                  onChange={(e) => { setAreaMin(Math.max(0, +e.target.value || 0)); onChangeArea(); }}
-                  style={inputStyle}/>
-                <span style={{ color: M.muted }}>~</span>
-                <input type="number" value={areaMax} min={areaMin}
-                  onChange={(e) => { setAreaMax(Math.max(areaMin, +e.target.value || 0)); onChangeArea(); }}
-                  style={inputStyle}/>
-              </div>
-              {areaType !== "gfa" && (
-                <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>
-                  ※ 현재 데이터는 <strong style={{ color: M.terra }}>연면적</strong>만 등록되어 있어요
-                </div>
-              )}
-              {(areaMin > 0 || areaMax < 200000) && (
-                <div onClick={() => { setAreaMin(0); setAreaMax(200000); setPage(1); }} style={{
-                  marginTop: 10, padding: "8px 0", textAlign: "center",
-                  fontSize: 12, fontWeight: 700, color: M.terra,
-                  cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
-                }}>초기화</div>
-              )}
-            </FilterChip>
-
-            {/* === 층수 === */}
-            <FilterChip label="층수" badge={floorsBadge}
-              open={openMenu === "floors"} onToggle={() => toggleMenu("floors")}
-              icon="filter" width={280}>
-              <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>
-                층 종류
-              </div>
-              <div style={{ marginBottom: 14 }}>
-                <RadioRow value="above" current={floorsType} onChange={setFloorsType} label="지상"/>
-                <RadioRow value="below" current={floorsType} onChange={setFloorsType} label="지하"/>
-              </div>
-              <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>
-                범위
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 8, alignItems: "center" }}>
-                <input type="number" value={floorsMin} min={1} max={floorsMax}
-                  onChange={(e) => { setFloorsMin(Math.max(1, +e.target.value || 1)); onChangeFloors(); }}
-                  style={inputStyle}/>
-                <span style={{ color: M.muted }}>~</span>
-                <input type="number" value={floorsMax} min={floorsMin}
-                  onChange={(e) => { setFloorsMax(Math.max(floorsMin, +e.target.value || floorsMin)); onChangeFloors(); }}
-                  style={inputStyle}/>
-              </div>
-              {floorsType === "below" && (
-                <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>
-                  ※ 지하층 데이터는 별도 등록 필요
-                </div>
-              )}
-              {(floorsMin > 1 || floorsMax < 50 || floorsType !== "above") && (
-                <div onClick={() => { setFloorsMin(1); setFloorsMax(50); setFloorsType("above"); setPage(1); }} style={{
-                  marginTop: 10, padding: "8px 0", textAlign: "center",
-                  fontSize: 12, fontWeight: 700, color: M.terra,
-                  cursor: "pointer", borderTop: `1px solid ${M.beigeAlt}`,
-                }}>초기화</div>
-              )}
-            </FilterChip>
-
-            {/* 우측: 전체 초기화 (필터 활성시만) */}
-            {(regionBadge + usesBadge + areaBadge + floorsBadge) > 0 && (
-              <div onClick={() => {
-                setRegions(new Set()); setUses(new Set());
-                setAreaMin(0); setAreaMax(200000);
-                setFloorsType("above"); setFloorsMin(1); setFloorsMax(50);
-                setPage(1);
-              }} style={{
-                position: "absolute", right: 0, top: "50%", transform: "translateY(-50%)",
-                padding: "8px 12px",
-                fontSize: 12, fontWeight: 700, color: M.muted,
-                cursor: "pointer", textDecoration: "underline",
-              }}>모든 필터 초기화</div>
-            )}
-          </div>
+        {/* 통합 분류: 렌즈 칩 + 상세 필터 펼침 (지도와 동일) */}
+        <section style={{ padding: `12px ${px}px 16px` }}>
+          <TxFilterBar state={tx} setState={setTx} store={txStore} total={BUILDINGS.length} shown={filtered.length} inline/>
         </section>
       </div>
 

@@ -221,7 +221,7 @@
     <tbody>
       <tr>
         <td><code>home</code></td>
-        <td>매거진 표지 + 검색 + 이번 주 픽 + 다음 코스 (4가지 layout 변형: cover / split / mapPrimary / editorial)</td>
+        <td>표지 + 검색 + 에디터 픽 + 다음 코스 (4가지 layout 변형: cover / split / mapPrimary / editorial)</td>
         <td class="path">src/screens/home.jsx</td>
         <td><span class="badge b-done">UI 완성</span></td>
       </tr>
@@ -441,8 +441,8 @@
         <td>buildings 인덱스 · detail · 지도 · 컬렉션 · 코스 등 거의 모든 곳</td>
       </tr>
       <tr>
-        <td><strong>COLLECTIONS</strong> (매거진 컬렉션)</td>
-        <td>6개 (Vol.01~06)</td>
+        <td><strong>COLLECTIONS</strong> (컬렉션)</td>
+        <td>6개 (No.01~06)</td>
         <td class="code">COLLECTIONS (data.jsx:496)</td>
         <td>collection 인덱스/상세 · 홈 cover · 디테일 NetworkSection</td>
       </tr>
@@ -669,17 +669,17 @@
 ]}</pre>
   <p>역색인: <code>USE_TYPE_INDEX</code>(data.jsx:683) — 2차 id → 1차 id</p>
 
-  <h3>5-3. COLLECTIONS (매거진 컬렉션) · 6건</h3>
+  <h3>5-3. COLLECTIONS (컬렉션) · 6건</h3>
   <table>
     <thead><tr><th>필드</th><th>타입</th><th>예시</th></tr></thead>
     <tbody>
       <tr><td><code>id</code></td><td>string (PK)</td><td>"brick"</td></tr>
-      <tr><td><code>no</code></td><td>string</td><td>"Vol.01"</td></tr>
+      <tr><td><code>no</code></td><td>string</td><td>"No.01"</td></tr>
       <tr><td><code>title</code></td><td>string</td><td>"벽돌의 시간"</td></tr>
       <tr><td><code>subtitle</code></td><td>string</td><td>"한국 모더니즘 건축 8선"</td></tr>
       <tr><td><code>editor</code></td><td>string</td><td>"이주영"</td></tr>
       <tr><td><code>editorRole</code></td><td>string</td><td>"건축평론가"</td></tr>
-      <tr><td><code>issue</code></td><td>string</td><td>"2026 봄호"</td></tr>
+      <tr><td><code>issue</code></td><td>string</td><td>"2026.04"</td></tr>
       <tr><td><code>cover</code></td><td>hex string</td><td>"#333D51"</td></tr>
       <tr><td><code>blurb</code></td><td>string</td><td>2~3문장 요약</td></tr>
       <tr><td><code>count</code></td><td>number</td><td>8</td></tr>

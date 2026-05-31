@@ -120,7 +120,7 @@ screens(특히 `mapmenu-engine` → `mapmenu`, `home-spotlight`·`home-mosaic`·
   "마실지도는 핵심만, 전문 정보는 외부에서" 원칙. (마실그라운드는 임시로 masilwide.com 검색 연결 — 실제 URL로 교체)
 
 ### 4.3 메인(홈) — 레이아웃 변형 (Tweaks "홈 · 메인 페이지")
-- **spotlight**(기본): 풀블리드 시네마틱 히어로(이번 주 한 곳 크게) + 썸네일 레일 + 스탯 밴드 + 컬렉션 띠. 다크 톤.
+- **spotlight**(기본): 풀블리드 시네마틱 히어로(에디터 픽 한 곳 크게) + 썸네일 레일 + 지도 밴드 + 컬렉션 띠. 다크 톤.
 - **mosaic**: 건축 사진 비대칭 모자이크 월 + 골드 매스트헤드.
 - mapPrimary(=지도 메뉴) / cover / editorial / split (기존).
 

@@ -111,12 +111,12 @@ function MButton({ children, kind = "primary", size = "md", as = "div", icon, ic
     lg: { pad: "12px 22px", fs: 14, weight: 900 },
   }[size];
   const kinds = {
-    primary:   { bg: M.terra,    color: M.cream, border: "none" },
-    secondary: { bg: M.cream,    color: M.ink,   border: `1px solid transparent`, boxShadow: MS.cardSm },
-    ghost:     { bg: "transparent", color: M.ink, border: "none" },
-    onTerra:   { bg: M.cream,    color: M.terra, border: "none" },   /* reverse on terra surface */
-    olive:     { bg: M.olive,    color: M.cream, border: "none" },
-    outline:   { bg: "transparent", color: M.ink, border: `1.5px solid ${M.ink}` },
+    primary:   { background: M.terra,    color: M.cream, border: "none" },
+    secondary: { background: M.cream,    color: M.ink,   border: `1px solid transparent`, boxShadow: MS.cardSm },
+    ghost:     { background: "transparent", color: M.ink, border: "none" },
+    onTerra:   { background: M.cream,    color: M.terra, border: "none" },   /* reverse on terra surface */
+    olive:     { background: M.olive,    color: M.cream, border: "none" },
+    outline:   { background: "transparent", color: M.ink, border: `1.5px solid ${M.ink}` },
   }[kind];
   const Comp = as;
   return (
