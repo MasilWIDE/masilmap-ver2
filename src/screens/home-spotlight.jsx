@@ -54,7 +54,7 @@ function SpotlightHome({ onNavigate }) {
         <div style={{ position: "absolute", left: isMobile ? 20 : 56, right: isMobile ? 20 : 56, bottom: isMobile ? 132 : 168, maxWidth: 980 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
             <span style={{ width: 30, height: 2, background: M.olive }}/>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: M.olive }}>에디터 스포트라이트 · #{hero.no}</span>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: M.olive }}>에디터 스포트라이트</span>
           </div>
           <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 44 : 96, fontWeight: 900,
             letterSpacing: "-0.035em", lineHeight: 0.98, margin: 0, color: "#fff", textWrap: "balance",

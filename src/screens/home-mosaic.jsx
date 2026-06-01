@@ -71,7 +71,7 @@ function MosaicHome({ onNavigate }) {
                   background: "linear-gradient(to top, rgba(15,18,28,0.78) 0%, rgba(15,18,28,0.05) 55%)" }}/>
                 <div style={{ position: "absolute", left: 14, right: 14, bottom: 12 }}>
                   <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700,
-                    letterSpacing: "0.1em", color: M.olive, marginBottom: 3 }}>#{b.no} · {b.region}</div>
+                    letterSpacing: "0.1em", color: M.olive, marginBottom: 3 }}>{b.region}</div>
                   <div style={{ fontSize: (cs >= 3 ? 20 : 15), fontWeight: 900, color: "#fff", letterSpacing: "-0.02em",
                     lineHeight: 1.15, textShadow: "0 2px 12px rgba(0,0,0,0.4)" }}>{b.name}</div>
                   {cs >= 3 && (
