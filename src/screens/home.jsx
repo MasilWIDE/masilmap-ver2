@@ -458,7 +458,7 @@ function MasilHero({ onNavigate }) {
             lineHeight: 1.02, color: M.ink, margin: 0,
             textWrap: "pretty",
           }}>
-            한국에 지어진 <span style={{ color: M.olive, fontWeight: 900 }}>모든 건축</span>은<br/>
+            한국에 지어진 <span style={{ color: M.olive, fontWeight: 900 }}>모든 공간</span>은<br/>
             한 번쯤 걸어볼 가치가 있다.
           </h1>
           <div style={{ display: "flex", gap: 12, marginTop: 32, alignItems: "center" }}>

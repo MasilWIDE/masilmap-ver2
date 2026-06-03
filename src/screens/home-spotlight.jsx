@@ -721,7 +721,7 @@ function SpotlightMapBand({ onNavigate, isMobile }) {
             <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: M.olive }}>EXPLORE THE MAP · 지도</span>
           </div>
           <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 30 : 52, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.08, margin: 0, color: M.ink, textWrap: "balance" }}>
-            지도 위에 펼쳐진<br/>한국의 모든 건축
+            지도 위에 펼쳐진<br/>한국의 모든 공간
           </h2>
           <p style={{ fontSize: isMobile ? 15 : 17, color: M.muted, fontWeight: 500, lineHeight: 1.7, margin: "20px 0 0", maxWidth: 440, textWrap: "pretty" }}>
             천 년 된 목조 건축부터 어제 완공된 미술관까지 — 전국 526곳을 지도 한 장에 펼쳐 두었습니다. 가까운 동네부터 천천히 걸어보세요.
