@@ -51,7 +51,15 @@ const BUBBLE_DEFS = [
 function SearchCenterHero({ onNavigate, isMobile }) {
   const [query, setQuery]   = React.useState("");
   const [focused, setFocused] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
   const containerRef = React.useRef(null);
+
+  /* 스크롤 감지 → 네이버/구글처럼 상단 검색창으로 시선 안내 */
+  React.useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 80);
+    window.addEventListener("scroll", h, { passive: true });
+    return () => window.removeEventListener("scroll", h);
+  }, []);
 
   /* 키프레임 CSS 한 번만 주입 */
   React.useEffect(() => {
@@ -437,6 +445,19 @@ function SearchCenterHero({ onNavigate, isMobile }) {
           </p>
         )}
       </div>
+
+      {/* 스크롤 유도 화살표 — 스크롤 전에만 표시 */}
+      {!scrolled && (
+        <div style={{
+          position: "absolute", bottom: 28, left: "50%", transform: "translateX(-50%)",
+          display: "flex", flexDirection: "column", alignItems: "center", gap: 4,
+          animation: "mFloat2 2.5s ease-in-out infinite",
+          pointerEvents: "none",
+        }}>
+          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(244,243,234,0.45)", fontFamily: "'JetBrains Mono', monospace" }}>SCROLL</span>
+          <div style={{ width: 1, height: 28, background: "rgba(244,243,234,0.25)" }}/>
+        </div>
+      )}
 
       {/* 하단 페이드아웃 */}
       <div style={{

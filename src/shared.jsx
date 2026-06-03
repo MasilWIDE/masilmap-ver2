@@ -16,11 +16,18 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
   const isMobile = window.useIsMobile ? window.useIsMobile() : false;
   const isTablet = window.useIsTablet ? window.useIsTablet() : false;
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
   // route 바뀌면 자동으로 drawer 닫기
   React.useEffect(() => { setDrawerOpen(false); }, [route]);
+  // 로그인 모달 전역 이벤트 수신
+  React.useEffect(() => {
+    const h = () => setShowLoginModal(true);
+    window.addEventListener("masil-need-login", h);
+    return () => window.removeEventListener("masil-need-login", h);
+  }, []);
 
   // 로그인 상태에 따라 메뉴 구성. 명시적 items 인자가 오면 그걸 우선.
-  const navItems = items || ["홈", "지도", "공간", "코스", "시리즈"];
+  const navItems = items || ["홈", "지도", "공간", "코스", "컬렉션"];
 
   const handleClick = (label) => {
     switch (label) {
@@ -44,7 +51,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
       if (t.homeLayout === "mapPrimary") return "지도";
       return "홈";
     }    if (route === "course")      return "코스";
-    if (route === "collection")  return "시리즈";
+    if (route === "collection")  return "컬렉션";
     if (route === "mypage")      return "내 마실";
     if (route === "feed")        return "피드";
     if (route === "booking")     return "코스";
@@ -55,6 +62,8 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
   if (isMobile) {
     const search = window.__masilSearch || { query: "", setQuery: () => {} };
     return (
+      <>
+      {showLoginModal && <LoginPromptModal onNavigate={onNavigate} onClose={() => setShowLoginModal(false)}/>}
       <header style={{
         padding: "14px 20px",
         display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -151,11 +160,14 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
           </div>
         )}
       </header>
+      </>
     );
   }
 
   // === DESKTOP NAV ===
   return (
+    <>
+    {showLoginModal && <LoginPromptModal onNavigate={onNavigate} onClose={() => setShowLoginModal(false)}/>}
     <header style={{
       padding: "22px 56px",
       display: "flex", alignItems: "center", justifyContent: "space-between",
@@ -233,6 +245,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
         )}
       </div>
     </header>
+    </>
   );
 }
 
@@ -349,6 +362,80 @@ function Serial({ children, size = 13, color }) {
 }
 
 /* ================================================================
+   찜(북마크) 상태 — localStorage 영속 + 전역 동기화.
+   로그인 필요 시 masil-need-login 이벤트를 통해 모달 표시.
+   ================================================================ */
+const MASIL_SAVED_KEY = "masil_saved_v1";
+function masilLoadSaved() {
+  try {
+    const raw = localStorage.getItem(MASIL_SAVED_KEY);
+    return raw ? new Set(JSON.parse(raw)) : new Set();
+  } catch (e) { return new Set(); }
+}
+function masilPersistSaved(set) {
+  try { localStorage.setItem(MASIL_SAVED_KEY, JSON.stringify([...set])); } catch (e) {}
+}
+function useBookmarks() {
+  const [savedIds, setSavedIds] = React.useState(masilLoadSaved);
+  React.useEffect(() => {
+    const h = () => setSavedIds(masilLoadSaved());
+    window.addEventListener("masil-saved-change", h);
+    return () => window.removeEventListener("masil-saved-change", h);
+  }, []);
+  const toggle = (id, { requireLogin = true } = {}) => {
+    const auth = window.__masilAuth || { isLoggedIn: false };
+    if (requireLogin && !auth.isLoggedIn) {
+      window.dispatchEvent(new CustomEvent("masil-need-login"));
+      return;
+    }
+    setSavedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      masilPersistSaved(next);
+      window.dispatchEvent(new Event("masil-saved-change"));
+      return next;
+    });
+  };
+  const has = (id) => savedIds.has(id);
+  return { savedIds, toggle, has };
+}
+
+/* 로그인 유도 모달 */
+function LoginPromptModal({ onNavigate, onClose }) {
+  return (
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, zIndex: 9000,
+      background: "rgba(31,39,56,0.5)", backdropFilter: "blur(4px)",
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
+    }}>
+      <div onClick={(e) => e.stopPropagation()} style={{
+        background: M.beige, borderRadius: 24, padding: "36px 32px",
+        maxWidth: 380, width: "100%", textAlign: "center",
+        boxShadow: "0 24px 64px rgba(31,39,56,0.22)",
+        animation: "slideUp .2s ease-out",
+      }}>
+        <div style={{ fontSize: 36, marginBottom: 12 }}>🔖</div>
+        <div style={{ fontSize: 20, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", marginBottom: 8 }}>
+          로그인이 필요해요
+        </div>
+        <p style={{ fontSize: 14, color: M.muted, fontWeight: 600, lineHeight: 1.6, margin: "0 0 24px" }}>
+          찜한 공간은 로그인 후 어디서든 확인할 수 있어요.<br/>
+          간편하게 소셜 로그인으로 시작해보세요.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+          <MButton kind="primary" size="lg" onClick={() => { onClose(); onNavigate("login"); }}>
+            로그인 / 회원가입
+          </MButton>
+          <div onClick={onClose} style={{
+            fontSize: 13, fontWeight: 700, color: M.muted, cursor: "pointer", padding: "8px 0",
+          }}>나중에 하기</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ================================================================
    코스 완주(정복) 상태 — localStorage 영속 + 컴포넌트 간 동기화.
    시리즈 진행률·도장·뱃지가 모두 이 상태를 읽는다.
    ================================================================ */
@@ -390,4 +477,5 @@ function useDoneCourses() {
 Object.assign(window, {
   MasilNav, MagCap, Hairline, ImgPlaceholder, MetaRow, Serial,
   useDoneCourses, masilLoadDone,
+  useBookmarks, masilLoadSaved, LoginPromptModal,
 });

@@ -328,10 +328,6 @@ function FilterBar({ onFilteredChange, searchQuery = "" }) {
         icon="map" width={240}>
         <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>카테고리 선택</div>
         <CheckRow checked={projects.has("building")} disabled dot={M.terra} label="공간 (현재 페이지)"/>
-        <CheckRow checked={false} disabled dot="#F0A0A0" label="인테리어"/>
-        <CheckRow checked={false} disabled dot="#4A5570" label="계획안"/>
-        <CheckRow checked={false} disabled dot={M.olive}  label="여행지"/>
-        <div style={{ fontSize: 10, color: M.muted, fontWeight: 600, marginTop: 8 }}>※ 다른 카테고리는 준비중</div>
       </FilterChip>
 
       {/* 지역 */}
@@ -477,8 +473,8 @@ function MasilHero({ onNavigate }) {
             color: M.ink, fontWeight: 400,
             margin: 0, textWrap: "pretty",
           }}>
-            마실맵은 한국의 공간을 천천히 걷는 여행 안내서입니다. 천 년 된 목조 건축부터 어제 완공된 미술관까지,
-            526곳의 공간과 47개의 코스를 지도 위에 함께 펼쳐 두었습니다.
+            그동안 걷던 공간이 새롭게 보이기 시작한다. 이렇게 걷기 좋은 공간이 존재 한다.<br/>
+            천 년 된 목조 건축부터 어제 완공된 미술관까지, 526곳의 공간과 47개의 코스를 지도 위에 함께 펼쳐 두었습니다.
           </p>
           <div style={{ marginTop: 20, display: "flex", gap: 24, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 600 }}>
             <span>526 PLACES</span>

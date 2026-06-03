@@ -74,11 +74,29 @@ function MKModLabel({ children, action, onAction }) {
 
 /* ---------- 외부 지도 보기·저장 (후발주자 · 항상 노출) ---------- */
 function MKExtMapsModule({ b }) {
+  const addr = encodeURIComponent(b.address || b.name || "");
+  const extMaps = [
+    {
+      id: "kakao", name: "카카오맵", dot: "#FFCD00", ring: true,
+      view: `https://map.kakao.com/link/search/${addr}`,
+      save: `https://map.kakao.com/link/search/${addr}`,
+    },
+    {
+      id: "naver", name: "네이버지도", dot: "#03C75A", ring: false,
+      view: `https://map.naver.com/v5/search/${addr}`,
+      save: `https://map.naver.com/v5/search/${addr}`,
+    },
+    {
+      id: "google", name: "구글맵", dot: "#4285F4", ring: false,
+      view: `https://www.google.com/maps/search/${addr}`,
+      save: `https://www.google.com/maps/search/${addr}`,
+    },
+  ];
   return (
     <div>
-      <MKModLabel>다른 지도에서 열기 · 저장</MKModLabel>
+      <MKModLabel>다른 지도에서 열기</MKModLabel>
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-        {b.extMaps.map((m) => (
+        {extMaps.map((m) => (
           <div key={m.id} style={{
             border: `1px solid ${M.beigeAlt}`, borderRadius: 14, padding: 9, background: M.beige,
             display: "flex", flexDirection: "column", gap: 8,
@@ -88,21 +106,15 @@ function MKExtMapsModule({ b }) {
                 boxShadow: m.ring ? "inset 0 0 0 1px rgba(0,0,0,0.12)" : "none" }}/>
               <span style={{ fontSize: 11, fontWeight: 800, color: M.ink, letterSpacing: "-0.02em", whiteSpace: "nowrap" }}>{m.name}</span>
             </div>
-            <div style={{ display: "flex", gap: 5 }}>
-              <a href={m.view} target="_blank" rel="noreferrer" style={{
-                flex: 1, textAlign: "center", textDecoration: "none", fontSize: 11, fontWeight: 800,
-                color: M.ink, background: M.cream, padding: "6px 0", borderRadius: 8,
-              }}>보기 ↗</a>
-              <a href={m.save} target="_blank" rel="noreferrer" title={`${m.name}에 저장`} style={{
-                width: 30, display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none",
-                background: M.cream, borderRadius: 8,
-              }}><MIcon name="bookmark" size={13} color={M.terra}/></a>
-            </div>
+            <a href={m.view} target="_blank" rel="noreferrer" style={{
+              textAlign: "center", textDecoration: "none", fontSize: 11, fontWeight: 800,
+              color: M.ink, background: M.cream, padding: "6px 0", borderRadius: 8, display: "block",
+            }}>열기 ↗</a>
           </div>
         ))}
       </div>
       <div style={{ fontSize: 10.5, color: M.muted, fontWeight: 600, marginTop: 8, lineHeight: 1.5 }}>
-        이미 쓰시던 지도에서 길찾기·저장하세요. 마실맵은 이야기를, 길안내는 익숙한 지도에 맡깁니다.
+        마실맵은 이야기를, 길안내는 익숙한 지도에 맡깁니다.
       </div>
     </div>
   );
@@ -144,7 +156,21 @@ function MKBookingModule({ b, onNavigate }) {
 
 /* ---------- 포함된 마실 코스 (있을 때만) ---------- */
 function MKCoursesModule({ b, onNavigate, onPreview, activeCourseId }) {
-  if (!b.courses.length) return null;
+  if (!b.courses.length) return (
+    <div>
+      <MKModLabel>이 공간이 포함된 마실 코스</MKModLabel>
+      <div style={{
+        padding: "16px 14px", borderRadius: 14,
+        background: M.beige, border: `1px dashed ${M.beigeAlt}`,
+        fontSize: 13, color: M.muted, fontWeight: 600, lineHeight: 1.55, textAlign: "center",
+      }}>
+        아직 이 공간을 포함한 코스가 없어요.<br/>
+        <span onClick={() => onNavigate && onNavigate("course")} style={{
+          color: M.terra, fontWeight: 800, cursor: "pointer", textDecoration: "underline",
+        }}>코스 제안하기 →</span>
+      </div>
+    </div>
+  );
   return (
     <div>
       <MKModLabel>이 공간이 포함된 마실 코스 · {b.courses.length}</MKModLabel>

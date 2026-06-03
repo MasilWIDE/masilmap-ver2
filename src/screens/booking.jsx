@@ -298,7 +298,7 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
             </div>
             <Hairline style={{ margin: "20px 0" }}/>
             <div style={{ display: "flex", gap: 8 }}>
-              <MButton kind="primary" size="md" style={{ flex: 1, justifyContent: "center" }} onClick={() => onNavigate("mypage")}>마이페이지에서 확인</MButton>
+              <MButton kind="primary" size="md" style={{ flex: 1, justifyContent: "center" }} onClick={() => onNavigate("mypage")}>예약 내역 확인 →</MButton>
               <MButton kind="secondary" size="md" style={{ flex: 1, justifyContent: "center" }} onClick={() => onNavigate("course", c.id)}>코스 다시 보기</MButton>
             </div>
           </div>
@@ -378,13 +378,11 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
               <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: M.muted, letterSpacing: "0.14em" }}>
                 TOSS PAYMENTS WIDGET
               </div>
-              <div style={{ fontSize: 14, color: M.muted, fontWeight: 600 }}>
-                <code style={{ fontFamily: "'JetBrains Mono', monospace", background: M.cream, padding: "4px 8px", borderRadius: 6 }}>
-                  &lt;PaymentWidget /&gt;
-                </code> 가 이 자리에 렌더됩니다
-              </div>
-              <div style={{ fontSize: 12, color: M.faint, marginTop: 4 }}>
-                실제 결제 UI는 토스페이먼츠 SDK가 주입
+              <div style={{ padding: "20px", borderRadius: 14, background: `${M.olive}12`, border: `1.5px solid ${M.olive}44`, textAlign: "center" }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: M.olive, letterSpacing: "-0.02em" }}>무료 도슨트 코스</div>
+                <div style={{ fontSize: 13, color: M.muted, fontWeight: 600, marginTop: 6, lineHeight: 1.6 }}>
+                  현재 마실맵 도슨트 코스는 무료로 운영됩니다.<br/>신청 후 카카오톡으로 확정 안내를 드립니다.
+                </div>
               </div>
             </div>
           </div>
@@ -404,23 +402,23 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
         {/* 우측 결제 요약 */}
         <aside style={{ position: "sticky", top: 110, alignSelf: "flex-start" }}>
           <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 24, boxShadow: MS.cardLg }}>
-            <MagCap>FINAL · 최종 결제</MagCap>
+            <MagCap>CONFIRM · 신청 확인</MagCap>
             <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8, fontSize: 13 }}>
-              <Row label="1인 가격" value={`₩ ${c.price.toLocaleString()}`}/>
-              <Row label="인원" value={`× ${people}`}/>
-              <Row label="결제 수단" value={pay === "card" ? "신용카드" : pay === "toss" ? "토스페이" : pay === "naver" ? "네이버페이" : "카카오페이"}/>
+              <Row label="코스" value={c.name}/>
+              <Row label="인원" value={`${people}명`}/>
+              <Row label="참가비" value="무료"/>
             </div>
             <Hairline style={{ margin: "16px 0" }}/>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-              <MagCap>총 결제 금액</MagCap>
-              <span style={{ fontSize: 36, fontWeight: 900, color: M.terra, letterSpacing: "-0.025em" }}>₩ {total.toLocaleString()}</span>
+              <MagCap>참가비</MagCap>
+              <span style={{ fontSize: 36, fontWeight: 900, color: M.olive, letterSpacing: "-0.025em" }}>무료</span>
             </div>
             <MButton kind="primary" size="lg" style={{ width: "100%", justifyContent: "center", marginTop: 20, opacity: agree1 && agree2 ? 1 : 0.5, pointerEvents: agree1 && agree2 ? "auto" : "none" }} onClick={() => setDone(true)}>
-              ₩ {total.toLocaleString()} 결제하기
+              도슨트 코스 신청하기
             </MButton>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, marginTop: 12, fontSize: 11, color: M.muted, fontWeight: 700 }}>
-              <span>🔒</span>
-              <span>토스페이먼츠가 안전하게 결제 정보를 처리합니다</span>
+              <span>📩</span>
+              <span>신청 완료 후 카카오톡으로 확정 안내를 드립니다</span>
             </div>
           </div>
         </aside>
