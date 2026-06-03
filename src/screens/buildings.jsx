@@ -391,7 +391,8 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
   const onChangeFloors  = ()   => { setPage(1); };
 
   // 검색어 바뀌면 첫 페이지로
-  React.useEffect(() => { setPage(1); }, [searchQuery, tx]);
+  const [sortBy, setSortBy] = React.useState("popular");
+  React.useEffect(() => { setPage(1); }, [searchQuery, tx, sortBy]);
 
   // dropdown 외부 클릭 시 닫기
   React.useEffect(() => {
@@ -425,10 +426,20 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
   const txState = { ...tx, q };
   const filtered = txFilter(BUILDINGS, txState, txStore);
 
+  // 정렬
+  const SORT_OPTS = [
+    { id: "popular", label: "인기순",  fn: (a, b) => (b.visited || 0) - (a.visited || 0) },
+    { id: "saved",   label: "찜 많은 순", fn: (a, b) => (b.saved || 0) - (a.saved || 0) },
+    { id: "newest",  label: "최근 등록순", fn: (a, b) => (b.year || 0) - (a.year || 0) },
+    { id: "distance", label: "가나다순",  fn: (a, b) => a.name.localeCompare(b.name, "ko") },
+  ];
+  const sortFn = (SORT_OPTS.find((s) => s.id === sortBy) || SORT_OPTS[0]).fn;
+  const sorted = [...filtered].sort(sortFn);
+
   // 페이지네이션
-  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const totalPages = Math.max(1, Math.ceil(sorted.length / ITEMS_PER_PAGE));
   const safePage   = Math.min(page, totalPages);
-  const pageItems  = filtered.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
+  const pageItems  = sorted.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
   const showPicks  = safePage === 1;
 
   // 활성 배지 계산
@@ -526,12 +537,57 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
 
       {/* 4-COL 그리드 (masilground 톤) · 20개/페이지 */}
       <section style={{ padding: `32px ${px}px 64px` }}>
-        {filtered.length === 0 ? (
+        {/* 정렬 바 */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          marginBottom: 20, flexWrap: "wrap", gap: 10,
+        }}>
+          <span style={{ fontSize: 13, color: M.muted, fontWeight: 700 }}>
+            {sorted.length}개 공간
+          </span>
+          <div style={{ display: "flex", gap: 6 }}>
+            {SORT_OPTS.map((s) => (
+              <button key={s.id} onClick={() => setSortBy(s.id)} style={{
+                padding: "7px 14px", borderRadius: 999, border: "none", cursor: "pointer",
+                fontSize: 12, fontWeight: 800, fontFamily: "inherit",
+                background: sortBy === s.id ? M.terra : M.cream,
+                color: sortBy === s.id ? "#fff" : M.muted,
+                transition: "all .15s",
+              }}>{s.label}</button>
+            ))}
+          </div>
+        </div>
+
+        {sorted.length === 0 ? (
           <div style={{
-            padding: "80px 0", textAlign: "center",
-            color: M.muted, fontWeight: 600,
+            padding: "60px 0 80px", textAlign: "center",
           }}>
-            선택한 필터에 해당하는 공간이 없습니다.
+            <div style={{ fontSize: 40, marginBottom: 16 }}>🔍</div>
+            <div style={{ fontSize: 18, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em", marginBottom: 8 }}>
+              찾는 공간이 없어요
+            </div>
+            <div style={{ fontSize: 14, color: M.muted, fontWeight: 600, marginBottom: 28, lineHeight: 1.6 }}>
+              필터나 검색어를 바꿔보시거나,<br/>아래 인기 공간을 둘러보세요.
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16, maxWidth: 800, margin: "0 auto", textAlign: "left" }}>
+              {BUILDINGS.sort((a, b) => (b.visited || 0) - (a.visited || 0)).slice(0, 3).map((b) => (
+                <div key={b.id} onClick={() => onNavigate("detail", b.id)} style={{
+                  background: M.cream, borderRadius: MR.card, padding: 18, cursor: "pointer",
+                  border: `1px solid ${M.beigeAlt}`,
+                  display: "flex", alignItems: "center", gap: 14,
+                }}>
+                  <div style={{ width: 52, height: 52, borderRadius: 12, background: b.palette || M.beigeAlt, flexShrink: 0 }}/>
+                  <div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em" }}>{b.name}</div>
+                    <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 2 }}>{b.region}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 20, fontSize: 13, color: M.terra, fontWeight: 700, cursor: "pointer" }}
+              onClick={() => onNavigate("upload-quick")}>
+              찾는 공간이 없다면? 직접 제보하기 →
+            </div>
           </div>
         ) : (
           <div style={{

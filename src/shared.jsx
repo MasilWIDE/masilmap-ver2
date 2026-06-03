@@ -282,43 +282,67 @@ function Hairline({ label, color = M.beigeAlt, style = {} }) {
 }
 
 /* striped image placeholder w/ caption + ratio */
-function ImgPlaceholder({ caption, ratio = "4/3", tone = "beige", style = {} }) {
-  /* Scholar palette tones — neutral cream, navy, gold */
+function ImgPlaceholder({ caption, ratio = "4/3", tone = "beige", style = {}, src }) {
   const tones = {
-    beige:  { bg: "#E8E4DC", stripe: "#D4D0C5", text: "#5A5F70" },  /* neutral cream */
-    cream:  { bg: "#F4F3EA", stripe: "#DCD9CA", text: "#5A5F70" },  /* warm cream */
-    terra:  { bg: "#8A95A8", stripe: "#6B7484", text: "#FFFFFF" },  /* navy gradient */
-    olive:  { bg: "#E8D080", stripe: "#D3AC2B", text: "#3A3220" },  /* gold gradient */
-    deep:   { bg: "#1F2738", stripe: "#333D51", text: "#F4F3EA" },  /* deep navy */
-    night:  { bg: "#0F1622", stripe: "#1F2738", text: "#D3AC2B" },  /* black + gold */
+    beige:  { bg: "#E8E4DC", stripe: "#D4D0C5" },
+    cream:  { bg: "#F4F3EA", stripe: "#DCD9CA" },
+    terra:  { bg: "#8A95A8", stripe: "#6B7484" },
+    olive:  { bg: "#E8D080", stripe: "#D3AC2B" },
+    deep:   { bg: "#1F2738", stripe: "#333D51" },
+    night:  { bg: "#0F1622", stripe: "#1F2738" },
   };
   const t = tones[tone] || tones.beige;
+  /* caption → 결정적 seed → 건물마다 항상 같은 사진 */
+  const seed = (caption || tone || "space")
+    .replace(/\s+/g, "-").replace(/[^\w-]/g, "").slice(0, 28) || "architecture";
+  const imgUrl = src || `https://picsum.photos/seed/${seed}/800/500`;
+  const [err, setErr] = React.useState(false);
+
   return (
     <div style={{
       aspectRatio: ratio,
-      background: `repeating-linear-gradient(45deg, ${t.bg} 0px, ${t.bg} 14px, ${t.stripe} 14px, ${t.stripe} 28px)`,
+      background: t.bg,
       borderRadius: MR.inner,
       position: "relative",
       overflow: "hidden",
       ...style,
     }}>
+      {/* 실제 이미지 */}
+      {!err && (
+        <img
+          src={imgUrl} alt={caption || ""}
+          onError={() => setErr(true)}
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover", display: "block",
+          }}
+        />
+      )}
+      {/* 로드 실패 시 줄무늬 폴백 */}
+      {err && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: `repeating-linear-gradient(45deg, ${t.bg} 0 14px, ${t.stripe} 14px 28px)`,
+        }}/>
+      )}
+      {/* 하단 그라데이션 + 캡션 */}
       <div style={{
         position: "absolute", inset: 0,
+        background: "linear-gradient(to top, rgba(0,0,0,0.42) 0%, transparent 55%)",
         display: "flex", flexDirection: "column",
-        justifyContent: "flex-end", padding: 16,
-        background: "linear-gradient(to top, rgba(0,0,0,0.18), transparent 50%)",
+        justifyContent: "flex-end", padding: 12,
       }}>
         {caption && (
           <span style={{
             fontFamily: "'JetBrains Mono', monospace",
-            fontSize: 10, fontWeight: 600,
+            fontSize: 9.5, fontWeight: 700,
             letterSpacing: "0.12em", textTransform: "uppercase",
-            color: t.text,
-            background: "rgba(255,248,236,0.85)",
-            padding: "4px 8px",
-            borderRadius: 6,
+            color: "#fff",
+            background: "rgba(0,0,0,0.38)",
+            padding: "3px 7px", borderRadius: 5,
             alignSelf: "flex-start",
-          }}>📷 {caption}</span>
+          }}>{caption}</span>
         )}
       </div>
     </div>
