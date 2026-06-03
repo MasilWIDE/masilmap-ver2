@@ -58,9 +58,9 @@ function CourseIndex({ onNavigate }) {
             <div style={{ padding: 20, flex: 1 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                 <MagCap>{c.type === "도슨트" ? "DOCENT" : "SELF"} · ★ {c.rating}</MagCap>
-                {c.price > 0
-                  ? <MagCap color={M.terra}>₩ {c.price.toLocaleString()}</MagCap>
-                  : <MagCap color={M.olive}>FREE</MagCap>}
+                <MagCap color={c.type === "도슨트" ? M.terra : M.olive}>
+                  {c.type === "도슨트" ? "도슨트 신청" : "FREE"}
+                </MagCap>
               </div>
               <div style={{ fontSize: 21, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, lineHeight: 1.2 }}>{c.name}</div>
               <p style={{ fontSize: 13, color: M.ink, lineHeight: 1.6, margin: "8px 0 12px", fontWeight: 500, textWrap: "pretty" }}>{c.blurb}</p>
@@ -265,10 +265,10 @@ function CourseScreen({ onNavigate, courseId }) {
         <aside style={{ position: "sticky", top: 110, alignSelf: "flex-start" }}>
           <div style={{ padding: 24, background: M.cream, borderRadius: MR.cardLg, boxShadow: MS.card }}>
             <MagCap color={M.terra}>{c.type === "도슨트" ? "DOCENT COURSE" : "SELF COURSE"}</MagCap>
-            <div style={{ marginTop: 8, fontSize: 36, fontWeight: 900, letterSpacing: "-0.025em", color: M.ink }}>
-              {c.price > 0 ? `₩ ${c.price.toLocaleString()}` : "무료"}
+            <div style={{ marginTop: 8, fontSize: 36, fontWeight: 900, letterSpacing: "-0.025em", color: c.type === "도슨트" ? M.terra : M.olive }}>
+              {c.type === "도슨트" ? "무료 신청" : "무료"}
             </div>
-            <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>{c.price > 0 ? "1인 기준" : "큐레이션 가이드만 따라가기"}</div>
+            <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>{c.type === "도슨트" ? "도슨트 코스 · 신청 후 확정" : "셀프 코스 · 자유롭게 걷기"}</div>
             <Hairline style={{ margin: "16px 0" }}/>
             <div style={{ display: "flex", flexDirection: "column", gap: 10, fontSize: 13 }}>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -285,8 +285,8 @@ function CourseScreen({ onNavigate, courseId }) {
               </div>
             </div>
             <div style={{ marginTop: 20, display: "flex", flexDirection: "column", gap: 8 }}>
-              {c.price > 0
-                ? <MButton kind="primary" size="lg" onClick={() => onNavigate("booking-docent", c.id)}>예약하기 →</MButton>
+              {c.type === "도슨트"
+                ? <MButton kind="primary" size="lg" onClick={() => onNavigate("booking-docent", c.id)}>도슨트 신청하기 →</MButton>
                 : <MButton kind="primary" size="lg">코스 시작하기 →</MButton>}
               <MButton kind="secondary" size="md" icon={<MIcon name="bookmark" size={14} color={M.ink}/>}>저장</MButton>
             </div>

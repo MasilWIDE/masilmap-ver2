@@ -69,7 +69,7 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: `16px ${px}px`, borderBottom: `1px solid ${M.beigeAlt}` }}>
         <span onClick={() => onNavigate("collection")} style={{ cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12, fontWeight: 700, color: M.muted }}>
           <MIcon name="chevron" size={12} color={M.muted} style={{ transform: "rotate(180deg)" }}/>
-          <span>전체 시리즈</span>
+          <span>전체 컬렉션</span>
         </span>
         <div style={{ display: "flex", gap: 8 }}>
           <MButton kind="secondary" size="sm" icon={<MIcon name="bookmark" size={12} color={M.ink}/>}>저장</MButton>
@@ -214,7 +214,7 @@ function SeriesFooter({ c, onNavigate, done }) {
   const others = MX_SERIES.filter((x) => x.id !== c.id).slice(0, 3);
   return (
     <section style={{ padding: `${isMobile ? 40 : 56}px ${px}px`, background: M.cream }}>
-      <Hairline label="다른 시리즈 · MORE SERIES" style={{ marginBottom: 24 }}/>
+      <Hairline label="다른 컬렉션 · MORE" style={{ marginBottom: 24 }}/>
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: 16 }}>
         {others.map((o) => {
           const osp = mxSeriesProgress(o, done);
@@ -253,7 +253,7 @@ function CollectionIndex({ onNavigate, t }) {
       <MasilNav route="collection" onNavigate={onNavigate}/>
 
       <section style={{ padding: `${isMobile ? 24 : 48}px ${px}px ${isMobile ? 20 : 32}px` }}>
-        <Hairline label="MASILMAP · 시리즈" style={{ marginBottom: isMobile ? 18 : 32 }}/>
+        <Hairline label="MASILMAP · 컬렉션" style={{ marginBottom: isMobile ? 18 : 32 }}/>
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr", gap: isMobile ? 16 : 56, alignItems: "end" }}>
           <div>
             <MagCap color={M.olive} style={{ marginBottom: 16 }}>SERIES · 산책 코스를 모아 정복</MagCap>

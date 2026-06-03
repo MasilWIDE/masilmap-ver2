@@ -283,68 +283,79 @@ function Hairline({ label, color = M.beigeAlt, style = {} }) {
 
 /* striped image placeholder w/ caption + ratio */
 function ImgPlaceholder({ caption, ratio = "4/3", tone = "beige", style = {}, src }) {
-  const tones = {
-    beige:  { bg: "#E8E4DC", stripe: "#D4D0C5" },
-    cream:  { bg: "#F4F3EA", stripe: "#DCD9CA" },
-    terra:  { bg: "#8A95A8", stripe: "#6B7484" },
-    olive:  { bg: "#E8D080", stripe: "#D3AC2B" },
-    deep:   { bg: "#1F2738", stripe: "#333D51" },
-    night:  { bg: "#0F1622", stripe: "#1F2738" },
+  const palettes = {
+    beige: { from: "#D6CEBD", to: "#BDB39E", text: "#7A6F60" },
+    cream: { from: "#E4DECE", to: "#CEC5B0", text: "#7A6F60" },
+    terra: { from: "#4A5870", to: "#333D51", text: "#A8B4C8" },
+    olive: { from: "#C8A420", to: "#9C7E1A", text: "#FFF8EC" },
+    deep:  { from: "#2B3549", to: "#1F2738", text: "#8899B2" },
+    night: { from: "#1C2840", to: "#0F1522", text: "#D3AC2B" },
   };
-  const t = tones[tone] || tones.beige;
-  /* caption → 결정적 seed → 건물마다 항상 같은 사진 */
-  const seed = (caption || tone || "space")
-    .replace(/\s+/g, "-").replace(/[^\w-]/g, "").slice(0, 28) || "architecture";
-  const imgUrl = src || `https://picsum.photos/seed/${seed}/800/500`;
-  const [err, setErr] = React.useState(false);
+  const p = palettes[tone] || palettes.beige;
+  const [imgErr, setImgErr] = React.useState(false);
 
+  /* src가 직접 지정된 경우 실제 이미지 사용 */
+  if (src && !imgErr) {
+    return (
+      <div style={{ aspectRatio: ratio, position: "relative", overflow: "hidden", borderRadius: MR.inner, ...style }}>
+        <img src={src} alt={caption || ""} onError={() => setImgErr(true)}
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}/>
+        {caption && (
+          <div style={{ position: "absolute", bottom: 0, left: 0, right: 0,
+            background: "linear-gradient(transparent, rgba(0,0,0,0.45))", padding: "20px 12px 10px" }}>
+            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700,
+              letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff",
+              background: "rgba(0,0,0,0.32)", padding: "3px 7px", borderRadius: 5 }}>{caption}</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  /* 팔레트 컬러 기반 아트 카드 (외부 이미지 없음 — 일관성·빠른 로딩) */
   return (
     <div style={{
       aspectRatio: ratio,
-      background: t.bg,
+      background: `linear-gradient(145deg, ${p.from} 0%, ${p.to} 100%)`,
       borderRadius: MR.inner,
       position: "relative",
       overflow: "hidden",
       ...style,
     }}>
-      {/* 실제 이미지 */}
-      {!err && (
-        <img
-          src={imgUrl} alt={caption || ""}
-          onError={() => setErr(true)}
-          style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
-            objectFit: "cover", display: "block",
-          }}
-        />
-      )}
-      {/* 로드 실패 시 줄무늬 폴백 */}
-      {err && (
-        <div style={{
-          position: "absolute", inset: 0,
-          background: `repeating-linear-gradient(45deg, ${t.bg} 0 14px, ${t.stripe} 14px 28px)`,
-        }}/>
-      )}
-      {/* 하단 그라데이션 + 캡션 */}
+      {/* 격자 텍스처 */}
       <div style={{
         position: "absolute", inset: 0,
-        background: "linear-gradient(to top, rgba(0,0,0,0.42) 0%, transparent 55%)",
-        display: "flex", flexDirection: "column",
-        justifyContent: "flex-end", padding: 12,
-      }}>
-        {caption && (
+        backgroundImage: [
+          "linear-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)",
+          "linear-gradient(90deg, rgba(255,255,255,0.07) 1px, transparent 1px)",
+        ].join(","),
+        backgroundSize: "28px 28px",
+      }}/>
+      {/* 중앙 원형 장식 */}
+      <div style={{
+        position: "absolute",
+        top: "50%", left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: "38%", paddingBottom: "38%",
+        borderRadius: "50%",
+        background: "rgba(255,255,255,0.07)",
+        border: "1px solid rgba(255,255,255,0.12)",
+      }}/>
+      {/* 캡션 */}
+      {caption && (
+        <div style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          background: "linear-gradient(transparent, rgba(0,0,0,0.28))",
+          padding: "20px 12px 10px",
+        }}>
           <span style={{
             fontFamily: "'JetBrains Mono', monospace",
             fontSize: 9.5, fontWeight: 700,
-            letterSpacing: "0.12em", textTransform: "uppercase",
-            color: "#fff",
-            background: "rgba(0,0,0,0.38)",
-            padding: "3px 7px", borderRadius: 5,
-            alignSelf: "flex-start",
+            letterSpacing: "0.1em", textTransform: "uppercase",
+            color: p.text, opacity: 0.85,
           }}>{caption}</span>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

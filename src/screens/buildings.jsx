@@ -493,7 +493,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
             <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
               <MagCap color={M.terra}>EDITOR'S PICKS</MagCap>
               <h2 style={{ fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", margin: 0, color: M.ink }}>
-                에디터가 고른 세 건축
+                에디터가 고른 세 공간
               </h2>
             </div>
             <span style={{ fontSize: 12, color: M.terra, fontWeight: 800, cursor: "pointer" }}
