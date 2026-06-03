@@ -117,7 +117,7 @@ function AdminContentScreen({ onNavigate }) {
       {/* 탭 */}
       <div style={{ padding: "0 32px", borderBottom: `1px solid ${M.beigeAlt}`, background: M.beige, display: "flex", gap: 4 }}>
         {[
-          { id: "buildings", label: "건축물", count: BUILDINGS.length },
+          { id: "buildings", label: "공간",    count: BUILDINGS.length },
           { id: "courses",   label: "코스",    count: COURSES.length },
           { id: "collections", label: "시리즈", count: SERIES.length },
         ].map((t) => {

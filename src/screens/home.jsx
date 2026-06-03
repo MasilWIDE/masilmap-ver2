@@ -327,7 +327,7 @@ function FilterBar({ onFilteredChange, searchQuery = "" }) {
         open={openMenu === "project"} onToggle={() => toggleMenu("project")}
         icon="map" width={240}>
         <div style={{ fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 8 }}>카테고리 선택</div>
-        <CheckRow checked={projects.has("building")} disabled dot={M.terra} label="건축물 (현재 페이지)"/>
+        <CheckRow checked={projects.has("building")} disabled dot={M.terra} label="공간 (현재 페이지)"/>
         <CheckRow checked={false} disabled dot="#F0A0A0" label="인테리어"/>
         <CheckRow checked={false} disabled dot="#4A5570" label="계획안"/>
         <CheckRow checked={false} disabled dot={M.olive}  label="여행지"/>
@@ -477,8 +477,8 @@ function MasilHero({ onNavigate }) {
             color: M.ink, fontWeight: 400,
             margin: 0, textWrap: "pretty",
           }}>
-            마실맵은 한국의 건축물을 천천히 걷는 여행 안내서입니다. 천 년 된 목조 건축부터 어제 완공된 미술관까지,
-            526곳의 건축물과 47개의 코스를 지도 위에 함께 펼쳐 두었습니다.
+            마실맵은 한국의 공간을 천천히 걷는 여행 안내서입니다. 천 년 된 목조 건축부터 어제 완공된 미술관까지,
+            526곳의 공간과 47개의 코스를 지도 위에 함께 펼쳐 두었습니다.
           </p>
           <div style={{ marginTop: 20, display: "flex", gap: 24, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 600 }}>
             <span>526 PLACES</span>
@@ -531,7 +531,7 @@ function ViewportPanel({ buildings, selectedId, onSelect, isMobile = false }) {
         {buildings.length === 0 ? (
           <div style={{ padding: "40px 8px", textAlign: "center", color: M.muted,
             fontSize: 13, fontWeight: 600 }}>
-            현재 영역에 표시할 건축물이 없습니다
+            현재 영역에 표시할 공간이 없습니다
           </div>
         ) : (
           buildings.map((b) => (
@@ -770,7 +770,7 @@ function CoverHomeLayout({ onNavigate }) {
               fontFamily: "'JetBrains Mono', monospace",
               fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
             }}>
-              <span>{featCourses.length} 코스 · {featBuildings} 건축물</span>
+              <span>{featCourses.length} 코스 · {featBuildings} 공간</span>
               <span>{featuredCol.kind}</span>
             </div>
           </div>
@@ -785,7 +785,7 @@ function CoverHomeLayout({ onNavigate }) {
           }}>
             <MagCap color={M.terra}>SERIES · {featuredCol.kind} 정복</MagCap>
             <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em" }}>
-              {featCourses.length} 코스 · {featBuildings} 건축물
+              {featCourses.length} 코스 · {featBuildings} 공간
             </div>
 
             <blockquote style={{
@@ -985,7 +985,7 @@ function SearchHero({ onSubmit }) {
       <MIcon name="search" size={18} color={M.muted}/>
       <input
         value={val} onChange={(e) => setVal(e.target.value)}
-        placeholder="건축물, 지역, 건축가, 키워드…"
+        placeholder="공간, 지역, 건축가, 키워드…"
         style={{
           flex: 1, border: "none", outline: "none", background: "transparent",
           fontSize: 16, fontWeight: 600, color: M.ink, fontFamily: "inherit",
@@ -1053,7 +1053,7 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
             <div style={{ maxWidth: 360, textAlign: "right" }}>
               <p style={{ fontSize: 14, color: M.muted, lineHeight: 1.6, margin: 0, fontWeight: 500 }}>
                 지도 위 핀을 누르면 자세한 이야기가 펼쳐집니다.
-                오른쪽 목록은 현재 보고 있는 영역의 건축물입니다.
+                오른쪽 목록은 현재 보고 있는 영역의 공간입니다.
               </p>
               <div style={{ marginTop: 12, display: "inline-flex", gap: 6 }}>
                 <MagCap>526 PLACES</MagCap>

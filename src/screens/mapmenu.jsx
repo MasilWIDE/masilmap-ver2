@@ -147,7 +147,7 @@ function MKCoursesModule({ b, onNavigate, onPreview, activeCourseId }) {
   if (!b.courses.length) return null;
   return (
     <div>
-      <MKModLabel>이 건축물이 포함된 마실 코스 · {b.courses.length}</MKModLabel>
+      <MKModLabel>이 공간이 포함된 마실 코스 · {b.courses.length}</MKModLabel>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {b.courses.map((c) => {
           const on = c.id === activeCourseId;
@@ -264,7 +264,7 @@ function MKDetailPanel({ b, isSaved, onToggleSave, onBack, onNavigate, onPreview
             width: "100%", padding: "13px 0", borderRadius: MR.pill, border: `1.5px solid ${M.ink}`,
             background: "transparent", color: M.ink, fontSize: 13.5, fontWeight: 800, cursor: "pointer",
             fontFamily: MT.family, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-          }}>건축물 전체 이야기 보기 <MIcon name="arrow" size={15} color={M.ink}/></button>
+          }}>공간 전체 이야기 보기 <MIcon name="arrow" size={15} color={M.ink}/></button>
         </div>
       </div>
     </div>
@@ -337,7 +337,7 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
         <div style={{ flex: 1, display: "flex", alignItems: "center", gap: 9, background: M.beige,
           borderRadius: 999, padding: "10px 14px", border: `1px solid ${M.beigeAlt}` }}>
           <MIcon name="search" size={16} color={M.muted}/>
-          <input placeholder="건축물·지역·건축가 검색"
+          <input placeholder="공간·지역·건축가 검색"
             defaultValue={searchQuery}
             onChange={(e) => { const s = window.__masilSearch; if (s && s.setQuery) s.setQuery(e.target.value); }}
             style={{ flex: 1, border: "none", outline: "none", background: "transparent", minWidth: 0,
@@ -375,7 +375,7 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
       </div>
       {listItems.length === 0 ? (
         <div style={{ padding: "48px 12px", textAlign: "center", color: M.muted, fontSize: 13, fontWeight: 600 }}>
-          이 영역에 표시할 건축물이 없습니다.<br/>지도를 옮기거나 필터를 바꿔보세요.
+          이 영역에 표시할 공간이 없습니다.<br/>지도를 옮기거나 필터를 바꿔보세요.
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>

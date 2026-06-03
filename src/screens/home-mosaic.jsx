@@ -45,7 +45,7 @@ function MosaicHome({ onNavigate }) {
               <button onClick={() => onNavigate("buildings")} style={{
                 padding: "13px 22px", borderRadius: 999, cursor: "pointer", background: "rgba(255,255,255,0.1)",
                 border: "1px solid rgba(255,255,255,0.3)", color: "#fff", fontSize: 14.5, fontWeight: 800, fontFamily: MT.family }}>
-                건축물 인덱스
+                공간 탐험
               </button>
             </div>
           </div>

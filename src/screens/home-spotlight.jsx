@@ -227,7 +227,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setFocused(true)}
               onKeyDown={(e) => { if (e.key === "Enter") doSearch(query); }}
-              placeholder="건축물, 코스, 지역, 건축가 검색…"
+              placeholder="공간, 코스, 지역, 건축가 검색…"
               style={{
                 flex: 1, border: "none", outline: "none",
                 background: "transparent",
@@ -341,7 +341,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
                     width: 3, height: 14, borderRadius: 2,
                     background: M.olive, display: "inline-block",
                   }}/>
-                  BUILDING · 건축물 추천
+                  SPACE · 공간 추천
                 </div>
                 {quickBuildings.map((b) => (
                   <div
@@ -382,7 +382,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
                     onClick={() => { setFocused(false); onNavigate("buildings"); }}
                     style={{ fontSize: 12, fontWeight: 800, color: M.terra, cursor: "pointer" }}
                   >
-                    건축물 전체 보기 →
+                    공간 전체 보기 →
                   </span>
                   <span style={{ color: M.beigeAlt }}>|</span>
                   <span
@@ -690,7 +690,7 @@ function SpotlightNeighborhood({ onNavigate, isMobile }) {
 function SpotlightMapBand({ onNavigate, isMobile }) {
   const Map = window.MasilMap;
   const toMap = () => onNavigate("home", null, { homeLayout: "mapPrimary" });
-  const stats = [["526", "건축물"], ["47", "코스"], ["18", "컬렉션"]];
+  const stats = [["526", "공간"], ["47", "코스"], ["18", "컬렉션"]];
   return (
     <section style={{ background: M.beige, color: M.ink, padding: isMobile ? "44px 20px" : "80px 56px", borderTop: `1px solid ${M.beigeAlt}` }}>
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "0.9fr 1.1fr", gap: isMobile ? 28 : 56, alignItems: "center" }}>

@@ -22,7 +22,7 @@ function IntroScreen({ onNavigate }) {
     { icon: "location", title: "전국 526곳",       body: "천 년 된 목조 건축부터 어제 완공된 미술관까지 — 한 지도 위에." },
   ];
 
-  const stats = [["526", "건축물"], ["47", "코스"], ["18", "시리즈"], ["6", "채널"]];
+  const stats = [["526", "공간"], ["47", "코스"], ["18", "시리즈"], ["6", "채널"]];
 
   return (
     <MPage>

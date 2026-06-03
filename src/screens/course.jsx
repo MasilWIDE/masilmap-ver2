@@ -225,7 +225,7 @@ function CourseScreen({ onNavigate, courseId }) {
         {/* 요약 바 */}
         <div style={{ marginTop: 32, padding: "20px 24px", background: M.cream, borderRadius: MR.card, boxShadow: MS.cardSm, display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 24, alignItems: "center" }}>
           {[
-            { l: "건축물", v: `${stops.length}곳`, i: "location" },
+            { l: "공간", v: `${stops.length}곳`, i: "location" },
             { l: "총 거리", v: c.distance, i: "walk" },
             { l: "예상 시간", v: c.duration, i: "clock" },
             { l: "고도차", v: c.elevation, i: "arrow" },

@@ -529,7 +529,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
           }}>
             <div onClick={() => onNavigate("buildings")} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: M.muted, fontWeight: 700, cursor: "pointer", marginBottom: 12 }}>
               <MIcon name="chevron" size={12} color={M.muted} style={{ transform: "rotate(180deg)" }}/>
-              <span>건축물 목록</span>
+              <span>공간 목록</span>
             </div>
             <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, lineHeight: 1.15 }}>{b.name}</div>
             <div style={{ fontSize: 12, color: M.muted, fontWeight: 600 }}>{b.architect} · {b.year}</div>

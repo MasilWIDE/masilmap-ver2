@@ -230,7 +230,7 @@ function UploadDeepScreen({ onNavigate }) {
           <div>
             <MagCap color={M.terra} style={{ marginBottom: 12 }}>천천히 채워도 괜찮아요 · 자동 저장</MagCap>
             <h1 style={{ fontSize: 56, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.04, color: M.ink, margin: 0, textWrap: "balance" }}>
-              건축물의 <span style={{ color: M.olive, fontWeight: 900 }}>이야기</span>를<br/>
+              공간의 <span style={{ color: M.olive, fontWeight: 900 }}>이야기</span>를<br/>
               한 줄씩 모아주세요
             </h1>
           </div>

@@ -531,7 +531,7 @@ function BuildingsIndexScreen({ onNavigate, searchQuery }) {
             padding: "80px 0", textAlign: "center",
             color: M.muted, fontWeight: 600,
           }}>
-            선택한 필터에 해당하는 건축물이 없습니다.
+            선택한 필터에 해당하는 공간이 없습니다.
           </div>
         ) : (
           <div style={{

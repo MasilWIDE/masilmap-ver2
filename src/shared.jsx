@@ -20,13 +20,13 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
   React.useEffect(() => { setDrawerOpen(false); }, [route]);
 
   // 로그인 상태에 따라 메뉴 구성. 명시적 items 인자가 오면 그걸 우선.
-  const navItems = items || ["홈", "지도", "건축물", "코스", "시리즈"];
+  const navItems = items || ["홈", "지도", "공간", "코스", "시리즈"];
 
   const handleClick = (label) => {
     switch (label) {
       case "홈":       return onNavigate("home", null, { homeLayout: "spotlight" });
       case "지도":     return onNavigate("home", null, { homeLayout: "mapPrimary" });
-      case "건축물":   return onNavigate("buildings");
+      case "공간":      return onNavigate("buildings");
       case "코스":     return onNavigate("course");
       case "시리즈":
       case "컬렉션":
@@ -38,8 +38,8 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
   };
 
   const activeLabel = (() => {
-    if (route === "buildings")   return "건축물";
-    if (route === "detail")      return "건축물";
+    if (route === "buildings")   return "공간";
+    if (route === "detail")      return "공간";
     if (route === "home") {
       if (t.homeLayout === "mapPrimary") return "지도";
       return "홈";
@@ -98,7 +98,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
               }}>
                 <MIcon name="search" size={16} color={M.muted}/>
                 <input
-                  placeholder="건축물, 지역, 건축가…"
+                  placeholder="공간, 지역, 건축가…"
                   value={search.query || ""}
                   onChange={(e) => {
                     search.setQuery(e.target.value);
@@ -195,7 +195,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
         <div style={{ display: "flex", alignItems: "center", gap: 8, background: M.cream, padding: "10px 16px", borderRadius: 999, boxShadow: MS.cardSm, flex: "0 1 200px", minWidth: 140 }}>
           <MIcon name="search" size={16} color={M.muted} />
           <input
-            placeholder="건축물, 지역, 건축가…"
+            placeholder="공간, 지역, 건축가…"
             value={(window.__masilSearch && window.__masilSearch.query) || ""}
             onChange={(e) => {
               const s = window.__masilSearch;

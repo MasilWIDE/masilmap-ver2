@@ -90,7 +90,7 @@ function CollectionScreen({ route, onNavigate, collectionId, t }) {
             <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 18 : 24, fontWeight: 400, marginTop: 16, opacity: 0.9 }}>{c.subtitle}</div>
             <p style={{ fontSize: isMobile ? 14.5 : 16, lineHeight: 1.7, color: "rgba(255,248,236,0.82)", fontWeight: 500, margin: "18px 0 0", maxWidth: 480, textWrap: "pretty" }}>{c.intro}</p>
             <div style={{ display: "flex", gap: isMobile ? 24 : 36, marginTop: 28, fontFamily: "'JetBrains Mono', monospace" }}>
-              {[[`${sp.total}`, "산책 코스"], [`${seriesBuildingCount(c)}`, "건축물"]].map(([n, l]) => (
+              {[[`${sp.total}`, "산책 코스"], [`${seriesBuildingCount(c)}`, "공간"]].map(([n, l]) => (
                 <div key={l}>
                   <div style={{ fontSize: isMobile ? 30 : 38, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1 }}>{n}</div>
                   <div style={{ fontSize: 10.5, fontWeight: 600, letterSpacing: "0.1em", opacity: 0.7, marginTop: 6 }}>{l}</div>

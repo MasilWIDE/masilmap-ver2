@@ -36,7 +36,7 @@ const CONSOLE_NAV = {
       { id: "console-editor", label: "대시보드",     icon: "home" },
       { id: "collection",     label: "컬렉션",       icon: "bookmark", count: 6 },
       { id: "upload-deep",    label: "새 글·컬렉션",  icon: "edit" },
-      { id: "upload-quick",   label: "건축물 등록",   icon: "plus" },
+      { id: "upload-quick",   label: "공간 등록",      icon: "plus" },
     ],
   },
 };
@@ -160,7 +160,7 @@ function AdminOverview({ onNavigate }) {
         action={<MButton kind="primary" size="md" onClick={() => onNavigate("admin-content")}>콘텐츠 관리 →</MButton>}/>
       <div style={{ padding: 32, display: "flex", flexDirection: "column", gap: 28 }}>
         <ConsoleKPIs items={[
-          { label: "총 건축물", value: "526", delta: "+8" },
+          { label: "총 공간",   value: "526", delta: "+8" },
           { label: "총 예약",   value: "1,284", delta: "+12%" },
           { label: "권리 대기", value: String(pending.length || 3), delta: null },
           { label: "사용자",    value: "2,480", delta: "+5%" },
@@ -172,7 +172,7 @@ function AdminOverview({ onNavigate }) {
             <SectionHead>QUICK ACTIONS · 빠른 작업</SectionHead>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {[
-                { t: "콘텐츠 관리", d: "건축물·코스·컬렉션 등록과 편집", to: "admin-content", icon: "edit" },
+                { t: "콘텐츠 관리", d: "공간·코스·컬렉션 등록과 편집", to: "admin-content", icon: "edit" },
                 { t: "예약·매출 통계", d: "코스별 예약과 매출 흐름", to: "admin-stats", icon: "calendar" },
                 { t: "권리 관리", d: "사진·도면 저작권 동의 게이트", to: "admin-rights", icon: "bookmark" },
                 { t: "지도에서 보기", d: "사용자가 보는 지도 메뉴", to: "home", icon: "map" },

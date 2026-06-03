@@ -477,7 +477,7 @@ function BookingExternalScreen({ onNavigate, spaceId }) {
           <div>
             <MetaRow items={[
               { label: "공간 유형", value: s.type },
-              { label: "건축물",   value: b.name },
+              { label: "공간",     value: b.name },
             ]} style={{ marginBottom: 10 }}/>
             <MetaRow items={[
               { label: "설계자",   value: b.architect },
