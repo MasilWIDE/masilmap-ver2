@@ -771,6 +771,26 @@ function SpotlightCollections({ onNavigate, isMobile }) {
           </div>
         ))}
       </div>
+
+      {/* 공간 제보 CTA */}
+      <div style={{
+        marginTop: 36, padding: isMobile ? "20px" : "24px 28px",
+        borderRadius: MR.cardLg, background: M.cream,
+        border: `1.5px dashed ${M.beigeAlt}`,
+        display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap",
+      }}>
+        <div style={{ flex: 1, minWidth: 200 }}>
+          <div style={{ fontSize: 15, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em", marginBottom: 4 }}>
+            걷기 좋은 공간을 발견하셨나요?
+          </div>
+          <div style={{ fontSize: 13, color: M.muted, fontWeight: 600 }}>
+            지도에 없는 공간을 제보해 주시면 마실맵 팀이 검토 후 등록합니다.
+          </div>
+        </div>
+        <MButton kind="outline" size="md" onClick={() => onNavigate("upload-quick")}>
+          📍 공간 제보하기
+        </MButton>
+      </div>
     </section>
   );
 }

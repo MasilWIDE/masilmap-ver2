@@ -101,6 +101,14 @@ function AdminTopBar({ title, subtitle, action }) {
 function AdminContentScreen({ onNavigate }) {
   const [tab, setTab] = React.useState("buildings");
   const [search, setSearch] = React.useState("");
+  const [tips, setTips] = React.useState(() => (window.loadTips ? window.loadTips() : []));
+  const pendingCount = tips.filter((t) => t.status === "pending").length;
+
+  React.useEffect(() => {
+    const h = () => setTips(window.loadTips ? window.loadTips() : []);
+    window.addEventListener("masil-tips-change", h);
+    return () => window.removeEventListener("masil-tips-change", h);
+  }, []);
 
   return (
     <AdminShell active="admin-content" onNavigate={onNavigate}>
@@ -117,90 +125,200 @@ function AdminContentScreen({ onNavigate }) {
       {/* 탭 */}
       <div style={{ padding: "0 32px", borderBottom: `1px solid ${M.beigeAlt}`, background: M.beige, display: "flex", gap: 4 }}>
         {[
-          { id: "buildings", label: "공간",    count: BUILDINGS.length },
-          { id: "courses",   label: "코스",    count: COURSES.length },
-          { id: "collections", label: "시리즈", count: SERIES.length },
+          { id: "buildings",   label: "공간",      count: BUILDINGS.length },
+          { id: "courses",     label: "코스",       count: COURSES.length },
+          { id: "collections", label: "시리즈",     count: SERIES.length },
+          { id: "tips",        label: "📍 제보 검토", count: pendingCount, highlight: pendingCount > 0 },
         ].map((t) => {
           const on = tab === t.id;
           return (
             <div key={t.id} onClick={() => setTab(t.id)} style={{
               padding: "14px 18px 16px",
               fontSize: 13, fontWeight: 800,
-              color: on ? M.terra : M.muted,
+              color: on ? M.terra : (t.highlight ? M.olive : M.muted),
               borderBottom: on ? `3px solid ${M.terra}` : "3px solid transparent",
               cursor: "pointer", display: "flex", alignItems: "center", gap: 8, marginBottom: -1,
               whiteSpace: "nowrap",
             }}>
               <span>{t.label}</span>
-              <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", color: on ? M.terra : M.faint, fontWeight: 600 }}>{t.count}</span>
+              {t.count > 0 && (
+                <span style={{
+                  fontSize: 10, fontFamily: "'JetBrains Mono', monospace", fontWeight: 800,
+                  color: on ? M.terra : (t.highlight ? "#fff" : M.faint),
+                  background: t.highlight && !on ? M.olive : "transparent",
+                  padding: t.highlight && !on ? "2px 6px" : 0,
+                  borderRadius: 999,
+                }}>{t.count}</span>
+              )}
             </div>
           );
         })}
       </div>
 
-      {/* 필터 바 */}
-      <div style={{ padding: "16px 32px", display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", borderBottom: `1px solid ${M.beigeAlt}`, background: M.beige }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, background: M.cream, padding: "10px 14px", borderRadius: 12, minWidth: 280, border: `1px solid ${M.beigeAlt}` }}>
-          <MIcon name="search" size={14} color={M.muted}/>
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="건물명·설계자·지역 검색" style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 13, color: M.ink, fontWeight: 600, fontFamily: "inherit", minWidth: 0 }}/>
-        </div>
-        <AdminFilter label="용도" value="전체"/>
-        <AdminFilter label="지역" value="전체"/>
-        <AdminFilter label="상태" value="공개"/>
-        <AdminFilter label="등록일" value="최근 30일"/>
-        <span style={{ marginLeft: "auto", fontSize: 12, color: M.muted, fontWeight: 700 }}>{BUILDINGS.length}건 · 정렬 ↕ 등록일 ↓</span>
-      </div>
-
-      {/* 테이블 */}
-      <div style={{ padding: 32 }}>
-        <div style={{ background: M.cream, borderRadius: 18, overflow: "hidden", boxShadow: MS.cardSm, border: `1px solid ${M.beigeAlt}` }}>
-          <div style={{ display: "grid", gridTemplateColumns: "60px 1.6fr 0.8fr 0.8fr 0.8fr 0.8fr 120px", padding: "12px 20px", background: M.beigeAlt, fontSize: 11, fontWeight: 800, color: M.muted, letterSpacing: "0.05em", textTransform: "uppercase", borderBottom: `1px solid ${M.beigeAlt}` }}>
-            <span></span>
-            <span>건물명 · 설계자</span>
-            <span>용도</span>
-            <span>지역</span>
-            <span>등록일</span>
-            <span>상태</span>
-            <span style={{ textAlign: "right" }}>액션</span>
-          </div>
-          {BUILDINGS.map((b, i) => (
-            <div key={b.id} style={{
-              display: "grid", gridTemplateColumns: "60px 1.6fr 0.8fr 0.8fr 0.8fr 0.8fr 120px",
-              padding: "14px 20px", borderBottom: i === BUILDINGS.length - 1 ? "none" : `1px solid ${M.beigeAlt}`,
-              alignItems: "center", fontSize: 13,
-            }}>
-              <div style={{ width: 44, height: 44 }}>
-                <ImgPlaceholder ratio="1/1" tone={b.pinTone === "olive" ? "olive" : "beige"} style={{ borderRadius: 8 }}/>
+      {/* 제보 검토 탭 */}
+      {tab === "tips" ? (
+        <div style={{ padding: 32 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 20 }}>
+            <div>
+              <div style={{ fontSize: 18, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em" }}>
+                공간 제보 검토
               </div>
-              <div>
-                <div>
-                  <span style={{ fontSize: 14, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em" }}>{b.name}</span>
-                </div>
-                <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 2 }}>{b.architect} · {b.year}</div>
-              </div>
-              <span style={{ fontWeight: 600, color: M.ink }}>{b.type}</span>
-              <span style={{ fontWeight: 600, color: M.ink }}>{b.region}</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 600 }}>2026.0{(i%9)+1}.{(10+i).toString().padStart(2,"0")}</span>
-              <span>
-                <StatusBadge status={i % 8 === 0 ? "대기" : i % 7 === 0 ? "비공개" : "공개"}/>
-              </span>
-              <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }}>
-                <IconBtn icon="edit"/>
-                <IconBtn icon="share"/>
-                <IconBtn icon="settings"/>
+              <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 4 }}>
+                대기 {pendingCount}건 · 총 {tips.length}건
               </div>
             </div>
-          ))}
-          <div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", background: M.cream }}>
-            <span style={{ fontSize: 12, color: M.muted, fontWeight: 700 }}>1 ~ {BUILDINGS.length} / {BUILDINGS.length}건 표시</span>
-            <div style={{ display: "flex", gap: 4 }}>
-              {["‹", "1", "2", "3", "…", "23", "›"].map((p, i) => (
-                <div key={i} style={{ minWidth: 28, height: 28, padding: "0 8px", borderRadius: 8, background: p === "1" ? M.terra : "transparent", color: p === "1" ? M.cream : M.ink, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, cursor: "pointer", border: p !== "1" ? `1px solid ${M.beigeAlt}` : "none" }}>{p}</div>
+          </div>
+
+          {tips.length === 0 ? (
+            <div style={{ padding: "60px 0", textAlign: "center", color: M.muted, fontSize: 14, fontWeight: 600 }}>
+              아직 제보가 없습니다. 사용자들이 공간을 제보하면 여기에 나타납니다.
+            </div>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {tips.map((tip) => (
+                <div key={tip.id} style={{
+                  background: M.cream, borderRadius: MR.cardLg, padding: "20px 24px",
+                  border: `1.5px solid ${tip.status === "pending" ? M.olive + "55" : M.beigeAlt}`,
+                  boxShadow: MS.cardSm,
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, flexWrap: "wrap" }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+                        <StatusBadge status={tip.status === "pending" ? "대기" : tip.status === "approved" ? "공개" : "비공개"}/>
+                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>
+                          {new Date(tip.submittedAt).toLocaleDateString("ko-KR")}
+                        </span>
+                        {tip.category && (
+                          <span style={{ fontSize: 11, fontWeight: 700, color: M.terra, background: `${M.terra}12`, padding: "2px 8px", borderRadius: 999 }}>
+                            {tip.category}
+                          </span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 17, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em", marginBottom: 4 }}>
+                        {tip.name}
+                      </div>
+                      <div style={{ fontSize: 13, color: M.muted, fontWeight: 600, marginBottom: tip.note ? 10 : 0 }}>
+                        📍 {tip.address}
+                      </div>
+                      {tip.note && (
+                        <div style={{
+                          fontSize: 13, color: M.ink, fontWeight: 500, lineHeight: 1.6,
+                          background: M.beige, padding: "10px 14px", borderRadius: 10,
+                          borderLeft: `3px solid ${M.beigeAlt}`, marginBottom: 8,
+                        }}>
+                          {tip.note}
+                        </div>
+                      )}
+                      {tip.photoUrl && (
+                        <a href={tip.photoUrl} target="_blank" rel="noreferrer" style={{
+                          fontSize: 12, color: M.terra, fontWeight: 700, textDecoration: "none",
+                        }}>🖼️ 사진 링크 보기 ↗</a>
+                      )}
+                      {tip.contact && (
+                        <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 6 }}>
+                          연락처: {tip.contact}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 액션 버튼 */}
+                    {tip.status === "pending" && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 8, flexShrink: 0 }}>
+                        <MButton kind="primary" size="md" onClick={() => {
+                          if (window.updateTipStatus) window.updateTipStatus(tip.id, "approved");
+                        }}>
+                          ✓ 승인 · 등록
+                        </MButton>
+                        <MButton kind="outline" size="md" onClick={() => {
+                          if (window.updateTipStatus) window.updateTipStatus(tip.id, "rejected");
+                        }}>
+                          × 반려
+                        </MButton>
+                      </div>
+                    )}
+                    {tip.status !== "pending" && (
+                      <div style={{
+                        fontSize: 12, fontWeight: 700, padding: "8px 14px", borderRadius: 999,
+                        color: tip.status === "approved" ? M.olive : M.muted,
+                        background: tip.status === "approved" ? `${M.olive}14` : M.beige,
+                        border: `1px solid ${tip.status === "approved" ? M.olive + "44" : M.beigeAlt}`,
+                      }}>
+                        {tip.status === "approved" ? "✓ 승인됨" : "× 반려됨"}
+                      </div>
+                    )}
+                  </div>
+                </div>
               ))}
             </div>
+          )}
+        </div>
+      ) : (
+        <>
+        {/* 필터 바 */}
+        <div style={{ padding: "16px 32px", display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", borderBottom: `1px solid ${M.beigeAlt}`, background: M.beige }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, background: M.cream, padding: "10px 14px", borderRadius: 12, minWidth: 280, border: `1px solid ${M.beigeAlt}` }}>
+            <MIcon name="search" size={14} color={M.muted}/>
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="건물명·설계자·지역 검색" style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 13, color: M.ink, fontWeight: 600, fontFamily: "inherit", minWidth: 0 }}/>
+          </div>
+          <AdminFilter label="용도" value="전체"/>
+          <AdminFilter label="지역" value="전체"/>
+          <AdminFilter label="상태" value="공개"/>
+          <AdminFilter label="등록일" value="최근 30일"/>
+          <span style={{ marginLeft: "auto", fontSize: 12, color: M.muted, fontWeight: 700 }}>{BUILDINGS.length}건 · 정렬 ↕ 등록일 ↓</span>
+        </div>
+
+        {/* 테이블 */}
+        <div style={{ padding: 32 }}>
+          <div style={{ background: M.cream, borderRadius: 18, overflow: "hidden", boxShadow: MS.cardSm, border: `1px solid ${M.beigeAlt}` }}>
+            <div style={{ display: "grid", gridTemplateColumns: "60px 1.6fr 0.8fr 0.8fr 0.8fr 0.8fr 120px", padding: "12px 20px", background: M.beigeAlt, fontSize: 11, fontWeight: 800, color: M.muted, letterSpacing: "0.05em", textTransform: "uppercase", borderBottom: `1px solid ${M.beigeAlt}` }}>
+              <span></span>
+              <span>건물명 · 설계자</span>
+              <span>용도</span>
+              <span>지역</span>
+              <span>등록일</span>
+              <span>상태</span>
+              <span style={{ textAlign: "right" }}>액션</span>
+            </div>
+            {BUILDINGS.map((b, i) => (
+              <div key={b.id} style={{
+                display: "grid", gridTemplateColumns: "60px 1.6fr 0.8fr 0.8fr 0.8fr 0.8fr 120px",
+                padding: "14px 20px", borderBottom: i === BUILDINGS.length - 1 ? "none" : `1px solid ${M.beigeAlt}`,
+                alignItems: "center", fontSize: 13,
+              }}>
+                <div style={{ width: 44, height: 44 }}>
+                  <ImgPlaceholder ratio="1/1" tone={b.pinTone === "olive" ? "olive" : "beige"} style={{ borderRadius: 8 }}/>
+                </div>
+                <div>
+                  <div>
+                    <span style={{ fontSize: 14, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em" }}>{b.name}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 2 }}>{b.architect} · {b.year}</div>
+                </div>
+                <span style={{ fontWeight: 600, color: M.ink }}>{b.type}</span>
+                <span style={{ fontWeight: 600, color: M.ink }}>{b.region}</span>
+                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 600 }}>2026.0{(i%9)+1}.{(10+i).toString().padStart(2,"0")}</span>
+                <span>
+                  <StatusBadge status={i % 8 === 0 ? "대기" : i % 7 === 0 ? "비공개" : "공개"}/>
+                </span>
+                <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }}>
+                  <IconBtn icon="edit"/>
+                  <IconBtn icon="share"/>
+                  <IconBtn icon="settings"/>
+                </div>
+              </div>
+            ))}
+            <div style={{ padding: "14px 20px", display: "flex", justifyContent: "space-between", alignItems: "center", background: M.cream }}>
+              <span style={{ fontSize: 12, color: M.muted, fontWeight: 700 }}>1 ~ {BUILDINGS.length} / {BUILDINGS.length}건 표시</span>
+              <div style={{ display: "flex", gap: 4 }}>
+                {["‹", "1", "2", "3", "…", "23", "›"].map((p, i) => (
+                  <div key={i} style={{ minWidth: 28, height: 28, padding: "0 8px", borderRadius: 8, background: p === "1" ? M.terra : "transparent", color: p === "1" ? M.cream : M.ink, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, cursor: "pointer", border: p !== "1" ? `1px solid ${M.beigeAlt}` : "none" }}>{p}</div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+        </>
+      )}
     </AdminShell>
   );
 }

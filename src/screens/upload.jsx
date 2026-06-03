@@ -51,143 +51,226 @@ function MSelect({ label, value, options, onChange, required }) {
   );
 }
 
-/* ================================================================
-   #7  빠른 등록 (얇은 핀)
-   ================================================================ */
-function UploadQuickScreen({ onNavigate }) {
-  const [name, setName] = React.useState("");
-  const [type, setType] = React.useState("미술관");
-  const [year, setYear] = React.useState("");
-  const [pinned, setPinned] = React.useState(true);
+/* localStorage 제보 저장/불러오기 */
+const TIPS_KEY = "masil_tips_v1";
+function loadTips() {
+  try { return JSON.parse(localStorage.getItem(TIPS_KEY) || "[]"); } catch { return []; }
+}
+function saveTip(tip) {
+  try {
+    const tips = loadTips();
+    tips.unshift(tip);
+    localStorage.setItem(TIPS_KEY, JSON.stringify(tips));
+  } catch {}
+}
+function updateTipStatus(id, status) {
+  try {
+    const tips = loadTips().map((t) => t.id === id ? { ...t, status } : t);
+    localStorage.setItem(TIPS_KEY, JSON.stringify(tips));
+    window.dispatchEvent(new Event("masil-tips-change"));
+  } catch {}
+}
 
+/* ================================================================
+   #7  공간 제보하기 (누구나 · 관리자 승인 후 등록)
+   ================================================================ */
+const TIP_CATEGORIES = ["미술관·갤러리","카페·레스토랑","한옥·전통건축","현대건축","공원·광장","도서관","종교건축","복합문화공간","주거·아파트","기타"];
+
+function UploadQuickScreen({ onNavigate }) {
+  const isMobile = useIsMobile();
+  const [step, setStep] = React.useState("form"); // form | done
+  const [name, setName]       = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [category, setCategory] = React.useState("");
+  const [photoUrl, setPhotoUrl] = React.useState("");
+  const [note, setNote]       = React.useState("");
+  const [contact, setContact] = React.useState("");
+  const [tipId, setTipId]     = React.useState("");
+
+  const canSubmit = name.trim().length > 0 && address.trim().length > 0;
+
+  const handleSubmit = () => {
+    if (!canSubmit) return;
+    const id = `tip_${Date.now()}`;
+    saveTip({
+      id, status: "pending",
+      name: name.trim(), address: address.trim(),
+      category: category || "기타",
+      photoUrl: photoUrl.trim(),
+      note: note.trim(),
+      contact: contact.trim(),
+      submittedAt: new Date().toISOString(),
+    });
+    setTipId(id);
+    setStep("done");
+    window.dispatchEvent(new Event("masil-tips-change"));
+  };
+
+  /* 완료 화면 */
+  if (step === "done") {
+    return (
+      <MPage>
+        <MasilNav route="upload" onNavigate={onNavigate}/>
+        <section style={{ padding: isMobile ? "60px 24px 80px" : "80px 56px 100px", maxWidth: 640, margin: "0 auto", textAlign: "center" }}>
+          <div style={{
+            width: 80, height: 80, borderRadius: "50%",
+            background: `${M.olive}18`, border: `2px solid ${M.olive}`,
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            fontSize: 36, marginBottom: 24,
+          }}>📍</div>
+          <MagCap color={M.olive} style={{ marginBottom: 12 }}>제보 완료 · SUBMITTED</MagCap>
+          <h1 style={{ fontSize: isMobile ? 32 : 44, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.2, color: M.ink, margin: "0 0 16px", textWrap: "balance" }}>
+            "{name}" 공간을<br/>제보해주셨어요!
+          </h1>
+          <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 15 : 17, lineHeight: 1.75, color: M.muted, margin: "0 0 36px", textWrap: "pretty" }}>
+            마실맵 운영팀이 검토 후 지도에 올릴게요.<br/>
+            보통 3~7일 안에 결과를 알려드립니다.
+          </p>
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: "20px 24px", marginBottom: 32, textAlign: "left", border: `1px solid ${M.beigeAlt}` }}>
+            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: M.muted, marginBottom: 12 }}>제보 요약</div>
+            {[
+              ["공간 이름", name],
+              ["주소", address],
+              ["분류", category || "기타"],
+              ["접수 번호", tipId.replace("tip_", "").slice(-6)],
+            ].map(([l, v]) => (
+              <div key={l} style={{ display: "flex", justifyContent: "space-between", fontSize: 13, fontWeight: 600, color: M.ink, padding: "6px 0", borderBottom: `1px solid ${M.beigeAlt}` }}>
+                <span style={{ color: M.muted }}>{l}</span>
+                <span style={{ fontWeight: 800 }}>{v}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <MButton kind="primary" size="lg" onClick={() => onNavigate("home")} style={{ justifyContent: "center" }}>홈으로 돌아가기</MButton>
+            <div onClick={() => { setStep("form"); setName(""); setAddress(""); setCategory(""); setPhotoUrl(""); setNote(""); setContact(""); }}
+              style={{ fontSize: 13, fontWeight: 700, color: M.muted, cursor: "pointer", padding: "8px 0" }}>
+              다른 공간도 제보하기 →
+            </div>
+          </div>
+        </section>
+        <MFooter/>
+      </MPage>
+    );
+  }
+
+  /* 제보 폼 */
   return (
     <MPage>
       <MasilNav route="upload" onNavigate={onNavigate}/>
 
-      <section style={{ padding: "32px 56px 24px", maxWidth: 1200, margin: "0 auto" }}>
+      {/* 헤더 */}
+      <section style={{ padding: isMobile ? "32px 20px 24px" : "48px 56px 32px", maxWidth: 800, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: M.muted, fontWeight: 700, marginBottom: 20 }}>
           <span onClick={() => onNavigate("home")} style={{ cursor: "pointer" }}>마실맵</span>
           <MIcon name="chevron" size={12} color={M.muted}/>
-          <span style={{ color: M.ink }}>건물 빠른 등록</span>
+          <span style={{ color: M.ink }}>공간 제보하기</span>
         </div>
-        <Hairline label="UPLOAD · QUICK PIN" style={{ marginBottom: 24 }}/>
-        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr", gap: 56, alignItems: "end" }}>
-          <div>
-            <MagCap color={M.terra} style={{ marginBottom: 12 }}>2~3분이면 끝나요</MagCap>
-            <h1 style={{ fontSize: 56, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.05, color: M.ink, margin: 0, textWrap: "balance" }}>
-              지도 위에<br/>
-              <span style={{ color: M.olive, fontWeight: 900 }}>건물 하나</span>를 올려요
-            </h1>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, lineHeight: 1.7, color: M.muted, marginTop: 16, fontWeight: 400, maxWidth: 540 }}>
-              위치와 기본 정보만 먼저 등록하고, 상세 내용은 나중에 천천히 채우셔도 됩니다.
-            </p>
-          </div>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
-            <div onClick={() => onNavigate("upload-deep")} style={{ padding: 14, borderRadius: MR.card, background: M.cream, border: `1px dashed ${M.beigeAlt}`, cursor: "pointer", maxWidth: 320 }}>
-              <MagCap color={M.terra}>DEEP RECORD</MagCap>
-              <div style={{ fontSize: 14, fontWeight: 800, color: M.ink, marginTop: 6 }}>처음부터 자세히 등록하기 →</div>
-              <div style={{ fontSize: 11, color: M.muted, fontWeight: 500, marginTop: 4 }}>사진·도면·권리정보까지 한 번에</div>
-            </div>
-          </div>
-        </div>
+
+        <MagCap color={M.terra} style={{ marginBottom: 12 }}>누구나 제보할 수 있어요</MagCap>
+        <h1 style={{ fontSize: isMobile ? 34 : 52, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.1, color: M.ink, margin: "0 0 14px", textWrap: "balance" }}>
+          걷기 좋은 공간을<br/>
+          <span style={{ color: M.olive }}>발견</span>하셨나요?
+        </h1>
+        <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: M.muted, margin: 0, maxWidth: 520, textWrap: "pretty" }}>
+          공간 이름과 위치만 알려주셔도 충분합니다. 운영팀이 검토해 마실맵 지도에 올려드립니다.
+        </p>
       </section>
 
-      <section style={{ padding: "16px 56px 64px", maxWidth: 1200, margin: "0 auto", display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 32 }}>
-        {/* 좌측 지도 */}
-        <div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-            <MagCap color={M.terra}>STEP 01 · 위치 핀</MagCap>
-            <MagCap>{pinned ? "✓ 핀 설정됨" : "지도를 클릭하세요"}</MagCap>
+      {/* 폼 */}
+      <section style={{ padding: isMobile ? "0 20px 64px" : "0 56px 80px", maxWidth: 800, margin: "0 auto" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+
+          {/* 필수 */}
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: isMobile ? 20 : 28, boxShadow: MS.cardSm, display: "flex", flexDirection: "column", gap: 16 }}>
+            <MagCap color={M.terra}>필수 정보</MagCap>
+            <MInput
+              label="공간 이름" required
+              placeholder="예: 환기미술관, 성수연방, 오래된 한옥 갤러리"
+              value={name} onChange={setName}/>
+            <MInput
+              label="주소 또는 위치 설명" required
+              placeholder="예: 서울시 종로구 자하문로40길 63 / 성수역 3번 출구에서 도보 5분"
+              value={address} onChange={setAddress}/>
           </div>
-          <div onClick={() => setPinned(true)} style={{ position: "relative", borderRadius: MR.cardLg, overflow: "hidden", height: 460, cursor: "pointer", boxShadow: MS.card }}>
-            <svg viewBox="0 0 700 460" preserveAspectRatio="xMidYMid slice" width="100%" height="100%" style={{ background: M.cream }}>
-              <defs>
-                <pattern id="ugrid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(58,46,34,0.07)" strokeWidth="1"/>
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#ugrid)"/>
-              {/* roads */}
-              <path d="M -20 130 C 200 150 460 90 720 130" fill="none" stroke="#D4C29E" strokeWidth="22" strokeLinecap="round"/>
-              <path d="M -20 320 C 200 340 460 290 720 330" fill="none" stroke="#D4C29E" strokeWidth="18" strokeLinecap="round"/>
-              <path d="M 240 -20 C 240 150 270 320 250 480" fill="none" stroke="#D4C29E" strokeWidth="14" strokeLinecap="round"/>
-              <path d="M 480 -20 C 470 150 510 320 490 480" fill="none" stroke="#D4C29E" strokeWidth="14" strokeLinecap="round"/>
-              {/* blocks */}
-              {[[80,40,120,70],[280,50,160,60],[280,210,200,90],[80,210,140,90],[520,170,140,120]].map((r, i) => (
-                <rect key={i} x={r[0]} y={r[1]} width={r[2]} height={r[3]} rx="8" fill="#E8D7B8" stroke="#D4C29E" strokeWidth="1"/>
-              ))}
-              {/* pin (only if pinned) */}
-              {pinned && (
-                <g transform="translate(360, 230)">
-                  <circle r="40" fill={M.terra} opacity="0.18">
-                    <animate attributeName="r" from="24" to="48" dur="1.6s" repeatCount="indefinite"/>
-                    <animate attributeName="opacity" from="0.4" to="0" dur="1.6s" repeatCount="indefinite"/>
-                  </circle>
-                  <g transform="translate(-14, -36)">
-                    <path d="M14 0 C22 0 28 6 28 13 C28 21 19 30 16 33 C15 34 13 34 12 33 C9 30 0 21 0 13 C0 6 6 0 14 0 Z" fill={M.terra}/>
-                    <circle cx="14" cy="13" r="6" fill={M.cream}/>
-                  </g>
-                </g>
-              )}
-            </svg>
-            <div style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,248,236,0.95)", padding: "10px 14px", borderRadius: 12, boxShadow: MS.cardSm, display: "flex", alignItems: "center", gap: 8 }}>
-              <MIcon name="location" size={14} color={M.terra}/>
-              <MagCap>지도를 클릭해 위치 핀을 찍으세요</MagCap>
+
+          {/* 분류 */}
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: isMobile ? 20 : 28, boxShadow: MS.cardSm }}>
+            <MagCap style={{ marginBottom: 14 }}>분류 (선택)</MagCap>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {TIP_CATEGORIES.map((c) => {
+                const on = category === c;
+                return (
+                  <div key={c} onClick={() => setCategory(on ? "" : c)} style={{
+                    padding: "9px 16px", borderRadius: 999, cursor: "pointer",
+                    fontSize: 13, fontWeight: 700,
+                    background: on ? M.terra : M.beige,
+                    color: on ? "#fff" : M.ink,
+                    border: `1.5px solid ${on ? M.terra : M.beigeAlt}`,
+                    transition: "all .15s",
+                  }}>{c}</div>
+                );
+              })}
             </div>
-            {pinned && (
-              <div style={{ position: "absolute", bottom: 16, left: 16, right: 16, background: M.cream, padding: "12px 16px", borderRadius: 14, boxShadow: MS.cardSm, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <div>
-                  <MagCap color={M.olive}>✓ 위치 확정</MagCap>
-                  <div style={{ fontSize: 13, color: M.ink, fontWeight: 800, marginTop: 4 }}>서울시 종로구 율곡로 83 인근</div>
-                  <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, marginTop: 2 }}>37.5775°N · 126.9869°E</div>
-                </div>
-                <span style={{ fontSize: 12, fontWeight: 800, color: M.terra, cursor: "pointer" }} onClick={(e) => { e.stopPropagation(); setPinned(false); }}>다시 찍기</span>
+          </div>
+
+          {/* 사진 URL */}
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: isMobile ? 20 : 28, boxShadow: MS.cardSm, display: "flex", flexDirection: "column", gap: 14 }}>
+            <MagCap>사진 (선택)</MagCap>
+            <MInput
+              label="사진 URL"
+              placeholder="예: https://example.com/photo.jpg (인스타그램·블로그·구글맵 사진 링크)"
+              value={photoUrl} onChange={setPhotoUrl}
+              hint="직접 찍은 사진이 있으면 구글 포토나 인스타그램 링크를 넣어주세요."/>
+            {photoUrl.trim() && (
+              <div style={{ borderRadius: 14, overflow: "hidden", maxHeight: 200 }}>
+                <img src={photoUrl.trim()} alt="미리보기"
+                  style={{ width: "100%", height: 200, objectFit: "cover", display: "block" }}
+                  onError={(e) => e.target.style.display = "none"}/>
               </div>
             )}
           </div>
-        </div>
 
-        {/* 우측 입력 */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: 24, boxShadow: MS.cardSm, display: "flex", flexDirection: "column", gap: 16 }}>
-            <div>
-              <MagCap color={M.terra}>STEP 02 · 기본 정보</MagCap>
-              <h3 style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "4px 0 0" }}>건물에 대해 알려주세요</h3>
-            </div>
-            <MInput label="건물명" placeholder="예: 환기미술관" required value={name} onChange={setName}/>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              <MSelect label="용도" value={type} onChange={setType} required options={["미술관","사무소","주택","상업","사찰","교회","공공","기타"]}/>
-              <MInput label="완공연도" placeholder="예: 1992" value={year} onChange={setYear}/>
-            </div>
-            <div>
-              <div style={{ display: "flex", alignItems: "baseline", gap: 6, marginBottom: 8 }}>
-                <span style={{ fontSize: 13, fontWeight: 800, color: M.ink }}>대표 사진</span>
-                <span style={{ fontSize: 11, fontWeight: 700, color: M.muted }}>(선택 · 1장)</span>
-              </div>
-              <div style={{
-                aspectRatio: "16/9", borderRadius: 16,
-                border: `1.5px dashed ${M.beigeAlt}`,
-                background: M.beige,
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8,
-                cursor: "pointer",
-              }}>
-                <MIcon name="camera" size={28} color={M.muted}/>
-                <span style={{ fontSize: 13, color: M.muted, fontWeight: 700 }}>드래그하거나 클릭해 업로드</span>
-                <span style={{ fontSize: 11, color: M.faint, fontWeight: 600 }}>JPG / PNG · 최대 8MB</span>
-              </div>
-            </div>
+          {/* 추가 설명 */}
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: isMobile ? 20 : 28, boxShadow: MS.cardSm, display: "flex", flexDirection: "column", gap: 12 }}>
+            <MagCap>이 공간에 대해 (선택)</MagCap>
+            <textarea
+              value={note} onChange={(e) => setNote(e.target.value)}
+              placeholder="어떤 공간인지, 어떤 점이 걷기 좋은지 자유롭게 적어주세요. 마실맵 팀이 소개글 작성에 참고합니다."
+              style={{
+                width: "100%", minHeight: 120, padding: "14px 16px",
+                borderRadius: 14, border: `1.5px solid ${M.beigeAlt}`,
+                background: M.beige, fontFamily: "inherit",
+                fontSize: 14, lineHeight: 1.65, color: M.ink,
+                resize: "vertical", outline: "none", boxSizing: "border-box",
+              }}/>
           </div>
 
-          {/* CTA */}
-          <div style={{ display: "flex", gap: 10 }}>
-            <MButton kind="primary" size="lg" style={{ flex: 1, justifyContent: "center" }}>등록하기</MButton>
-            <MButton kind="outline" size="lg" onClick={() => onNavigate("upload-deep")}>
-              상세 정보 추가 →
+          {/* 연락처 */}
+          <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: isMobile ? 20 : 28, boxShadow: MS.cardSm }}>
+            <MInput
+              label="연락처 (선택)"
+              placeholder="검토 결과를 받고 싶으면 이메일 또는 인스타 계정을 남겨주세요"
+              value={contact} onChange={setContact}
+              hint="익명 제보도 가능합니다. 연락처는 결과 안내 외에 사용하지 않습니다."/>
+          </div>
+
+          {/* 제출 */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, paddingTop: 8 }}>
+            <MButton
+              kind="primary" size="lg"
+              style={{ justifyContent: "center", opacity: canSubmit ? 1 : 0.45, pointerEvents: canSubmit ? "auto" : "none" }}
+              onClick={handleSubmit}>
+              제보 보내기 📍
             </MButton>
+            {!canSubmit && (
+              <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, textAlign: "center" }}>
+                공간 이름과 주소를 입력하면 제보할 수 있어요
+              </div>
+            )}
+            <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, textAlign: "center", lineHeight: 1.6 }}>
+              익명 제보 가능 · 운영팀 검토 후 등록 · 보통 3~7일 소요
+            </div>
           </div>
-          <p style={{ fontSize: 12, color: M.muted, textAlign: "center", fontWeight: 600, margin: 0 }}>
-            등록 후 24시간 내 운영팀이 확인합니다 · 익명 등록 가능
-          </p>
         </div>
       </section>
 
@@ -518,4 +601,4 @@ function RightsChoice({ on, onClick, label, sub, color }) {
   );
 }
 
-Object.assign(window, { UploadQuickScreen, UploadDeepScreen });
+Object.assign(window, { UploadQuickScreen, UploadDeepScreen, loadTips, updateTipStatus });
