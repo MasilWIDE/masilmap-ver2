@@ -73,7 +73,7 @@ function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = f
           { x: 720, y: 990, t: "제주" },
         ].map((r, i) => (
           <text key={i} x={r.x} y={r.y}
-            fontFamily="'JetBrains Mono', monospace"
+            fontFamily={MT.family}
             fontSize="11" fontWeight="600"
             letterSpacing="0.1em"
             fill={tone === "deep" ? "rgba(245,235,220,0.5)" : "rgba(58,46,34,0.4)"}
@@ -86,7 +86,7 @@ function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = f
         {[200, 400, 600, 800, 1000].map((y) => (
           <g key={y}>
             <line x1="20" y1={y} x2="32" y2={y} stroke={tone === "deep" ? "#5C4D3D" : "#B89E7A"} strokeWidth="1" />
-            <text x="38" y={y+4} fontFamily="'JetBrains Mono', monospace" fontSize="9" fill={tone === "deep" ? "#7B6342" : "#8A7A65"}>
+            <text x="38" y={y+4} fontFamily={MT.family} fontSize="9" fill={tone === "deep" ? "#7B6342" : "#8A7A65"}>
               {(38 - y * 0.005).toFixed(2)}°
             </text>
           </g>
@@ -116,7 +116,7 @@ function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = f
               </g>
               {on && (
                 <text x="0" y="-32" textAnchor="middle"
-                  fontFamily="Pretendard, Nunito, sans-serif"
+                  fontFamily={MT.family}
                   fontSize="13" fontWeight="800" fill={M.ink}
                   style={{ paintOrder: "stroke", stroke: M.cream, strokeWidth: 4, strokeLinejoin: "round" }}>
                   {b.name}
@@ -468,7 +468,7 @@ function MasilHero({ onNavigate }) {
         </div>
         <div>
           <p style={{
-            fontFamily: "'Noto Serif KR', serif",
+            fontFamily: MT.family,
             fontSize: 17, lineHeight: 1.75,
             color: M.ink, fontWeight: 400,
             margin: 0, textWrap: "pretty",
@@ -476,7 +476,7 @@ function MasilHero({ onNavigate }) {
             그동안 걷던 공간이 새롭게 보이기 시작한다. 이렇게 걷기 좋은 공간이 존재 한다.<br/>
             천 년 된 목조 건축부터 어제 완공된 미술관까지, 526곳의 공간과 47개의 코스를 지도 위에 함께 펼쳐 두었습니다.
           </p>
-          <div style={{ marginTop: 20, display: "flex", gap: 24, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 600 }}>
+          <div style={{ marginTop: 20, display: "flex", gap: 24, fontFamily: MT.family, fontSize: 11, color: M.muted, fontWeight: 600 }}>
             <span>526 PLACES</span>
             <span>·</span>
             <span>47 COURSES</span>
@@ -575,7 +575,7 @@ function PinPopupCard({ b, onClose, onNavigate, isMobile = false }) {
         {/* 우하단: PHOTO 인디케이터 */}
         <div style={{
           position: "absolute", bottom: 12, right: 12,
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: MT.family,
           fontSize: 10, fontWeight: 700, letterSpacing: "0.14em",
           color: M.cream, background: "rgba(58,46,34,0.7)",
           padding: "4px 9px", borderRadius: 6,
@@ -611,7 +611,7 @@ function PinPopupCard({ b, onClose, onNavigate, isMobile = false }) {
         <div style={{
           padding: "12px 14px", borderRadius: 12,
           background: M.beige, border: `1px solid ${M.beigeAlt}`,
-          fontFamily: "'Noto Serif KR', serif",
+          fontFamily: MT.family,
           fontSize: 13, color: M.ink, lineHeight: 1.55,
           marginBottom: 14,
         }}>"{b.intro}"</div>
@@ -731,7 +731,7 @@ function CoverHomeLayout({ onNavigate }) {
             {/* 코너 모노 텍스트 */}
             <div style={{
               display: "flex", justifyContent: "space-between",
-              fontFamily: "'JetBrains Mono', monospace",
+              fontFamily: MT.family,
               fontSize: 11, fontWeight: 600, letterSpacing: "0.14em",
               color: "rgba(244,243,234,0.7)",
             }}>
@@ -742,7 +742,7 @@ function CoverHomeLayout({ onNavigate }) {
             {/* 표지 본문 */}
             <div>
               <div style={{
-                fontFamily: "'Noto Serif KR', serif",
+                fontFamily: MT.family,
                 fontSize: 18, opacity: 0.85, marginBottom: 14, fontWeight: 400,
               }}>
                 a masilmap series
@@ -753,7 +753,7 @@ function CoverHomeLayout({ onNavigate }) {
                 margin: "0 0 18px", textWrap: "balance",
               }}>{featuredCol.title}</h1>
               <div style={{
-                fontFamily: "'Noto Serif KR', serif",
+                fontFamily: MT.family,
                 fontSize: 22, fontWeight: 500, opacity: 0.92,
               }}>{featuredCol.subtitle}</div>
             </div>
@@ -763,7 +763,7 @@ function CoverHomeLayout({ onNavigate }) {
               paddingTop: 18,
               borderTop: `1px solid rgba(244,243,234,0.25)`,
               display: "flex", justifyContent: "space-between",
-              fontFamily: "'JetBrains Mono', monospace",
+              fontFamily: MT.family,
               fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
             }}>
               <span>{featCourses.length} 코스 · {featBuildings} 공간</span>
@@ -780,13 +780,13 @@ function CoverHomeLayout({ onNavigate }) {
             display: "flex", flexDirection: "column", gap: 18,
           }}>
             <MagCap color={M.terra}>SERIES · {featuredCol.kind} 정복</MagCap>
-            <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em" }}>
+            <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, fontFamily: MT.family, letterSpacing: "0.08em" }}>
               {featCourses.length} 코스 · {featBuildings} 공간
             </div>
 
             <blockquote style={{
               margin: 0, padding: 0,
-              fontFamily: "'Noto Serif KR', serif",
+              fontFamily: MT.family,
               fontSize: 22, lineHeight: 1.55, color: M.ink,
               fontWeight: 500, letterSpacing: "-0.005em",
               textWrap: "pretty",
@@ -930,7 +930,7 @@ function CoverHomeLayout({ onNavigate }) {
                 background: c.cover, color: M.cream, padding: 18,
                 display: "flex", flexDirection: "column", justifyContent: "space-between",
               }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em" }}>
+                <div style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em" }}>
                   {c.type === "도슨트" ? "DOCENT COURSE" : "SELF COURSE"}
                 </div>
                 <div>
@@ -1178,7 +1178,7 @@ function HomeScreen({ route, onNavigate, t, searchQuery }) {
               }}>
                 <div style={{ position: "absolute", top: 16, left: 16, display: "flex", gap: 6 }}>
                   <span style={{
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: MT.family,
                     fontSize: 10, fontWeight: 700, letterSpacing: "0.14em",
                     color: M.cream, background: "rgba(255,248,236,0.15)",
                     padding: "5px 9px", borderRadius: 6,

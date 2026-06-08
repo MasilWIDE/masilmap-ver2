@@ -15,7 +15,7 @@ const ADMIN_NAV = [
 
 function AdminShell({ active, onNavigate, children }) {
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: M.beige, fontFamily: "Pretendard, Nunito, sans-serif", color: M.ink }}>
+    <div style={{ display: "flex", minHeight: "100vh", background: M.beige, fontFamily: MT.family, color: M.ink }}>
       {/* 사이드바 */}
       <aside style={{
         width: 240, flexShrink: 0,
@@ -31,7 +31,7 @@ function AdminShell({ active, onNavigate, children }) {
           <div style={{ width: 22, height: 22, borderRadius: 999, background: M.ink, color: M.cream, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, fontSize: 11 }}>A</div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 11, fontWeight: 800, color: M.ink, letterSpacing: "-0.005em" }}>운영자 모드</div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 600, color: M.muted, letterSpacing: "0.05em" }}>masil-admin</div>
+            <div style={{ fontFamily: MT.family, fontSize: 9, fontWeight: 600, color: M.muted, letterSpacing: "0.05em" }}>masil-admin</div>
           </div>
         </div>
         <MagCap style={{ marginBottom: 8, padding: "0 4px" }}>SECTIONS</MagCap>
@@ -56,7 +56,7 @@ function AdminShell({ active, onNavigate, children }) {
                   {n.label}
                 </span>
                 {n.count != null && (
-                  <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: on ? "rgba(255,248,236,0.7)" : M.muted }}>{n.count}</span>
+                  <span style={{ fontSize: 10, fontFamily: MT.family, fontWeight: 600, color: on ? "rgba(255,248,236,0.7)" : M.muted }}>{n.count}</span>
                 )}
               </div>
             );
@@ -65,7 +65,7 @@ function AdminShell({ active, onNavigate, children }) {
         <div style={{ marginTop: "auto", padding: "12px 10px", borderRadius: 10, background: M.beigeAlt }}>
           <MagCap style={{ marginBottom: 4 }}>ENV</MagCap>
           <div style={{ fontSize: 11, fontWeight: 700, color: M.ink }}>production · ko-KR</div>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: M.muted, marginTop: 2 }}>v2.4.1 · build #3201</div>
+          <div style={{ fontFamily: MT.family, fontSize: 9, color: M.muted, marginTop: 2 }}>v2.4.1 · build #3201</div>
         </div>
       </aside>
 
@@ -143,7 +143,7 @@ function AdminContentScreen({ onNavigate }) {
               <span>{t.label}</span>
               {t.count > 0 && (
                 <span style={{
-                  fontSize: 10, fontFamily: "'JetBrains Mono', monospace", fontWeight: 800,
+                  fontSize: 10, fontFamily: MT.family, fontWeight: 800,
                   color: on ? M.terra : (t.highlight ? "#fff" : M.faint),
                   background: t.highlight && !on ? M.olive : "transparent",
                   padding: t.highlight && !on ? "2px 6px" : 0,
@@ -185,7 +185,7 @@ function AdminContentScreen({ onNavigate }) {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
                         <StatusBadge status={tip.status === "pending" ? "대기" : tip.status === "approved" ? "공개" : "비공개"}/>
-                        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>
+                        <span style={{ fontFamily: MT.family, fontSize: 10, color: M.muted, fontWeight: 600 }}>
                           {new Date(tip.submittedAt).toLocaleDateString("ko-KR")}
                         </span>
                         {tip.category && (
@@ -296,7 +296,7 @@ function AdminContentScreen({ onNavigate }) {
                 </div>
                 <span style={{ fontWeight: 600, color: M.ink }}>{b.type}</span>
                 <span style={{ fontWeight: 600, color: M.ink }}>{b.region}</span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 600 }}>2026.0{(i%9)+1}.{(10+i).toString().padStart(2,"0")}</span>
+                <span style={{ fontFamily: MT.family, fontSize: 11, color: M.muted, fontWeight: 600 }}>2026.0{(i%9)+1}.{(10+i).toString().padStart(2,"0")}</span>
                 <span>
                   <StatusBadge status={i % 8 === 0 ? "대기" : i % 7 === 0 ? "비공개" : "공개"}/>
                 </span>
@@ -437,7 +437,7 @@ function AdminStatsScreen({ onNavigate }) {
             <div style={{ position: "absolute", inset: "0 0 28px 0", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
               {[10, 7.5, 5, 2.5, 0].map((v, i) => (
                 <div key={i} style={{ height: 1, background: i === 4 ? "transparent" : "rgba(58,46,34,0.06)", position: "relative" }}>
-                  <span style={{ position: "absolute", right: "calc(100% + 8px)", top: -7, fontFamily: "'JetBrains Mono', monospace", fontSize: 9, color: M.muted, fontWeight: 600 }}>{v}M</span>
+                  <span style={{ position: "absolute", right: "calc(100% + 8px)", top: -7, fontFamily: MT.family, fontSize: 9, color: M.muted, fontWeight: 600 }}>{v}M</span>
                 </div>
               ))}
             </div>
@@ -463,7 +463,7 @@ function AdminStatsScreen({ onNavigate }) {
           </div>
           <div style={{ display: "flex", gap: 14, marginTop: 10 }}>
             {months.map((m) => (
-              <div key={m} style={{ flex: 1, textAlign: "center", fontSize: 11, color: M.muted, fontWeight: 700, fontFamily: "'JetBrains Mono', monospace" }}>{m}월</div>
+              <div key={m} style={{ flex: 1, textAlign: "center", fontSize: 11, color: M.muted, fontWeight: 700, fontFamily: MT.family }}>{m}월</div>
             ))}
           </div>
         </div>
@@ -479,7 +479,7 @@ function AdminStatsScreen({ onNavigate }) {
                 <div key={c.name}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6, fontSize: 12, fontWeight: 700 }}>
                     <span style={{ color: M.ink }}><Serial color={c.color} size={11}>0{i+1}</Serial> &nbsp; {c.name}</span>
-                    <span style={{ color: M.muted, fontFamily: "'JetBrains Mono', monospace" }}>{c.count}건</span>
+                    <span style={{ color: M.muted, fontFamily: MT.family }}>{c.count}건</span>
                   </div>
                   <div style={{ height: 10, borderRadius: 999, background: M.beige, overflow: "hidden" }}>
                     <div style={{ height: "100%", width: `${(c.count / maxC) * 100}%`, background: c.color, borderRadius: 999 }}/>
@@ -514,14 +514,14 @@ function AdminStatsScreen({ onNavigate }) {
               { id: "B2026-0414", course: "북촌 골목", name: "민준", date: "06.18", people: 2, amount: 64000, status: "취소" },
             ].map((r, i) => (
               <div key={r.id} style={{ display: "grid", gridTemplateColumns: "auto 1.6fr 1fr 0.8fr 0.8fr auto", gap: 12, padding: "12px 0", fontSize: 12, borderBottom: i === 4 ? "none" : `1px solid ${M.beigeAlt}`, alignItems: "center" }}>
-                <span style={{ width: 80, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: M.muted }}>{r.id}</span>
+                <span style={{ width: 80, fontFamily: MT.family, fontSize: 10, fontWeight: 700, color: M.muted }}>{r.id}</span>
                 <div>
                   <div style={{ fontWeight: 800, color: M.ink }}>{r.course}</div>
                   <div style={{ fontSize: 10, color: M.muted, fontWeight: 600 }}>{r.name}</div>
                 </div>
                 <span style={{ fontWeight: 700, color: M.ink }}>{r.date}</span>
                 <span style={{ fontWeight: 700, color: M.ink }}>{r.people}명</span>
-                <span style={{ fontWeight: 800, color: M.ink, fontFamily: "'JetBrains Mono', monospace", fontSize: 11 }}>{r.amount > 0 ? `₩${(r.amount/1000).toFixed(0)}k` : "—"}</span>
+                <span style={{ fontWeight: 800, color: M.ink, fontFamily: MT.family, fontSize: 11 }}>{r.amount > 0 ? `₩${(r.amount/1000).toFixed(0)}k` : "—"}</span>
                 <span style={{ width: 60, textAlign: "right" }}>
                   <StatusBadge status={r.status === "취소" ? "비공개" : r.status === "결제대기" ? "대기" : r.status === "완료" ? "완료" : "공개"}/>
                 </span>
@@ -639,14 +639,14 @@ function AdminRightsScreen({ onNavigate }) {
                     <ImgPlaceholder ratio="1/1" tone={a.type === "도면" ? "beige" : a.type === "3D" ? "deep" : a.type === "다이어그램" ? "olive" : "cream"} style={{ borderRadius: 6 }}/>
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 800, color: M.ink, fontFamily: "'JetBrains Mono', monospace" }}>{a.name}</div>
+                    <div style={{ fontSize: 13, fontWeight: 800, color: M.ink, fontFamily: MT.family }}>{a.name}</div>
                     <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 2 }}>업로더 · {a.uploader}</div>
                   </div>
                   <span>
                     <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 8px", borderRadius: 6, background: M.beige, color: M.ink, border: `1px solid ${M.beigeAlt}` }}>{a.type}</span>
                   </span>
                   <span style={{ fontWeight: 700, color: M.ink }}>{a.owner}</span>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: M.muted, fontFamily: "'JetBrains Mono', monospace", lineHeight: 1.5 }}>{a.split}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: M.muted, fontFamily: MT.family, lineHeight: 1.5 }}>{a.split}</span>
                   <span><StatusBadge status={a.consent}/></span>
                   <MIcon name="chevron" size={14} color={M.muted} style={{ transform: isOpen ? "rotate(90deg)" : "none" }}/>
                 </div>
@@ -675,7 +675,7 @@ function AdminRightsScreen({ onNavigate }) {
                                   {p.joined ? "마실맵 가입자" : "비가입 · 메일로 초대 발송됨"}
                                 </div>
                               </div>
-                              <div style={{ fontSize: 13, fontWeight: 800, color: M.ink, fontFamily: "'JetBrains Mono', monospace" }}>{p.share}%</div>
+                              <div style={{ fontSize: 13, fontWeight: 800, color: M.ink, fontFamily: MT.family }}>{p.share}%</div>
                               <StatusBadge status={p.consent === "완료" ? "완료" : p.consent === "대기" ? "대기" : "보류"}/>
                             </div>
                           ))}
@@ -762,7 +762,7 @@ function AdminTaxonomyScreen({ onNavigate }) {
               return (
                 <div key={t.tag} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "#fff", borderRadius: 12, border: `1px solid ${M.beigeAlt}` }}>
                   <span style={{ fontSize: 14, fontWeight: 800, color: M.ink, whiteSpace: "nowrap" }}># {t.tag}</span>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 700, whiteSpace: "nowrap" }}>{t.count}곳</span>
+                  <span style={{ fontFamily: MT.family, fontSize: 11, color: M.muted, fontWeight: 700, whiteSpace: "nowrap" }}>{t.count}곳</span>
                   <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
                     <AdminMiniBtn active={isLens} onClick={() => isLens ? sh.demoteLens("tag-" + t.tag) : sh.promoteLens(t.tag, t.tag)}>
                       {isLens ? "✓ 렌즈" : "렌즈 승격"}
@@ -799,7 +799,7 @@ function AdminTaxonomyScreen({ onNavigate }) {
                   <div key={L.id} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", background: "#fff", borderRadius: 12, border: `1px solid ${M.beigeAlt}` }}>
                     <MIcon name={L.icon} size={14} color={M.olive}/>
                     <span style={{ fontSize: 14, fontWeight: 800, color: M.ink, whiteSpace: "nowrap" }}>{L.label}</span>
-                    {!isPromoted && <span style={{ fontSize: 10.5, fontWeight: 700, color: M.faint, fontFamily: "'JetBrains Mono', monospace" }}>기본</span>}
+                    {!isPromoted && <span style={{ fontSize: 10.5, fontWeight: 700, color: M.faint, fontFamily: MT.family }}>기본</span>}
                     {isPromoted && <span onClick={() => sh.demoteLens(L.id)} style={{ marginLeft: "auto", fontSize: 12, fontWeight: 800, color: M.terra, cursor: "pointer" }}>제거</span>}
                   </div>
                 );

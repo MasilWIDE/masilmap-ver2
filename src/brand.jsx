@@ -35,11 +35,13 @@ const M = {
 };
 
 /* ---------- 2. TYPE TOKENS ---------- *
-   Font: Nunito for body + headings (warmth + roundness),
-         Quicksand for wordmark only.                        */
+   Font: Pretendard 단일 스택 (한·영 동일 폰트로 일관성 + 무게감).
+   본문 weight 600 (기존 400/500 대비 묵직함), 헤딩 900.            */
+const PRETENDARD_STACK = '"Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif';
 const MT = {
-  family:       "'Nunito', 'Quicksand', system-ui, sans-serif",
-  familyMark:   "'Quicksand', system-ui, sans-serif",
+  family:       PRETENDARD_STACK,
+  familyMark:   PRETENDARD_STACK,
+  familyMono:   PRETENDARD_STACK,  /* 호환: 과거 JetBrains Mono 자리 — 자간으로 구분 */
 
   /* sizes / weights — use these names everywhere */
   display:      { size: 64, weight: 900, line: 1.04, ls: "-0.025em" },

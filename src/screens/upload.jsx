@@ -122,12 +122,12 @@ function UploadQuickScreen({ onNavigate }) {
           <h1 style={{ fontSize: isMobile ? 32 : 44, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.2, color: M.ink, margin: "0 0 16px", textWrap: "balance" }}>
             "{name}" 공간을<br/>제보해주셨어요!
           </h1>
-          <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 15 : 17, lineHeight: 1.75, color: M.muted, margin: "0 0 36px", textWrap: "pretty" }}>
+          <p style={{ fontFamily: MT.family, fontSize: isMobile ? 15 : 17, lineHeight: 1.75, color: M.muted, margin: "0 0 36px", textWrap: "pretty" }}>
             마실맵 운영팀이 검토 후 지도에 올릴게요.<br/>
             보통 3~7일 안에 결과를 알려드립니다.
           </p>
           <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: "20px 24px", marginBottom: 32, textAlign: "left", border: `1px solid ${M.beigeAlt}` }}>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: M.muted, marginBottom: 12 }}>제보 요약</div>
+            <div style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: M.muted, marginBottom: 12 }}>제보 요약</div>
             {[
               ["공간 이름", name],
               ["주소", address],
@@ -171,7 +171,7 @@ function UploadQuickScreen({ onNavigate }) {
           걷기 좋은 공간을<br/>
           <span style={{ color: M.olive }}>발견</span>하셨나요?
         </h1>
-        <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: M.muted, margin: 0, maxWidth: 520, textWrap: "pretty" }}>
+        <p style={{ fontFamily: MT.family, fontSize: isMobile ? 15 : 17, lineHeight: 1.7, color: M.muted, margin: 0, maxWidth: 520, textWrap: "pretty" }}>
           공간 이름과 위치만 알려주셔도 충분합니다. 운영팀이 검토해 마실맵 지도에 올려드립니다.
         </p>
       </section>
@@ -318,7 +318,7 @@ function UploadDeepScreen({ onNavigate }) {
             </h1>
           </div>
           <div>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 16, lineHeight: 1.7, color: M.muted, margin: 0, fontWeight: 400, textWrap: "pretty" }}>
+            <p style={{ fontFamily: MT.family, fontSize: 16, lineHeight: 1.7, color: M.muted, margin: 0, fontWeight: 400, textWrap: "pretty" }}>
               사진과 도면, 운영시간 같은 정보부터 “건축가의 한마디”까지. 입력이 많지만, 한 섹션씩 완성하면 됩니다.
             </p>
           </div>
@@ -432,7 +432,7 @@ function UploadDeepScreen({ onNavigate }) {
                 <textarea placeholder="이 건물은 김환기 화백의 점화에서 모티프를 가져와…" style={{
                   width: "100%", minHeight: 220, padding: 18,
                   borderRadius: 16, border: `1.5px solid ${M.beigeAlt}`,
-                  background: M.beige, fontFamily: "'Noto Serif KR', serif",
+                  background: M.beige, fontFamily: MT.family,
                   fontSize: 16, lineHeight: 1.7, color: M.ink,
                   resize: "vertical", outline: "none",
                 }}/>

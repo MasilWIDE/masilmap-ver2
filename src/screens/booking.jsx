@@ -115,7 +115,7 @@ function BookingDocentScreen({ onNavigate, courseId }) {
           언제, 몇 분이서<br/>
           <span style={{ color: M.olive, fontWeight: 900 }}>마실</span> 다녀오실까요?
         </h1>
-        <p style={{ fontSize: 15, color: M.muted, marginTop: 14, fontWeight: 500, fontFamily: "'Noto Serif KR', serif" }}>
+        <p style={{ fontSize: 15, color: M.muted, marginTop: 14, fontWeight: 500, fontFamily: MT.family }}>
           {c.curator.name} 큐레이터가 직접 안내합니다. 우천 시에도 운영되며, 1시간 전까지 무료 취소.
         </p>
       </section>
@@ -278,7 +278,7 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
             6월 27일,<br/>
             <span style={{ color: M.olive, fontWeight: 900 }}>마실</span> 갑니다.
           </h1>
-          <p style={{ fontSize: 16, color: M.muted, fontFamily: "'Noto Serif KR', serif", lineHeight: 1.7, fontWeight: 400, margin: "0 auto 40px", maxWidth: 480, textWrap: "pretty" }}>
+          <p style={{ fontSize: 16, color: M.muted, fontFamily: MT.family, lineHeight: 1.7, fontWeight: 400, margin: "0 auto 40px", maxWidth: 480, textWrap: "pretty" }}>
             확정 안내를 카카오톡과 이메일로 보내드렸어요. 당일 출발 15분 전까지 집합 장소에서 만나요.
           </p>
 
@@ -375,7 +375,7 @@ function BookingPaymentScreen({ onNavigate, courseId }) {
               minHeight: 200,
               display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", gap: 10,
             }}>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: M.muted, letterSpacing: "0.14em" }}>
+              <div style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, color: M.muted, letterSpacing: "0.14em" }}>
                 TOSS PAYMENTS WIDGET
               </div>
               <div style={{ padding: "20px", borderRadius: 14, background: `${M.olive}12`, border: `1.5px solid ${M.olive}44`, textAlign: "center" }}>
@@ -470,7 +470,7 @@ function BookingExternalScreen({ onNavigate, spaceId }) {
           <div>
             <MagCap color={M.terra} style={{ marginBottom: 12 }}>{s.typeIcon} {b.region} · {b.name} 옆</MagCap>
             <h1 style={{ fontSize: 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, color: M.ink, margin: 0, textWrap: "balance" }}>{s.name}</h1>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 19, lineHeight: 1.65, color: M.muted, marginTop: 20, marginBottom: 0, fontWeight: 400, textWrap: "pretty" }}>{s.summary}</p>
+            <p style={{ fontFamily: MT.family, fontSize: 19, lineHeight: 1.65, color: M.muted, marginTop: 20, marginBottom: 0, fontWeight: 400, textWrap: "pretty" }}>{s.summary}</p>
           </div>
           <div>
             <MetaRow items={[
@@ -494,7 +494,7 @@ function BookingExternalScreen({ onNavigate, spaceId }) {
           {/* 마실맵 큐레이션 한 줄 */}
           <div style={{ padding: 24, background: M.cream, borderRadius: MR.cardLg, boxShadow: MS.cardSm, borderLeft: `4px solid ${M.terra}` }}>
             <MagCap color={M.terra} style={{ marginBottom: 10 }}>MASILMAP CURATION</MagCap>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 22, lineHeight: 1.5, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>
+            <p style={{ fontFamily: MT.family, fontSize: 22, lineHeight: 1.5, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>
               “{b.name}의 동선을 그대로 옮긴 곳. 머무는 것 자체가 건축 산책의 연장이 됩니다.”
             </p>
             <div style={{ marginTop: 14, fontSize: 12, color: M.muted, fontWeight: 700 }}>— 마실맵 에디터팀</div>
@@ -524,7 +524,7 @@ function BookingExternalScreen({ onNavigate, spaceId }) {
             <div style={{ marginTop: 8, fontSize: 36, fontWeight: 900, color: M.ink, letterSpacing: "-0.025em" }}>₩ {s.minPrice.toLocaleString()}<span style={{ fontSize: 14, color: M.muted, marginLeft: 4 }}>~</span></div>
             <Hairline style={{ margin: "16px 0" }}/>
             <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", background: M.beige, borderRadius: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: M.ink, color: M.cream, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, fontSize: 14 }}>{s.partnerLogo}</div>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: M.ink, color: M.cream, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MT.family, fontWeight: 800, fontSize: 14 }}>{s.partnerLogo}</div>
               <div>
                 <MagCap>예약 파트너</MagCap>
                 <div style={{ fontSize: 15, fontWeight: 800, color: M.ink, marginTop: 2 }}>{s.partner}</div>
@@ -552,7 +552,7 @@ function BookingExternalScreen({ onNavigate, spaceId }) {
             boxShadow: MS.cardLg,
           }}>
             <div style={{ display: "flex", justifyContent: "center", marginBottom: 18 }}>
-              <div style={{ width: 64, height: 64, borderRadius: 16, background: M.ink, color: M.cream, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'JetBrains Mono', monospace", fontWeight: 800, fontSize: 22 }}>{s.partnerLogo}</div>
+              <div style={{ width: 64, height: 64, borderRadius: 16, background: M.ink, color: M.cream, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: MT.family, fontWeight: 800, fontSize: 22 }}>{s.partnerLogo}</div>
             </div>
             <h3 style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, textAlign: "center", margin: 0 }}>
               {s.partner}로 이동합니다

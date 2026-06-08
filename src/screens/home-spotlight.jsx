@@ -185,7 +185,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
 
         {/* 모노 라벨 */}
         <div style={{
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: MT.family,
           fontSize: 11.5, fontWeight: 700, letterSpacing: "0.24em",
           color: M.olive, marginBottom: 22,
           display: "flex", alignItems: "center", gap: 12,
@@ -197,7 +197,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
 
         {/* 헤드라인 */}
         <h1 style={{
-          fontFamily: "'Noto Serif KR', serif",
+          fontFamily: MT.family,
           fontSize: isMobile ? 40 : 68,
           fontWeight: 900,
           letterSpacing: "-0.03em",
@@ -294,7 +294,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
                 <div style={{
                   display: "flex", alignItems: "center", gap: 8,
                   fontSize: 10.5, fontWeight: 800, letterSpacing: "0.14em",
-                  color: M.terra, fontFamily: "'JetBrains Mono', monospace",
+                  color: M.terra, fontFamily: MT.family,
                   marginBottom: 10,
                 }}>
                   <span style={{
@@ -342,7 +342,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
                 <div style={{
                   display: "flex", alignItems: "center", gap: 8,
                   fontSize: 10.5, fontWeight: 800, letterSpacing: "0.14em",
-                  color: M.olive, fontFamily: "'JetBrains Mono', monospace",
+                  color: M.olive, fontFamily: MT.family,
                   marginBottom: 10, marginTop: 6,
                 }}>
                   <span style={{
@@ -438,7 +438,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
             marginTop: 26,
             fontSize: 11.5, color: "rgba(244,243,234,0.35)",
             fontWeight: 600,
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: MT.family,
             letterSpacing: "0.06em",
           }}>
             주변에 떠다니는 검색어를 클릭하거나 직접 입력해 보세요
@@ -454,7 +454,7 @@ function SearchCenterHero({ onNavigate, isMobile }) {
           animation: "mFloat2 2.5s ease-in-out infinite",
           pointerEvents: "none",
         }}>
-          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(244,243,234,0.45)", fontFamily: "'JetBrains Mono', monospace" }}>SCROLL</span>
+          <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(244,243,234,0.45)", fontFamily: MT.family }}>SCROLL</span>
           <div style={{ width: 1, height: 28, background: "rgba(244,243,234,0.25)" }}/>
         </div>
       )}
@@ -511,9 +511,9 @@ function MasilRecommender({ onNavigate, isMobile }) {
       <div style={{ maxWidth: 1100, margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14 }}>
           <MIcon name="sparkle" size={18} color={M.olive}/>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: M.olive }}>FOR YOU · 오늘의 마실</span>
+          <span style={{ fontFamily: MT.family, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: M.olive }}>FOR YOU · 오늘의 마실</span>
         </div>
-        <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 30 : 52, fontWeight: 900, letterSpacing: "-0.035em", margin: 0, color: M.ink, lineHeight: 1.05, textWrap: "balance" }}>
+        <h2 style={{ fontFamily: MT.family, fontSize: isMobile ? 30 : 52, fontWeight: 900, letterSpacing: "-0.035em", margin: 0, color: M.ink, lineHeight: 1.05, textWrap: "balance" }}>
           이번엔 어디로 <span style={{ color: M.olive }}>마실</span> 갈까요?
         </h2>
         <p style={{ fontSize: isMobile ? 14.5 : 17, color: M.muted, fontWeight: 500, margin: "12px 0 0", maxWidth: 560, textWrap: "pretty" }}>
@@ -551,7 +551,7 @@ function MasilRecommender({ onNavigate, isMobile }) {
           <div style={{ marginTop: 32 }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 16 }}>
               <span style={{ fontSize: isMobile ? 17 : 20, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em" }}>"{moodLabel}" 마실, 이런 코스 어때요?</span>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, color: M.muted }}>{matches.length}곳</span>
+              <span style={{ fontFamily: MT.family, fontSize: 12, fontWeight: 700, color: M.muted }}>{matches.length}곳</span>
             </div>
             {matches.length === 0 ? (
               <div style={{ padding: "28px 16px", borderRadius: MR.cardLg, background: M.cream, border: `1px dashed ${M.beigeAlt}`, fontSize: 14, color: M.muted, fontWeight: 600, textAlign: "center" }}>
@@ -565,7 +565,7 @@ function MasilRecommender({ onNavigate, isMobile }) {
                     <div key={c.id} onClick={() => onNavigate("walkcourse", c.id)} style={{ cursor: "pointer", background: M.cream, borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.card, border: `1px solid ${M.beigeAlt}` }}>
                       <div style={{ height: 150, background: c.cover, position: "relative", display: "flex", alignItems: "flex-end", padding: 16 }}>
                         <span style={{ position: "absolute", top: 12, left: 12, padding: "4px 9px", borderRadius: 999, background: c.official ? M.terra : "rgba(255,255,255,0.92)", color: c.official ? "#fff" : M.muted, fontSize: 10, fontWeight: 800 }}>{c.official ? "공식" : "유저 코스"}</span>
-                        <span style={{ color: "#fff", fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700 }}>{c.distance} · {c.duration}</span>
+                        <span style={{ color: "#fff", fontFamily: MT.family, fontSize: 11, fontWeight: 700 }}>{c.distance} · {c.duration}</span>
                       </div>
                       <div style={{ padding: 18 }}>
                         <div style={{ fontSize: 19, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", lineHeight: 1.25 }}>{c.title}</div>
@@ -610,7 +610,7 @@ function SpotlightResume({ onNavigate, isMobile }) {
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
         <span style={{ width: 26, height: 26, borderRadius: "50%", background: curCh.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 900, color: "#fff" }}>{curCh.name[0]}</span>
         <span style={{ fontSize: isMobile ? 16 : 19, fontWeight: 800, letterSpacing: "-0.01em" }}>{curCh.name}님, 이어서 걸어요</span>
-        <span style={{ marginLeft: "auto", fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: M.olive }}>FOR YOU</span>
+        <span style={{ marginLeft: "auto", fontFamily: MT.family, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: M.olive }}>FOR YOU</span>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : (resume && nearBadge ? "1.4fr 1fr" : "1fr"), gap: 16 }}>
@@ -621,7 +621,7 @@ function SpotlightResume({ onNavigate, isMobile }) {
               <span style={{ fontSize: 9, fontWeight: 700, opacity: 0.85, marginTop: 3 }}>방문</span>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: M.olive, letterSpacing: "0.08em", fontFamily: "'JetBrains Mono', monospace" }}>이어 걷기 · {resume.pr.pct}%</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: M.olive, letterSpacing: "0.08em", fontFamily: MT.family }}>이어 걷기 · {resume.pr.pct}%</div>
               <div style={{ fontSize: isMobile ? 19 : 23, fontWeight: 900, letterSpacing: "-0.02em", color: "#fff", marginTop: 4, lineHeight: 1.2 }}>{resume.c.title}</div>
               <div style={{ marginTop: 12, height: 8, borderRadius: 999, background: "rgba(255,248,236,0.2)", overflow: "hidden" }}>
                 <div style={{ width: `${resume.pr.pct}%`, height: "100%", borderRadius: 999, background: M.olive }}/>
@@ -648,7 +648,7 @@ function SpotlightResume({ onNavigate, isMobile }) {
               <MIcon name="sparkle" size={24} color={M.olive}/>
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: M.olive, letterSpacing: "0.08em", fontFamily: "'JetBrains Mono', monospace" }}>정복 임박 · 1코스 남음</div>
+              <div style={{ fontSize: 11, fontWeight: 700, color: M.olive, letterSpacing: "0.08em", fontFamily: MT.family }}>정복 임박 · 1코스 남음</div>
               <div style={{ fontSize: isMobile ? 17 : 19, fontWeight: 900, color: "#fff", marginTop: 4, letterSpacing: "-0.02em" }}>{nearBadge.b.name}</div>
               <div style={{ fontSize: 12.5, color: "rgba(244,243,234,0.7)", fontWeight: 500, marginTop: 2 }}>{nearBadge.b.desc}</div>
             </div>
@@ -670,9 +670,9 @@ function SpotlightNeighborhood({ onNavigate, isMobile }) {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
             <MIcon name="location" size={18} color={M.olive}/>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: M.olive }}>THIS WEEK · 이 동네</span>
+            <span style={{ fontFamily: MT.family, fontSize: 12, fontWeight: 700, letterSpacing: "0.12em", color: M.olive }}>THIS WEEK · 이 동네</span>
           </div>
-          <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 28 : 44, fontWeight: 900, letterSpacing: "-0.03em", margin: 0, color: M.ink }}>
+          <h2 style={{ fontFamily: MT.family, fontSize: isMobile ? 28 : 44, fontWeight: 900, letterSpacing: "-0.03em", margin: 0, color: M.ink }}>
             {hood.name}, 오늘 걷기 좋아요
           </h2>
           <div style={{ fontSize: isMobile ? 14 : 16, color: M.muted, fontWeight: 500, marginTop: 8 }}>{hood.sub} · 채널이 만든 산책 코스 {mxCoursesByHood(sh.s.hood).length}</div>
@@ -718,9 +718,9 @@ function SpotlightMapBand({ onNavigate, isMobile }) {
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18 }}>
             <span style={{ width: 30, height: 2, background: M.olive }}/>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: M.olive }}>EXPLORE THE MAP · 지도</span>
+            <span style={{ fontFamily: MT.family, fontSize: 12, fontWeight: 700, letterSpacing: "0.14em", color: M.olive }}>EXPLORE THE MAP · 지도</span>
           </div>
-          <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 30 : 52, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.08, margin: 0, color: M.ink, textWrap: "balance" }}>
+          <h2 style={{ fontFamily: MT.family, fontSize: isMobile ? 30 : 52, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1.08, margin: 0, color: M.ink, textWrap: "balance" }}>
             지도 위에 펼쳐진<br/>한국의 모든 공간
           </h2>
           <p style={{ fontSize: isMobile ? 15 : 17, color: M.muted, fontWeight: 500, lineHeight: 1.7, margin: "20px 0 0", maxWidth: 440, textWrap: "pretty" }}>
@@ -730,7 +730,7 @@ function SpotlightMapBand({ onNavigate, isMobile }) {
             {stats.map(([n, l]) => (
               <div key={l}>
                 <div style={{ fontSize: isMobile ? 32 : 44, fontWeight: 900, letterSpacing: "-0.04em", color: M.terra, lineHeight: 1 }}>{n}</div>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, fontWeight: 600, letterSpacing: "0.1em", color: M.muted, marginTop: 7 }}>{l}</div>
+                <div style={{ fontFamily: MT.family, fontSize: 10.5, fontWeight: 600, letterSpacing: "0.1em", color: M.muted, marginTop: 7 }}>{l}</div>
               </div>
             ))}
           </div>
@@ -763,7 +763,7 @@ function SpotlightCollections({ onNavigate, isMobile }) {
               <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15,18,28,0.6), transparent 55%)" }}/>
               <div style={{ position: "absolute", top: 14, right: 14, padding: "4px 10px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.4)", fontSize: 10.5, fontWeight: 800, color: "#fff" }}>{c.kind}</div>
               <div style={{ position: "absolute", left: 16, bottom: 14, right: 16 }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(255,255,255,0.8)" }}>{c.no} · {sc(c).length} 코스</div>
+                <div style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(255,255,255,0.8)" }}>{c.no} · {sc(c).length} 코스</div>
                 <div style={{ fontSize: 20, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", marginTop: 3 }}>{c.title}</div>
               </div>
             </div>

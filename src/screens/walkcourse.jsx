@@ -44,7 +44,7 @@ function StampModal({ course, stop, onClose, onConfirm }) {
         </div>
 
         <div style={{ padding: 24 }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: M.muted }}>STAMP · 방문 인증</div>
+          <div style={{ fontFamily: MT.family, fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", color: M.muted }}>STAMP · 방문 인증</div>
           <div style={{ fontSize: 23, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", marginTop: 6 }}>{stop.name}</div>
           <div style={{ fontSize: 13, color: M.muted, fontWeight: 600, marginTop: 4 }}>{course.title} · {stop.kind}</div>
 
@@ -112,9 +112,9 @@ function WalkCourseScreen({ onNavigate, courseId }) {
           <span style={{ padding: "4px 11px", borderRadius: 999, background: c.official ? "rgba(255,255,255,0.92)" : "rgba(255,255,255,0.16)", color: c.official ? accent : "#fff", border: c.official ? "none" : "1px solid rgba(255,255,255,0.35)", fontSize: 11, fontWeight: 800 }}>{c.official ? "공식 코스" : "유저 코스"}</span>
           {c.moods.map((m) => <span key={m} style={{ padding: "4px 11px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.35)", fontSize: 11, fontWeight: 700 }}>{(mxMood(m) || {}).label}</span>)}
         </div>
-        <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 38 : 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, margin: 0, textWrap: "balance" }}>{c.title}</h1>
+        <h1 style={{ fontFamily: MT.family, fontSize: isMobile ? 38 : 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, margin: 0, textWrap: "balance" }}>{c.title}</h1>
         <p style={{ fontSize: isMobile ? 14.5 : 16.5, lineHeight: 1.7, color: "rgba(255,255,255,0.88)", fontWeight: 500, margin: "16px 0 0", maxWidth: 560, textWrap: "pretty" }}>{c.summary}</p>
-        <div style={{ display: "flex", gap: isMobile ? 24 : 40, marginTop: 26, fontFamily: "'JetBrains Mono', monospace" }}>
+        <div style={{ display: "flex", gap: isMobile ? 24 : 40, marginTop: 26, fontFamily: MT.family }}>
           {[[c.distance, "거리"], [c.duration, "소요"], [`${c.stops.length}`, "지점"], [c.walked.toLocaleString(), "완보"]].map(([n, l]) => (
             <div key={l}>
               <div style={{ fontSize: isMobile ? 20 : 26, fontWeight: 900, letterSpacing: "-0.02em", lineHeight: 1 }}>{n}</div>
@@ -129,7 +129,7 @@ function WalkCourseScreen({ onNavigate, courseId }) {
         <div style={{ background: M.cream, borderRadius: MR.cardLg, padding: isMobile ? 18 : 22 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 12 }}>
             <span style={{ fontSize: 14, fontWeight: 800, color: M.ink }}>{pr.complete ? "완주했어요 ★" : walking ? "따라 걷는 중" : "아직 시작 전"}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 800, color: pr.complete ? M.oliveDeep : M.muted }}>{pr.done} / {pr.tot} 방문 · {pr.pct}%</span>
+            <span style={{ fontFamily: MT.family, fontSize: 13, fontWeight: 800, color: pr.complete ? M.oliveDeep : M.muted }}>{pr.done} / {pr.tot} 방문 · {pr.pct}%</span>
           </div>
           <div style={{ height: 12, borderRadius: 999, background: M.beigeAlt, overflow: "hidden" }}>
             <div style={{ width: `${pr.pct}%`, height: "100%", borderRadius: 999, background: pr.complete ? M.olive : accent, transition: "width .35s" }}/>
@@ -177,7 +177,7 @@ function WalkCourseScreen({ onNavigate, courseId }) {
                   {/* 인문학 카드 (왜 이렇게 지었는가) */}
                   {s.story && (
                     <div style={{ marginTop: 12, padding: "14px 16px", borderRadius: 12, background: M.cream, borderLeft: `3px solid ${M.olive}` }}>
-                      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: M.olive, marginBottom: 6 }}>왜 이렇게 지었나</div>
+                      <div style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: M.olive, marginBottom: 6 }}>왜 이렇게 지었나</div>
                       <p style={{ fontSize: 13.5, color: M.ink, lineHeight: 1.65, margin: 0, fontWeight: 500, textWrap: "pretty" }}>{s.story}</p>
                     </div>
                   )}
@@ -226,7 +226,7 @@ function NearbyEats({ course, isMobile, px }) {
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, justifyContent: "space-between" }}>
                     <span style={{ fontSize: 16, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.name}</span>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: M.muted, whiteSpace: "nowrap" }}>{e.price}</span>
+                    <span style={{ fontFamily: MT.family, fontSize: 11, fontWeight: 700, color: M.muted, whiteSpace: "nowrap" }}>{e.price}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 3 }}>
                     <span style={{ fontSize: 11, fontWeight: 800, color: k.color }}>{e.kind}</span>

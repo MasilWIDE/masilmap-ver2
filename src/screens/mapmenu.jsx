@@ -31,7 +31,7 @@ function MKListCard({ b, selected, hovered, onSelect, onHover, isSaved, onToggle
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 2 }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.08em", color: M.muted }}>{b.region}</span>
+          <span style={{ fontFamily: MT.family, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.08em", color: M.muted }}>{b.region}</span>
         </div>
         <div style={{ fontSize: 15, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", lineHeight: 1.2,
           overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{b.name}</div>
@@ -63,7 +63,7 @@ function MKListCard({ b, selected, hovered, onSelect, onHover, isSaved, onToggle
 function MKModLabel({ children, action, onAction }) {
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: "'JetBrains Mono', monospace",
+      <div style={{ display: "flex", alignItems: "center", gap: 8, fontFamily: MT.family,
         fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", color: M.muted, textTransform: "uppercase" }}>
         <span style={{ width: 14, height: 1, background: M.beigeAlt }}/>{children}
       </div>
@@ -137,7 +137,7 @@ function MKBookingModule({ b, onNavigate }) {
             </div>
             <div style={{ fontSize: 11.5, color: M.muted, fontWeight: 600, marginTop: 4, lineHeight: 1.5, textWrap: "pretty" }}>{e.summary}</div>
           </div>
-          <span style={{ flexShrink: 0, fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700,
+          <span style={{ flexShrink: 0, fontFamily: MT.family, fontSize: 9, fontWeight: 700,
             color: M.muted, border: `1px solid ${M.beigeAlt}`, borderRadius: 6, padding: "3px 6px" }}>via {e.partner}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
@@ -184,7 +184,7 @@ function MKCoursesModule({ b, onNavigate, onPreview, activeCourseId }) {
             }}>
               <div style={{ width: 42, height: 42, borderRadius: 10, background: c.cover, flexShrink: 0,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 800, color: "rgba(244,243,234,0.92)" }}>{c.no}</div>
+                fontFamily: MT.family, fontSize: 10, fontWeight: 800, color: "rgba(244,243,234,0.92)" }}>{c.no}</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em",
                   overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</div>
@@ -217,7 +217,7 @@ function MKCollectionsModule({ b, onNavigate }) {
           }}>
             <span style={{ width: 18, height: 18, borderRadius: 6, background: c.cover, flexShrink: 0 }}/>
             <span style={{ fontSize: 12, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em" }}>{c.title}</span>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: M.muted }}>{c.no}</span>
+            <span style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, color: M.muted }}>{c.no}</span>
           </div>
         ))}
       </div>
@@ -262,11 +262,11 @@ function MKDetailPanel({ b, isSaved, onToggleSave, onBack, onNavigate, onPreview
         <div style={{ padding: 18, overflowY: "auto", display: "flex", flexDirection: "column", gap: 18 }}>
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 5 }}>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: M.muted }}>{b.region}</span>
+              <span style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: M.muted }}>{b.region}</span>
             </div>
             <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.025em", color: M.ink, lineHeight: 1.15 }}>{b.name}</div>
             <div style={{ fontSize: 12.5, color: M.muted, fontWeight: 600, marginTop: 4 }}>{b.architect} · {b.year} · {b.type}</div>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 14, color: M.ink, lineHeight: 1.7, fontWeight: 400, margin: "11px 0 0", textWrap: "pretty" }}>{b.intro}</p>
+            <p style={{ fontFamily: MT.family, fontSize: 14, color: M.ink, lineHeight: 1.7, fontWeight: 400, margin: "11px 0 0", textWrap: "pretty" }}>{b.intro}</p>
             {/* 메트릭 2칸 */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 12 }}>
               <div style={{ background: M.beige, border: `1px solid ${M.beigeAlt}`, borderRadius: 10, padding: "9px 12px" }}>
@@ -531,7 +531,7 @@ function MKRouteToast({ course, onClose, bottom = 22 }) {
       display: "flex", alignItems: "center", gap: 12, boxShadow: MS.cardLg }}>
       <span style={{ display: "inline-flex" }}><MIcon name="walk" size={15} color={M.cream}/></span>
       <span style={{ fontSize: 12.5, fontWeight: 800 }}>코스 경로 · {course.name}</span>
-      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, color: "rgba(244,243,234,0.7)" }}>{course.buildings.length}곳 · {course.duration}</span>
+      <span style={{ fontFamily: MT.family, fontSize: 10.5, color: "rgba(244,243,234,0.7)" }}>{course.buildings.length}곳 · {course.duration}</span>
       <button onClick={onClose} style={{ border: "none", background: "transparent", color: M.cream, cursor: "pointer", fontSize: 16, lineHeight: 1 }}>×</button>
     </div>
   );
@@ -558,7 +558,7 @@ function MKExtRefsModule({ b }) {
               <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 3 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" }}>
                   <span style={{ fontSize: 13.5, fontWeight: 800, color: M.ink, letterSpacing: "-0.01em", whiteSpace: "nowrap" }}>{r.name}</span>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8.5, fontWeight: 700,
+                  <span style={{ fontFamily: MT.family, fontSize: 8.5, fontWeight: 700,
                     letterSpacing: "0.1em", color: c, border: `1px solid ${c}44`, borderRadius: 5, padding: "1px 5px" }}>{r.badge}</span>
                 </div>
                 <span style={{ fontSize: 11.5, color: M.muted, fontWeight: 600, lineHeight: 1.45, textWrap: "pretty" }}>{r.desc}</span>

@@ -30,7 +30,7 @@ function FeaturedCard({ b, onClick, variant = "compact" }) {
           position: "absolute", top: 12, left: 12, display: "flex", gap: 6,
         }}>
           <span style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: MT.family,
             fontSize: 10, fontWeight: 700, letterSpacing: "0.14em",
             color: M.cream, background: `${M.ink}cc`,
             padding: "4px 9px", borderRadius: 6,
@@ -55,7 +55,7 @@ function FeaturedCard({ b, onClick, variant = "compact" }) {
         </div>
         {sizes.showIntro && (
           <p style={{
-            fontFamily: "'Noto Serif KR', serif",
+            fontFamily: MT.family,
             fontSize: 15, lineHeight: 1.7, color: M.ink,
             margin: "8px 0 0", fontWeight: 400,
             display: "-webkit-box", WebkitBoxOrient: "vertical",
@@ -89,7 +89,7 @@ function GridCard({ b, onClick }) {
           {b.name} <span style={{ color: M.muted, fontWeight: 500 }}>/ {b.architect}</span>
         </div>
         <div style={{
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: MT.family,
           fontSize: 10, fontWeight: 600, letterSpacing: "0.12em",
           textTransform: "uppercase", color: M.muted,
         }}>

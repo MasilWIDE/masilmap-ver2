@@ -222,7 +222,7 @@ function NavRow({ active, onClick, children }) {
       fontSize: 12, fontWeight: 700,
       cursor: "pointer", textAlign: "left",
       width: "100%", marginBottom: 4,
-      fontFamily: "Pretendard, Nunito, sans-serif",
+      fontFamily: MT.family,
       display: "block",
     }}>{children}</button>
   );
@@ -233,7 +233,7 @@ function Hint({ children }) {
     <p style={{
       fontSize: 11, color: M.muted, fontWeight: 500,
       lineHeight: 1.55, margin: "8px 2px 0",
-      fontFamily: "Pretendard, Nunito, sans-serif",
+      fontFamily: MT.family,
       textWrap: "pretty",
     }}>{children}</p>
   );

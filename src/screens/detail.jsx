@@ -40,7 +40,7 @@ function MiniMap({ b, style = {} }) {
         {/* compass */}
         <g transform="translate(360, 40)">
           <circle r="14" fill={M.cream} stroke={M.beigeAlt}/>
-          <text textAnchor="middle" y="-3" fontSize="9" fontFamily="'JetBrains Mono'" fontWeight="700" fill={M.terra}>N</text>
+          <text textAnchor="middle" y="-3" fontSize="9" fontFamily={MT.family} fontWeight="700" fill={M.terra}>N</text>
           <path d="M 0 -10 L 3 0 L 0 10 L -3 0 Z" fill={M.terra} transform="translate(0, 4) scale(0.5)"/>
         </g>
       </svg>
@@ -76,7 +76,7 @@ function VisitorNote({ channelId, time, text }) {
             {ch.official && <MIcon name="sparkle" size={11} color={M.olive}/>}
             {ch.handle && <span style={{ fontSize: 11, color: M.faint, fontWeight: 600 }}>{ch.handle}</span>}
           </span>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600, whiteSpace: "nowrap" }}>{time}</span>
+          <span style={{ fontFamily: MT.family, fontSize: 10, color: M.muted, fontWeight: 600, whiteSpace: "nowrap" }}>{time}</span>
         </div>
         <p style={{ fontSize: 13, lineHeight: 1.6, color: M.ink, margin: 0, fontWeight: 500, textWrap: "pretty" }}>{text}</p>
       </div>
@@ -163,7 +163,7 @@ function BodyBlock({ block, style = {} }) {
   if (block.kind === "lead") {
     return (
       <p style={{
-        fontFamily: "'Noto Serif KR', serif",
+        fontFamily: MT.family,
         fontSize: 24, fontWeight: 500,
         lineHeight: 1.5, color: M.ink, margin: 0,
         textWrap: "pretty",
@@ -189,7 +189,7 @@ function BodyBlock({ block, style = {} }) {
         ...style,
       }}>
         <p style={{
-          fontFamily: "'Noto Serif KR', serif",
+          fontFamily: MT.family,
           fontSize: 22, fontWeight: 500,
           lineHeight: 1.5, color: M.ink, margin: 0,
           textWrap: "pretty",
@@ -302,7 +302,7 @@ function NetworkSectionInner({ b, inCourses, inCollections, onNavigate }) {
                     display: "flex", flexDirection: "column",
                     alignItems: "center", justifyContent: "center",
                   }}>
-                    <div style={{ fontSize: 10, fontWeight: 800, opacity: 0.8, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.08em" }}>
+                    <div style={{ fontSize: 10, fontWeight: 800, opacity: 0.8, fontFamily: MT.family, letterSpacing: "0.08em" }}>
                       {c.no}
                     </div>
                     <div style={{ fontSize: 16, fontWeight: 900, marginTop: 2 }}>{(c.courses || []).length}코스</div>
@@ -372,12 +372,12 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
                 color: M.ink, margin: 0, textWrap: "balance",
               }}>{b.name}</h1>
               <div style={{
-                fontFamily: "'Noto Serif KR', serif",
+                fontFamily: MT.family,
                 fontSize: 18, fontStyle: "italic",
                 color: M.muted, marginTop: 14, fontWeight: 400,
               }}>{b.nameEn}</div>
               <p style={{
-                fontFamily: "'Noto Serif KR', serif",
+                fontFamily: MT.family,
                 fontSize: 20, lineHeight: 1.65,
                 color: M.ink, marginTop: 28, marginBottom: 0,
                 fontWeight: 400, maxWidth: 680, textWrap: "pretty",
@@ -453,7 +453,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
                 <MagCap color="rgba(255,248,236,0.7)" style={{ marginBottom: 8 }}>{inCollection.no} · {inCollection.kind}</MagCap>
                 <div style={{ fontSize: 24, fontWeight: 900, letterSpacing: "-0.025em", lineHeight: 1.1 }}>{inCollection.title}</div>
                 <div style={{ fontSize: 13, marginTop: 4, opacity: 0.85, fontWeight: 600 }}>{inCollection.subtitle}</div>
-                <div style={{ marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 600 }}>
+                <div style={{ marginTop: 14, display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: MT.family, fontSize: 10, fontWeight: 600 }}>
                   <span>{(inCollection.courses || []).length} 코스 · {inCollection.badge}</span>
                   <span>정복 →</span>
                 </div>
@@ -559,7 +559,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
               <Hairline label="01 · OVERVIEW" style={{ marginBottom: 28 }}/>
               <MagCap color={accent} style={{ marginBottom: 14 }}>{b.region} · {b.style}</MagCap>
               <h1 style={{ fontSize: isMobile ? 36 : 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, margin: 0, color: M.ink, textWrap: "balance" }}>{b.name}</h1>
-              <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, fontStyle: "italic", color: M.muted, marginTop: 10 }}>{b.nameEn}</div>
+              <div style={{ fontFamily: MT.family, fontSize: 17, fontStyle: "italic", color: M.muted, marginTop: 10 }}>{b.nameEn}</div>
               <ImgPlaceholder ratio="16/9" tone={b.pinTone === "olive" ? "olive" : "beige"} caption={`${b.name} · 외관`} style={{ marginTop: 32 }}/>
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(4, 1fr)", gap: 16, marginTop: 28 }}>
                 {[
@@ -686,7 +686,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
         <h1 style={{ fontSize: isMobile ? 36 : 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.04, margin: "20px 0 16px", color: M.ink, textWrap: "balance" }}>
           {b.name}
         </h1>
-        <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 18, fontStyle: "italic", color: M.muted, marginBottom: 24 }}>{b.nameEn}</div>
+        <div style={{ fontFamily: MT.family, fontSize: 18, fontStyle: "italic", color: M.muted, marginBottom: 24 }}>{b.nameEn}</div>
         <Hairline label={`${b.region} · ${b.architect} · ${b.year}`}/>
       </section>
 
@@ -704,7 +704,7 @@ function DetailScreen({ route, onNavigate, buildingId, t }) {
 
         <figure style={{ margin: "16px -120px" }}>
           <ImgPlaceholder ratio="16/9" tone="deep" caption={`${b.name} · 내부 디테일`} style={{ borderRadius: MR.cardLg }}/>
-          <figcaption style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 13, color: M.muted, marginTop: 12, textAlign: "center" }}>
+          <figcaption style={{ fontFamily: MT.family, fontSize: 13, color: M.muted, marginTop: 12, textAlign: "center" }}>
             FIG. 02 · 빛이 떨어지는 자리. 회랑 끝에서 본 모습.
           </figcaption>
         </figure>

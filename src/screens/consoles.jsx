@@ -57,7 +57,7 @@ function ConsoleShell({ role, active, onNavigate, children }) {
           <div style={{ width: 24, height: 24, borderRadius: 999, background: M.olive, color: M.ink, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 12 }}>{cfg.badge.letter}</div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 11.5, fontWeight: 800, color: M.cream, letterSpacing: "-0.005em" }}>{cfg.badge.label}</div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 600, color: "rgba(244,243,234,0.6)", letterSpacing: "0.05em" }}>{cfg.badge.sub}</div>
+            <div style={{ fontFamily: MT.family, fontSize: 9, fontWeight: 600, color: "rgba(244,243,234,0.6)", letterSpacing: "0.05em" }}>{cfg.badge.sub}</div>
           </div>
         </div>
         <MagCap style={{ marginBottom: 8, padding: "0 4px" }}>SECTIONS</MagCap>
@@ -75,7 +75,7 @@ function ConsoleShell({ role, active, onNavigate, children }) {
                   <MIcon name={n.icon} size={15} color={on ? M.cream : M.ink}/>{n.label}
                 </span>
                 {n.count != null && (
-                  <span style={{ fontSize: 10, fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: on ? "rgba(244,243,234,0.7)" : M.muted }}>{n.count}</span>
+                  <span style={{ fontSize: 10, fontFamily: MT.family, fontWeight: 600, color: on ? "rgba(244,243,234,0.7)" : M.muted }}>{n.count}</span>
                 )}
               </div>
             );
@@ -246,7 +246,7 @@ function TourConsole({ onNavigate }) {
                 }}>
                   <div style={{ width: 56, height: 56, borderRadius: 12, background: c.cover, color: M.cream,
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 8, fontWeight: 700, opacity: 0.8 }}>{c.type === "도슨트" ? "DOCENT" : "SELF"}</span>
+                    <span style={{ fontFamily: MT.family, fontSize: 8, fontWeight: 700, opacity: 0.8 }}>{c.type === "도슨트" ? "DOCENT" : "SELF"}</span>
                     <span style={{ fontSize: 16, fontWeight: 900 }}>{c.buildings.length}곳</span>
                   </div>
                   <div style={{ minWidth: 0 }}>
@@ -277,7 +277,7 @@ function TourConsole({ onNavigate }) {
                   <div key={bk.id} style={{ background: M.cream, borderRadius: MR.card, padding: 14, boxShadow: MS.cardSm }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                       <span style={{ fontSize: 11, fontWeight: 800, padding: "3px 9px", borderRadius: 999, background: M.terra, color: M.cream }}>{bk.status}</span>
-                      <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>{bk.id}</span>
+                      <span style={{ fontFamily: MT.family, fontSize: 10, color: M.muted, fontWeight: 600 }}>{bk.id}</span>
                     </div>
                     <div style={{ fontSize: 14, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em" }}>{c ? c.name : bk.courseId}</div>
                     <div style={{ fontSize: 11.5, color: M.muted, fontWeight: 700, marginTop: 5 }}>{bk.date} · {bk.time} · {bk.people}명</div>
@@ -326,7 +326,7 @@ function EditorConsole({ onNavigate }) {
                   <div style={{ aspectRatio: "16/9", background: c.cover, position: "relative" }}>
                     <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(15,18,28,0.55), transparent 60%)" }}/>
                     <div style={{ position: "absolute", left: 12, bottom: 10, right: 12 }}>
-                      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>{c.no} · {c.kind}</div>
+                      <div style={{ fontFamily: MT.family, fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.8)" }}>{c.no} · {c.kind}</div>
                       <div style={{ fontSize: 16, fontWeight: 900, color: "#fff", letterSpacing: "-0.02em", marginTop: 2 }}>{c.title}</div>
                     </div>
                   </div>
@@ -347,7 +347,7 @@ function EditorConsole({ onNavigate }) {
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
                     <span style={{ fontSize: 10.5, fontWeight: 800, padding: "3px 9px", borderRadius: 999,
                       background: d.status === "검토" ? `${M.olive}22` : `${M.terra}14`, color: d.status === "검토" ? M.oliveDeep : M.terra }}>{d.status}</span>
-                    <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600 }}>{d.courses} 코스</span>
+                    <span style={{ fontFamily: MT.family, fontSize: 10, color: M.muted, fontWeight: 600 }}>{d.courses} 코스</span>
                   </div>
                   <div style={{ fontSize: 14, fontWeight: 900, color: M.ink, letterSpacing: "-0.01em", lineHeight: 1.3, textWrap: "pretty" }}>{d.title}</div>
                   <div style={{ fontSize: 11, color: M.muted, fontWeight: 600, marginTop: 6 }}>수정 {d.updated}</div>

@@ -49,7 +49,7 @@ function Field({ label, type = "text", placeholder, value, onChange, hint, style
           border: `1px solid ${M.beigeAlt}`, borderRadius: MR.field,
           background: M.cream, color: M.ink,
           fontSize: 14, fontWeight: 600,
-          fontFamily: "Pretendard, Nunito, sans-serif",
+          fontFamily: MT.family,
           outline: "none",
         }}
       />
@@ -75,7 +75,7 @@ function SocialButton({ brand, onClick }) {
         background: cfg.bg, color: cfg.color, border: cfg.border || "none",
         borderRadius: MR.field, padding: 0, marginBottom: 10,
         fontSize: 14, fontWeight: 800, cursor: "pointer",
-        fontFamily: "Pretendard, Nunito, sans-serif",
+        fontFamily: MT.family,
         overflow: "hidden",
       }}>
       <span style={{
@@ -262,9 +262,9 @@ function OnboardingScreen({ onNavigate }) {
               <div style={{ width: 38, height: 38, borderRadius: "50%", background: "rgba(255,248,236,0.16)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <MIcon name="sparkle" size={20} color={M.olive}/>
               </div>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,248,236,0.8)" }}>FOR YOU</span>
+              <span style={{ fontFamily: MT.family, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", color: "rgba(255,248,236,0.8)" }}>FOR YOU</span>
             </div>
-            <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 26, fontWeight: 900, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
+            <div style={{ fontFamily: MT.family, fontSize: 26, fontWeight: 900, letterSpacing: "-0.02em", lineHeight: 1.2 }}>
               이번엔 어디로<br/>마실 갈까요?
             </div>
             <p style={{ fontSize: 13, color: "rgba(255,248,236,0.82)", fontWeight: 500, margin: "12px 0 0", lineHeight: 1.6 }}>

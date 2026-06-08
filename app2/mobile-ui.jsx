@@ -127,7 +127,7 @@ function MXBtn({ children, onClick, kind = "primary", full, icon, style = {} }) 
     <button onClick={onClick} style={{
       display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7,
       padding: "13px 18px", borderRadius: 999, cursor: "pointer",
-      fontFamily: "Pretendard, sans-serif", fontSize: 15, fontWeight: 800,
+      fontFamily: MT.family, fontSize: 15, fontWeight: 800,
       width: full ? "100%" : undefined, ...kinds, ...style,
     }}>{icon}{children}</button>
   );
@@ -137,7 +137,7 @@ function MXBtn({ children, onClick, kind = "primary", full, icon, style = {} }) 
 function MXSection({ children, action, onAction }) {
   return (
     <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "0 0 12px" }}>
-      <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 20, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>{children}</h2>
+      <h2 style={{ fontFamily: MT.family, fontSize: 20, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>{children}</h2>
       {action && <span onClick={onAction} style={{ fontSize: 12.5, fontWeight: 800, color: M.olive, cursor: "pointer", whiteSpace: "nowrap" }}>{action}</span>}
     </div>
   );

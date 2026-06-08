@@ -252,12 +252,12 @@ function MKDataMap({
 
         {/* region labels */}
         {[{x:705,y:205,t:"강원"},{x:672,y:330,t:"서울·경기"},{x:600,y:470,t:"충청"},{x:585,y:620,t:"전라"},{x:740,y:600,t:"경상"},{x:720,y:992,t:"제주"}].map((r, i) => (
-          <text key={i} x={r.x} y={r.y} fontFamily="'JetBrains Mono', monospace" fontSize="13" fontWeight="600"
+          <text key={i} x={r.x} y={r.y} fontFamily={MT.family} fontSize="13" fontWeight="600"
             letterSpacing="0.1em" fill={tickInk} textAnchor="middle" style={{ pointerEvents: "none" }}>{r.t}</text>
         ))}
         {/* coordinate ticks */}
         {[200,400,600,800,1000].map((y) => (
-          <text key={y} x={vb.x + 14} y={y + 4} fontFamily="'JetBrains Mono', monospace" fontSize="11" fill={tickInk} style={{ pointerEvents: "none" }}>
+          <text key={y} x={vb.x + 14} y={y + 4} fontFamily={MT.family} fontSize="11" fill={tickInk} style={{ pointerEvents: "none" }}>
             {(38 - y * 0.005).toFixed(2)}°
           </text>
         ))}
@@ -290,7 +290,7 @@ function MKDataMap({
         background: dark ? "rgba(16,21,30,0.8)" : "rgba(255,255,255,0.92)",
         backdropFilter: "blur(6px)", padding: "8px 14px", borderRadius: 12, boxShadow: MS.cardSm,
       }}>
-        <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", color: M.muted }}>유형</span>
+        <span style={{ fontFamily: MT.family, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.1em", color: M.muted }}>유형</span>
         {MK_CAT_ORDER.map((k) => {
           const cat = MK_CATS[k];
           return (
@@ -352,7 +352,7 @@ function MKPinNode({ b, zoom, selected, hovered, dim, onSelect, onHover }) {
         </g>
       </g>
       {(selected || hovered) && (
-        <text x="0" y={(-46) * s} textAnchor="middle" fontFamily="Pretendard, Nunito, sans-serif"
+        <text x="0" y={(-46) * s} textAnchor="middle" fontFamily={MT.family}
           fontSize={13 / zoom} fontWeight="800" fill={M.ink}
           style={{ paintOrder: "stroke", stroke: M.beige, strokeWidth: 4 / zoom, strokeLinejoin: "round", pointerEvents: "none" }}>
           {b.name}
@@ -388,7 +388,7 @@ function MKClusterNode({ node, zoom, onClick, dark }) {
       onClick={(e) => { e.stopPropagation(); onClick(); }} onPointerDown={(e) => e.stopPropagation()}>
       <circle r={r * 1.32} fill={M.olive} opacity="0.18"/>
       <circle r={r} fill={M.terra} stroke={M.beige} strokeWidth={2.5 / zoom}/>
-      <text textAnchor="middle" dy={r * 0.34} fontFamily="Pretendard, Nunito, sans-serif"
+      <text textAnchor="middle" dy={r * 0.34} fontFamily={MT.family}
         fontSize={r * 0.92} fontWeight="900" fill={M.beige} style={{ pointerEvents: "none" }}>{n}</text>
     </g>
   );

@@ -253,7 +253,7 @@ function MasilNav({ route, onNavigate, items, variant = "default" }) {
 function MagCap({ children, color, style = {} }) {
   return (
     <div style={{
-      fontFamily: "'JetBrains Mono', monospace",
+      fontFamily: MT.family,
       fontSize: 11, fontWeight: 600,
       letterSpacing: "0.14em", textTransform: "uppercase",
       color: color || M.muted,
@@ -270,7 +270,7 @@ function Hairline({ label, color = M.beigeAlt, style = {} }) {
       <div style={{ flex: 1, height: 1, background: color }} />
       {label && (
         <span style={{
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: MT.family,
           fontSize: 10, fontWeight: 600,
           letterSpacing: "0.16em", textTransform: "uppercase",
           color: M.muted,
@@ -303,7 +303,7 @@ function ImgPlaceholder({ caption, ratio = "4/3", tone = "beige", style = {}, sr
         {caption && (
           <div style={{ position: "absolute", bottom: 0, left: 0, right: 0,
             background: "linear-gradient(transparent, rgba(0,0,0,0.45))", padding: "20px 12px 10px" }}>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, fontWeight: 700,
+            <span style={{ fontFamily: MT.family, fontSize: 9.5, fontWeight: 700,
               letterSpacing: "0.12em", textTransform: "uppercase", color: "#fff",
               background: "rgba(0,0,0,0.32)", padding: "3px 7px", borderRadius: 5 }}>{caption}</span>
           </div>
@@ -349,7 +349,7 @@ function ImgPlaceholder({ caption, ratio = "4/3", tone = "beige", style = {}, sr
           padding: "20px 12px 10px",
         }}>
           <span style={{
-            fontFamily: "'JetBrains Mono', monospace",
+            fontFamily: MT.family,
             fontSize: 9.5, fontWeight: 700,
             letterSpacing: "0.1em", textTransform: "uppercase",
             color: p.text, opacity: 0.85,
@@ -365,7 +365,7 @@ function MetaRow({ items, style = {} }) {
   return (
     <div style={{
       display: "flex", flexWrap: "wrap", gap: "4px 14px", alignItems: "baseline",
-      fontFamily: "'JetBrains Mono', monospace",
+      fontFamily: MT.family,
       fontSize: 11, fontWeight: 500,
       letterSpacing: "0.05em",
       color: M.muted,
@@ -388,7 +388,7 @@ function MetaRow({ items, style = {} }) {
 function Serial({ children, size = 13, color }) {
   return (
     <span style={{
-      fontFamily: "'JetBrains Mono', monospace",
+      fontFamily: MT.family,
       fontSize: size, fontWeight: 600,
       letterSpacing: "0.05em",
       color: color || M.muted,

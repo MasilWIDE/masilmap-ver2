@@ -94,7 +94,7 @@ function MXApp() {
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 18, padding: "30px 12px 60px", minHeight: "100vh", boxSizing: "border-box" }}>
       <IOSDevice width={402} height={860}>
         <div style={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", background: "#fff", overflow: "hidden",
-          fontFamily: "'Pretendard', system-ui, sans-serif", color: M.ink, wordBreak: "keep-all" }}>
+          fontFamily: MT.family, color: M.ink, wordBreak: "keep-all" }}>
           <div ref={scrollRef} style={{ flex: 1, overflow: "auto", WebkitOverflowScrolling: "touch" }}>{screen}</div>
           {showTab && <MXTabBar tab={cur.name} onTab={nav.tab} onCreate={() => nav.go("create")}/>}
 
@@ -117,7 +117,7 @@ function MXApp() {
         </div>
       </IOSDevice>
 
-      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: "#9aa0ab", fontWeight: 600, letterSpacing: "0.04em", textAlign: "center" }}>
+      <div style={{ fontFamily: MT.family, fontSize: 11, color: "#9aa0ab", fontWeight: 600, letterSpacing: "0.04em", textAlign: "center" }}>
         masilmap rel3 · 채널 · 코스 · 따라 걷기 — 우측 하단 Tweaks로 패턴 전환
       </div>
 

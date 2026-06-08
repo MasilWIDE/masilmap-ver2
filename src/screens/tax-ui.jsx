@@ -98,7 +98,7 @@ function TxFilterPanel({ state, setState, store }) {
   );
 }
 function TxGroupLabel({ children }) {
-  return <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: M.muted, textTransform: "uppercase", marginBottom: 9 }}>{children}</div>;
+  return <div style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", color: M.muted, textTransform: "uppercase", marginBottom: 9 }}>{children}</div>;
 }
 
 /* ---------- 전체 필터 바 (칩 + 펼침) ----------

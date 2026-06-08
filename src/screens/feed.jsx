@@ -53,7 +53,7 @@ function FeedScreen({ onNavigate }) {
         <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1.3fr 1fr", gap: isMobile ? 14 : 56, alignItems: "end" }}>
           <div>
             <MagCap color={M.olive} style={{ marginBottom: 14 }}>팔로우한 채널의 새 코스</MagCap>
-            <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 34 : 64, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.04, margin: 0, color: M.ink, textWrap: "balance" }}>
+            <h1 style={{ fontFamily: MT.family, fontSize: isMobile ? 34 : 64, fontWeight: 900, letterSpacing: "-0.04em", lineHeight: 1.04, margin: 0, color: M.ink, textWrap: "balance" }}>
               내가 따르는<br/><span style={{ color: M.olive }}>채널의 소식</span>
             </h1>
           </div>
@@ -122,16 +122,16 @@ function FeedScreen({ onNavigate }) {
                           {ch.official && <MIcon name="sparkle" size={11} color={M.olive}/>}
                           <span style={{ fontSize: 12.5, color: M.muted, fontWeight: 600 }}>· {f.verb}</span>
                         </div>
-                        <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, color: M.faint, fontWeight: 600, marginTop: 1 }}>{f.when}</div>
+                        <div style={{ fontFamily: MT.family, fontSize: 10.5, color: M.faint, fontWeight: 600, marginTop: 1 }}>{f.when}</div>
                       </div>
                     </div>
                     <div onClick={() => onNavigate("walkcourse", c.id)} style={{ cursor: "pointer", fontSize: isMobile ? 20 : 24, fontWeight: 900, color: M.ink, letterSpacing: "-0.025em", lineHeight: 1.2, textWrap: "balance" }}>{c.title}</div>
                     <p style={{ fontSize: 13.5, color: M.muted, lineHeight: 1.6, margin: "8px 0 0", fontWeight: 500, textWrap: "pretty" }}>{c.summary}</p>
-                    <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 14, fontFamily: "'JetBrains Mono', monospace", fontSize: 11.5, fontWeight: 600, color: M.muted }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 14, fontFamily: MT.family, fontSize: 11.5, fontWeight: 600, color: M.muted }}>
                       <span>{c.distance}</span><span style={{ color: M.faint }}>·</span>
                       <span>{c.duration}</span><span style={{ color: M.faint }}>·</span>
                       <span>지점 {c.stops.length}곳</span>
-                      <span onClick={() => onNavigate("walkcourse", c.id)} style={{ marginLeft: "auto", fontSize: 12.5, fontWeight: 800, color: M.terra, cursor: "pointer", fontFamily: "Pretendard, sans-serif" }}>{walking ? "이어 걷기 →" : "따라 걷기 →"}</span>
+                      <span onClick={() => onNavigate("walkcourse", c.id)} style={{ marginLeft: "auto", fontSize: 12.5, fontWeight: 800, color: M.terra, cursor: "pointer", fontFamily: MT.family }}>{walking ? "이어 걷기 →" : "따라 걷기 →"}</span>
                     </div>
                   </div>
                 </div>
@@ -199,10 +199,10 @@ function ChannelScreen({ onNavigate, channelId }) {
           <div style={{ width: isMobile ? 76 : 96, height: isMobile ? 76 : 96, borderRadius: "50%", background: "rgba(255,255,255,0.16)", border: "2px solid rgba(255,255,255,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: isMobile ? 34 : 44, fontWeight: 900, flexShrink: 0 }}>{ch.name[0]}</div>
           <div style={{ flex: 1, minWidth: 200 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 32 : 48, fontWeight: 900, letterSpacing: "-0.03em", margin: 0, lineHeight: 1 }}>{ch.name}</h1>
+              <h1 style={{ fontFamily: MT.family, fontSize: isMobile ? 32 : 48, fontWeight: 900, letterSpacing: "-0.03em", margin: 0, lineHeight: 1 }}>{ch.name}</h1>
               {ch.official && <span style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 10px", borderRadius: 999, background: M.olive, color: M.terraDeep, fontSize: 11, fontWeight: 900 }}>✓ 공식</span>}
             </div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 13, fontWeight: 600, opacity: 0.82, marginTop: 6 }}>{ch.handle} · {ch.cat}</div>
+            <div style={{ fontFamily: MT.family, fontSize: 13, fontWeight: 600, opacity: 0.82, marginTop: 6 }}>{ch.handle} · {ch.cat}</div>
             <p style={{ fontSize: isMobile ? 14 : 15.5, lineHeight: 1.6, opacity: 0.92, fontWeight: 500, margin: "12px 0 0", maxWidth: 460, textWrap: "pretty" }}>{ch.bio}</p>
           </div>
           {!isMine && (
@@ -214,7 +214,7 @@ function ChannelScreen({ onNavigate, channelId }) {
           )}
         </div>
         {/* 통계 — 발자취 랭킹 */}
-        <div style={{ display: "flex", gap: isMobile ? 24 : 40, marginTop: 28, fontFamily: "'JetBrains Mono', monospace" }}>
+        <div style={{ display: "flex", gap: isMobile ? 24 : 40, marginTop: 28, fontFamily: MT.family }}>
           {[[ch.followers.toLocaleString(), "팔로워"], [String(fp.walkedCourses), "완주 코스"], [String(fp.conqueredSeries), "정복 시리즈"], [String(fp.count), "다녀온 곳"]].map(([n, l]) => (
             <div key={l}>
               <div style={{ fontSize: isMobile ? 24 : 30, fontWeight: 900, letterSpacing: "-0.03em", lineHeight: 1 }}>{n}</div>
@@ -249,7 +249,7 @@ function ChannelScreen({ onNavigate, channelId }) {
                   <div style={{ padding: 18 }}>
                     <div style={{ fontSize: 18, fontWeight: 900, color: M.ink, letterSpacing: "-0.02em", lineHeight: 1.25 }}>{c.title}</div>
                     <p style={{ fontSize: 12.5, color: M.muted, lineHeight: 1.55, margin: "8px 0 12px", fontWeight: 500, textWrap: "pretty" }}>{c.summary}</p>
-                    <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: M.muted, fontWeight: 600 }}>{c.distance} · {c.duration} · 지점 {c.stops.length}곳</div>
+                    <div style={{ fontFamily: MT.family, fontSize: 11, color: M.muted, fontWeight: 600 }}>{c.distance} · {c.duration} · 지점 {c.stops.length}곳</div>
                   </div>
                 </div>
               );
@@ -289,7 +289,7 @@ function ChannelFootprint({ ch, fp, isMine, sh, isMobile, px, onNavigate }) {
       <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 18, flexWrap: "wrap", gap: 8 }}>
         <div>
           <MagCap color={ch.color} style={{ marginBottom: 6 }}>FOOTPRINT · 다녀온 곳</MagCap>
-          <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 24 : 32, fontWeight: 900, letterSpacing: "-0.025em", color: M.ink, margin: 0 }}>
+          <h2 style={{ fontFamily: MT.family, fontSize: isMobile ? 24 : 32, fontWeight: 900, letterSpacing: "-0.025em", color: M.ink, margin: 0 }}>
             {ch.name}의 발자취
           </h2>
         </div>
@@ -321,10 +321,10 @@ function ChannelFootprint({ ch, fp, isMine, sh, isMobile, px, onNavigate }) {
             const pos = FP_HOOD_POS[hid] || { x: 0.5, y: 0.5 };
             const h = mxHood(hid) || { name: hid };
             return (
-              <div key={hid} style={{ position: "absolute", left: `${pos.x * 100}%`, top: `${pos.y * 100}%`, transform: "translate(-50%, 14px)", fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: M.ink, background: "rgba(255,255,255,0.75)", padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap" }}>{h.name} {arr.length}</div>
+              <div key={hid} style={{ position: "absolute", left: `${pos.x * 100}%`, top: `${pos.y * 100}%`, transform: "translate(-50%, 14px)", fontFamily: MT.family, fontSize: 10, fontWeight: 700, color: M.ink, background: "rgba(255,255,255,0.75)", padding: "2px 7px", borderRadius: 999, whiteSpace: "nowrap" }}>{h.name} {arr.length}</div>
             );
           })}
-          <div style={{ position: "absolute", left: 12, bottom: 12, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, color: M.muted }}>{fp.count} PLACES · {fp.hoods} AREAS</div>
+          <div style={{ position: "absolute", left: 12, bottom: 12, fontFamily: MT.family, fontSize: 10, fontWeight: 700, color: M.muted }}>{fp.count} PLACES · {fp.hoods} AREAS</div>
         </div>
 
         {/* 장소 그리드 (동네별) */}

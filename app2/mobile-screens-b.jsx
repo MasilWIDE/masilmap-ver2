@@ -16,7 +16,7 @@ function MXFeed({ app }) {
   return (
     <div>
       <div style={{ paddingTop: MX.topClear, paddingLeft: MX.pageX, paddingRight: MX.pageX, paddingBottom: 6 }}>
-        <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink, margin: 0 }}>피드</h1>
+        <h1 style={{ fontFamily: MT.family, fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink, margin: 0 }}>피드</h1>
         <div style={{ display: "flex", gap: 4, background: M.cream, borderRadius: 999, padding: 4, marginTop: 14 }}>
           {[["following", "팔로잉"], ["discover", "발견"]].map(([v, l]) => (
             <button key={v} onClick={() => setTab(v)} style={{ flex: 1, padding: "9px", borderRadius: 999, border: "none", cursor: "pointer",
@@ -69,7 +69,7 @@ function MXExplore({ app }) {
   return (
     <div>
       <div style={{ paddingTop: MX.topClear, paddingLeft: MX.pageX, paddingRight: MX.pageX, paddingBottom: 6 }}>
-        <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink, margin: 0 }}>탐색</h1>
+        <h1 style={{ fontFamily: MT.family, fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink, margin: 0 }}>탐색</h1>
         <div style={{ display: "flex", alignItems: "center", gap: 10, background: M.cream, borderRadius: MR.field, padding: "13px 16px", marginTop: 14 }}>
           <MIcon name="search" size={17} color={M.muted}/>
           <span style={{ fontSize: 14, color: M.muted, fontWeight: 600 }}>동네·채널·코스 검색</span>
@@ -330,9 +330,9 @@ function MXFootprint({ ch, fp, app }) {
         ))}
         {Object.entries(fp.byHood).map(([hid, arr]) => {
           const pos = MXFP_HOOD_POS[hid] || { x: 0.5, y: 0.5 }; const h = mxHood(hid) || { name: hid };
-          return <div key={hid} style={{ position: "absolute", left: `${pos.x * 100}%`, top: `${pos.y * 100}%`, transform: "translate(-50%, 12px)", fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700, color: M.ink, background: "rgba(255,255,255,0.75)", padding: "2px 6px", borderRadius: 999, whiteSpace: "nowrap" }}>{h.name} {arr.length}</div>;
+          return <div key={hid} style={{ position: "absolute", left: `${pos.x * 100}%`, top: `${pos.y * 100}%`, transform: "translate(-50%, 12px)", fontFamily: MT.family, fontSize: 9, fontWeight: 700, color: M.ink, background: "rgba(255,255,255,0.75)", padding: "2px 6px", borderRadius: 999, whiteSpace: "nowrap" }}>{h.name} {arr.length}</div>;
         })}
-        <div style={{ position: "absolute", left: 10, bottom: 8, fontFamily: "'JetBrains Mono', monospace", fontSize: 9, fontWeight: 700, color: M.muted }}>{fp.count} PLACES · {fp.hoods} AREAS</div>
+        <div style={{ position: "absolute", left: 10, bottom: 8, fontFamily: MT.family, fontSize: 9, fontWeight: 700, color: M.muted }}>{fp.count} PLACES · {fp.hoods} AREAS</div>
       </div>
       {/* 장소 칩 (동네별) */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 14 }}>
@@ -434,7 +434,7 @@ function MXAddStopSheet({ app, data }) {
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, background: M.cream, borderRadius: MR.field, padding: "12px 14px", marginBottom: 14 }}>
         <MIcon name="search" size={16} color={M.muted}/>
-        <input value={q} onChange={(e) => setQ(e.target.value)} autoFocus placeholder="장소 검색 (건축·카페·공원)" style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 600, color: M.ink, fontFamily: "Pretendard" }}/>
+        <input value={q} onChange={(e) => setQ(e.target.value)} autoFocus placeholder="장소 검색 (건축·카페·공원)" style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontSize: 14, fontWeight: 600, color: M.ink, fontFamily: MT.family }}/>
       </div>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {pool.map((p, i) => (
@@ -472,7 +472,7 @@ function MXStampModal({ app, data }) {
         {phase === "done" ? (
           <div style={{ padding: `12px ${MX.pageX}px ${MX.bottomClear + 24}px`, textAlign: "center" }}>
             <div style={{ width: 92, height: 92, borderRadius: "50%", background: M.olive, color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "8px auto 0", fontSize: 46, fontWeight: 900, boxShadow: "0 10px 30px rgba(211,172,43,0.5)", animation: "mxPop .4s cubic-bezier(.2,1.4,.4,1)" }}>✓</div>
-            <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, color: M.ink, margin: "18px 0 4px" }}>스탬프 획득!</h2>
+            <h2 style={{ fontFamily: MT.family, fontSize: 24, fontWeight: 900, color: M.ink, margin: "18px 0 4px" }}>스탬프 획득!</h2>
             <div style={{ fontSize: 14, color: M.muted, fontWeight: 600 }}>{stop.name} 방문을 인증했어요</div>
             <div style={{ marginTop: 24 }}>
               <MXBtn kind="primary" full onClick={() => { act.toggleStop(data.courseId, stop.id); act.closeStamp(); }}>코스로 돌아가기</MXBtn>
@@ -537,7 +537,7 @@ function MXSeriesList({ app }) {
   return (
     <div>
       <div style={{ paddingTop: MX.topClear, paddingLeft: MX.pageX, paddingRight: MX.pageX, paddingBottom: 6 }}>
-        <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink, margin: 0 }}>시리즈 정복</h1>
+        <h1 style={{ fontFamily: MT.family, fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink, margin: 0 }}>시리즈 정복</h1>
         <div style={{ fontSize: 13, color: M.muted, fontWeight: 600, marginTop: 4 }}>산책 코스를 모아 완주 · 정복 {conquered}/{MX_SERIES.length}</div>
       </div>
       <div style={{ padding: `16px ${MX.pageX}px 24px`, display: "flex", flexDirection: "column", gap: 14 }}>
@@ -547,15 +547,15 @@ function MXSeriesList({ app }) {
             <div key={s.id} onClick={() => nav.go("seriesDetail", s.id)} style={{ background: "#fff", borderRadius: MR.cardLg, overflow: "hidden", boxShadow: MS.card, border: `1px solid ${M.cream}`, cursor: "pointer" }}>
               <div style={{ height: 120, background: s.cover, color: "#fff", padding: 16, position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", opacity: 0.85 }}>{s.no} · {s.kind}</span>
+                  <span style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", opacity: 0.85 }}>{s.no} · {s.kind}</span>
                   {sp.complete && <span style={{ padding: "3px 9px", borderRadius: 999, background: M.olive, color: M.terraDeep, fontSize: 10.5, fontWeight: 900 }}>★ 정복</span>}
                 </div>
-                <div style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, letterSpacing: "-0.025em" }}>{s.title}</div>
+                <div style={{ fontFamily: MT.family, fontSize: 24, fontWeight: 900, letterSpacing: "-0.025em" }}>{s.title}</div>
               </div>
               <div style={{ padding: 15 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
                   <span style={{ fontSize: 12.5, fontWeight: 800, color: sp.complete ? M.olive : M.muted, whiteSpace: "nowrap" }}>{sp.done} / {sp.total} 코스 정복</span>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, color: M.muted, whiteSpace: "nowrap" }}>{sp.pct}%</span>
+                  <span style={{ fontFamily: MT.family, fontSize: 11, fontWeight: 700, color: M.muted, whiteSpace: "nowrap" }}>{sp.pct}%</span>
                 </div>
                 <MXBar pct={sp.pct} h={8}/>
               </div>
@@ -578,8 +578,8 @@ function MXSeriesDetail({ app, seriesId }) {
       <div style={{ margin: "-58px 0 0", position: "relative" }}>
         <MXPhoto tone={s.cover} height={210}/>
         <div style={{ position: "absolute", left: MX.pageX, right: MX.pageX, bottom: 16, color: "#fff" }}>
-          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", opacity: 0.85 }}>SERIES · {s.no} · {s.kind}</div>
-          <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 30, fontWeight: 900, letterSpacing: "-0.03em", margin: "4px 0 0", textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}>{s.title}</h1>
+          <div style={{ fontFamily: MT.family, fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", opacity: 0.85 }}>SERIES · {s.no} · {s.kind}</div>
+          <h1 style={{ fontFamily: MT.family, fontSize: 30, fontWeight: 900, letterSpacing: "-0.03em", margin: "4px 0 0", textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}>{s.title}</h1>
         </div>
       </div>
 
@@ -605,7 +605,7 @@ function MXSeriesDetail({ app, seriesId }) {
             <MIcon name="sparkle" size={24} color={sp.complete ? "#fff" : M.beigeAlt}/>
           </div>
           <div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: "0.1em" }}>{sp.complete ? "BADGE UNLOCKED" : "전체 정복 시 획득"}</div>
+            <div style={{ fontFamily: MT.family, fontSize: 10, fontWeight: 700, letterSpacing: "0.1em" }}>{sp.complete ? "BADGE UNLOCKED" : "전체 정복 시 획득"}</div>
             <div style={{ fontSize: 18, fontWeight: 900, letterSpacing: "-0.02em", marginTop: 3, color: sp.complete ? "#fff" : M.ink }}>{s.badge}</div>
           </div>
         </div>

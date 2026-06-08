@@ -32,7 +32,7 @@ function MXCourseCard({ course, app, compact }) {
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           <MXChannelChip ch={ch}/>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, color: M.muted, fontWeight: 600, whiteSpace: "nowrap" }}>♥ {course.saved}</span>
+          <span style={{ fontFamily: MT.family, fontSize: 10.5, color: M.muted, fontWeight: 600, whiteSpace: "nowrap" }}>♥ {course.saved}</span>
         </div>
         {following && <div style={{ marginTop: 12 }}><MXBar pct={pr.pct}/></div>}
       </div>
@@ -70,7 +70,7 @@ function MXHome({ app }) {
 
         <div style={{ marginTop: 18 }}>
           <button onClick={() => act.openSheet("hood")} style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", padding: 0, cursor: "pointer" }}>
-            <span style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 30, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink }}>{hood.name}</span>
+            <span style={{ fontFamily: MT.family, fontSize: 30, fontWeight: 900, letterSpacing: "-0.03em", color: M.ink }}>{hood.name}</span>
             <span style={{ width: 26, height: 26, borderRadius: "50%", background: M.cream, display: "inline-flex", alignItems: "center", justifyContent: "center" }}>
               <MIcon name="chevron" size={14} color={M.ink} style={{ transform: "rotate(90deg)" }}/>
             </span>
@@ -92,7 +92,7 @@ function MXHome({ app }) {
           <div onClick={() => nav.go("seriesDetail", st.hood)} style={{ display: "flex", alignItems: "center", gap: 14, background: M.terra, color: "#fff", borderRadius: MR.cardLg, padding: "16px 18px", marginBottom: 20, cursor: "pointer" }}>
             <MXRing pct={Math.round(badgeDone / hoodBadge.need.length * 100)} size={48} accent={M.olive} label={`${badgeDone}/${hoodBadge.need.length}`}/>
             <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", color: M.oliveSoft }}>정복 도전</div>
+              <div style={{ fontFamily: MT.family, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", color: M.oliveSoft }}>정복 도전</div>
               <div style={{ fontSize: 16, fontWeight: 900, marginTop: 3 }}>{hoodBadge.name}</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.75)", marginTop: 2 }}>{hood.name} 코스를 모두 완주하면 배지 획득</div>
             </div>
@@ -159,7 +159,7 @@ function MXCourseDetail({ app, courseId }) {
         <MXPhoto tone={c.cover} height={250}/>
         <div style={{ position: "absolute", left: MX.pageX, right: MX.pageX, bottom: 16 }}>
           <div style={{ marginBottom: 8 }}><MXBadge official={c.official}/></div>
-          <h1 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: "#fff", margin: 0, lineHeight: 1.12, textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}>{c.title}</h1>
+          <h1 style={{ fontFamily: MT.family, fontSize: 28, fontWeight: 900, letterSpacing: "-0.03em", color: "#fff", margin: 0, lineHeight: 1.12, textShadow: "0 2px 12px rgba(0,0,0,0.3)" }}>{c.title}</h1>
         </div>
       </div>
 
@@ -236,7 +236,7 @@ function MXCourseDetail({ app, courseId }) {
                             <MIcon name="chevron" size={11} color={M.muted} style={{ transform: openStory === s.id ? "rotate(90deg)" : "rotate(0)" }}/>
                           </button>
                           {openStory === s.id && (
-                            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 13.5, lineHeight: 1.75, color: M.ink, fontWeight: 400, margin: "10px 2px 0", paddingLeft: 12, borderLeft: `2px solid ${M.olive}`, textWrap: "pretty" }}>{s.story}</p>
+                            <p style={{ fontFamily: MT.family, fontSize: 13.5, lineHeight: 1.75, color: M.ink, fontWeight: 400, margin: "10px 2px 0", paddingLeft: 12, borderLeft: `2px solid ${M.olive}`, textWrap: "pretty" }}>{s.story}</p>
                           )}
                         </div>
                       )}
@@ -283,7 +283,7 @@ function MXNearbyEats({ course }) {
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
                   <span style={{ fontSize: 14.5, fontWeight: 800, color: M.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.name}</span>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10.5, fontWeight: 700, color: M.muted, whiteSpace: "nowrap" }}>{e.kind} · {e.price}</span>
+                  <span style={{ fontFamily: MT.family, fontSize: 10.5, fontWeight: 700, color: M.muted, whiteSpace: "nowrap" }}>{e.kind} · {e.price}</span>
                 </div>
                 <p style={{ fontSize: 12.5, color: M.muted, lineHeight: 1.5, margin: "5px 0 0", fontWeight: 500, textWrap: "pretty" }}>{e.note}</p>
                 <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 7, flexWrap: "wrap" }}>
@@ -344,7 +344,7 @@ function MXCreate({ app }) {
 
         {/* 제목 */}
         <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="코스 제목 (예: 비 오는 날 성수 실내)"
-          style={{ width: "100%", border: "none", outline: "none", background: "#fff", boxShadow: MS.cardSm, borderRadius: MR.field, padding: "15px 16px", fontSize: 16, fontWeight: 700, color: M.ink, fontFamily: "Pretendard", marginBottom: 16 }}/>
+          style={{ width: "100%", border: "none", outline: "none", background: "#fff", boxShadow: MS.cardSm, borderRadius: MR.field, padding: "15px 16px", fontSize: 16, fontWeight: 700, color: M.ink, fontFamily: MT.family, marginBottom: 16 }}/>
 
         {/* 뷰 토글 */}
         <div style={{ display: "flex", gap: 4, background: M.cream, borderRadius: 999, padding: 4, marginBottom: 16 }}>
@@ -388,7 +388,7 @@ function MXCreate({ app }) {
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontSize: 14.5, fontWeight: 800, color: M.ink }}>{s.name}</div>
                 <input value={s.note} onChange={(e) => setStops((arr) => arr.map((x) => x.id === s.id ? { ...x, note: e.target.value } : x))}
-                  placeholder="한 줄 코멘트 추가" style={{ width: "100%", border: "none", outline: "none", background: "transparent", fontSize: 12.5, color: M.muted, fontWeight: 600, marginTop: 3, fontFamily: "Pretendard" }}/>
+                  placeholder="한 줄 코멘트 추가" style={{ width: "100%", border: "none", outline: "none", background: "transparent", fontSize: 12.5, color: M.muted, fontWeight: 600, marginTop: 3, fontFamily: MT.family }}/>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 <button onClick={() => moveStop(i, -1)} style={{ border: "none", background: M.cream, borderRadius: 7, width: 26, height: 22, cursor: "pointer", color: M.muted, fontSize: 11 }}>▲</button>

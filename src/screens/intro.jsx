@@ -33,7 +33,7 @@ function IntroScreen({ onNavigate }) {
         <Hairline label="WELCOME · 마실맵 소개" style={{ marginBottom: isMobile ? 22 : 30 }}/>
         <div style={{ maxWidth: 880 }}>
           <h1 style={{
-            fontFamily: "'Noto Serif KR', serif",
+            fontFamily: MT.family,
             fontSize: isMobile ? 38 : 72, fontWeight: 900,
             letterSpacing: "-0.035em", lineHeight: 1.08,
             color: M.ink, margin: 0, textWrap: "balance",
@@ -74,7 +74,7 @@ function IntroScreen({ onNavigate }) {
               paddingLeft: (!isMobile && i > 0) ? 32 : 0,
             }}>
               <div style={{ fontSize: isMobile ? 36 : 52, fontWeight: 900, letterSpacing: "-0.04em", color: M.terra, lineHeight: 1 }}>{n}</div>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", color: M.muted, marginTop: 8 }}>{l}</div>
+              <div style={{ fontFamily: MT.family, fontSize: 11, fontWeight: 600, letterSpacing: "0.1em", color: M.muted, marginTop: 8 }}>{l}</div>
             </div>
           ))}
         </div>
@@ -84,7 +84,7 @@ function IntroScreen({ onNavigate }) {
       <section style={{ background: M.cream, padding: `${isMobile ? 48 : 88}px ${px}px` }}>
         <MagCap color={M.olive} style={{ marginBottom: 14 }}>HOW IT WORKS · 이렇게 즐겨요</MagCap>
         <h2 style={{
-          fontFamily: "'Noto Serif KR', serif",
+          fontFamily: MT.family,
           fontSize: isMobile ? 28 : 44, fontWeight: 900, letterSpacing: "-0.03em",
           color: M.ink, margin: "0 0 8px", lineHeight: 1.12, textWrap: "balance",
         }}>
@@ -106,7 +106,7 @@ function IntroScreen({ onNavigate }) {
                 }}>
                   <MIcon name={s.icon} size={24} color={M.cream}/>
                 </div>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 30, fontWeight: 800, color: M.beigeAlt, letterSpacing: "-0.02em" }}>{s.no}</span>
+                <span style={{ fontFamily: MT.family, fontSize: 30, fontWeight: 800, color: M.beigeAlt, letterSpacing: "-0.02em" }}>{s.no}</span>
               </div>
               <h3 style={{ fontSize: isMobile ? 20 : 23, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 10px" }}>{s.title}</h3>
               <p style={{ fontSize: 14.5, lineHeight: 1.65, color: M.muted, fontWeight: 500, margin: 0, textWrap: "pretty" }}>{s.body}</p>
@@ -119,7 +119,7 @@ function IntroScreen({ onNavigate }) {
       <section style={{ padding: `${isMobile ? 48 : 88}px ${px}px` }}>
         <MagCap color={M.terra} style={{ marginBottom: 14 }}>WHY MASILMAP · 이런 점이 좋아요</MagCap>
         <h2 style={{
-          fontFamily: "'Noto Serif KR', serif",
+          fontFamily: MT.family,
           fontSize: isMobile ? 28 : 44, fontWeight: 900, letterSpacing: "-0.03em",
           color: M.ink, margin: "0 0 40px", lineHeight: 1.12, textWrap: "balance",
         }}>
@@ -152,7 +152,7 @@ function IntroScreen({ onNavigate }) {
       <section style={{ background: M.terra, padding: `${isMobile ? 56 : 96}px ${px}px`, textAlign: "center" }}>
         <MagCap color={M.oliveSoft} style={{ marginBottom: 18, justifyContent: "center" }}>START YOUR MASIL</MagCap>
         <h2 style={{
-          fontFamily: "'Noto Serif KR', serif",
+          fontFamily: MT.family,
           fontSize: isMobile ? 30 : 52, fontWeight: 900, letterSpacing: "-0.03em",
           color: M.cream, margin: "0 auto 18px", lineHeight: 1.12, maxWidth: 640, textWrap: "balance",
         }}>

@@ -23,7 +23,7 @@ function CourseIndex({ onNavigate }) {
             오늘 걷기 좋은{isMobile ? " " : <br/>}
             <span style={{ color: M.olive, fontWeight: 900 }}>코스</span> {COURSES.length}가지
           </h1>
-          <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: isMobile ? 14 : 17, lineHeight: 1.7, color: M.ink, margin: 0, textWrap: "pretty" }}>
+          <p style={{ fontFamily: MT.family, fontSize: isMobile ? 14 : 17, lineHeight: 1.7, color: M.ink, margin: 0, textWrap: "pretty" }}>
             마실 코스는 동네 큐레이터와 건축사학자가 직접 걸어보고 묶은 워킹 가이드입니다. 도슨트가 있는 코스는 예약, 셀프 코스는 무료로 따라 걸으실 수 있어요.
           </p>
         </div>
@@ -64,7 +64,7 @@ function CourseIndex({ onNavigate }) {
               </div>
               <div style={{ fontSize: 21, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, lineHeight: 1.2 }}>{c.name}</div>
               <p style={{ fontSize: 13, color: M.ink, lineHeight: 1.6, margin: "8px 0 12px", fontWeight: 500, textWrap: "pretty" }}>{c.blurb}</p>
-              <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: M.muted, fontWeight: 600, letterSpacing: "0.05em", display: "flex", gap: 10 }}>
+              <div style={{ fontFamily: MT.family, fontSize: 10, color: M.muted, fontWeight: 600, letterSpacing: "0.05em", display: "flex", gap: 10 }}>
                 <span>{c.distance}</span><span>·</span><span>{c.duration}</span><span>·</span><span>{c.difficulty}</span>
               </div>
             </div>
@@ -106,10 +106,10 @@ function CourseRouteMap({ stops, height = 380 }) {
         {pts.map((p) => (
           <g key={p.i} transform={`translate(${p.x}, ${p.y})`}>
             <circle r="22" fill={M.cream} stroke={M.terra} strokeWidth="2.5"/>
-            <text textAnchor="middle" dy="6" fontFamily="Pretendard, Nunito, sans-serif" fontSize="16" fontWeight="900" fill={M.terra}>
+            <text textAnchor="middle" dy="6" fontFamily={MT.family} fontSize="16" fontWeight="900" fill={M.terra}>
               {p.i + 1}
             </text>
-            <text x="0" y="-30" textAnchor="middle" fontFamily="Pretendard, Nunito, sans-serif" fontSize="12" fontWeight="800" fill={M.ink}
+            <text x="0" y="-30" textAnchor="middle" fontFamily={MT.family} fontSize="12" fontWeight="800" fill={M.ink}
               style={{ paintOrder: "stroke", stroke: M.cream, strokeWidth: 4, strokeLinejoin: "round" }}>
               {p.s.name}
             </text>
@@ -118,11 +118,11 @@ function CourseRouteMap({ stops, height = 380 }) {
         {/* start/end caps */}
         <g transform={`translate(${pts[0].x - 38}, ${pts[0].y})`}>
           <rect x="-24" y="-10" width="48" height="20" rx="10" fill={M.olive}/>
-          <text textAnchor="middle" dy="4" fontSize="10" fontFamily="'JetBrains Mono', monospace" fontWeight="700" fill={M.cream}>START</text>
+          <text textAnchor="middle" dy="4" fontSize="10" fontFamily={MT.family} fontWeight="700" fill={M.cream}>START</text>
         </g>
         <g transform={`translate(${pts[pts.length-1].x + 38}, ${pts[pts.length-1].y})`}>
           <rect x="-22" y="-10" width="44" height="20" rx="10" fill={M.ink}/>
-          <text textAnchor="middle" dy="4" fontSize="10" fontFamily="'JetBrains Mono', monospace" fontWeight="700" fill={M.cream}>END</text>
+          <text textAnchor="middle" dy="4" fontSize="10" fontFamily={MT.family} fontWeight="700" fill={M.cream}>END</text>
         </g>
       </svg>
       {/* HUD */}
@@ -156,7 +156,7 @@ function StopCard({ stop, idx, total, onClick, nextDist }) {
         <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink }}>{stop.name}</div>
         <div style={{ fontSize: 12, color: M.muted, fontWeight: 600, marginTop: 4 }}>{stop.architect} · {stop.year} · {stop.region}</div>
         <p style={{ fontSize: 13, color: M.ink, lineHeight: 1.6, margin: "8px 0 0", fontWeight: 500, textWrap: "pretty" }}>{stop.intro}</p>
-        <div style={{ display: "flex", gap: 14, marginTop: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, fontWeight: 600, color: M.muted }}>
+        <div style={{ display: "flex", gap: 14, marginTop: 10, fontFamily: MT.family, fontSize: 10, fontWeight: 600, color: M.muted }}>
           <span>머무는 시간 · {idx === 0 ? "60분" : idx === total - 1 ? "70분" : "40분"}</span>
           {idx < total - 1 && <><span>·</span><span>다음까지 · {nextDist}</span></>}
         </div>
@@ -188,7 +188,7 @@ function CourseScreen({ onNavigate, courseId }) {
             <h1 style={{ fontSize: 64, fontWeight: 900, letterSpacing: "-0.035em", lineHeight: 1.02, margin: "14px 0 0", color: M.ink, textWrap: "balance" }}>
               {c.name}
             </h1>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 19, lineHeight: 1.65, color: M.muted, marginTop: 20, marginBottom: 0, fontWeight: 400, maxWidth: 680, textWrap: "pretty" }}>{c.blurb}</p>
+            <p style={{ fontFamily: MT.family, fontSize: 19, lineHeight: 1.65, color: M.muted, marginTop: 20, marginBottom: 0, fontWeight: 400, maxWidth: 680, textWrap: "pretty" }}>{c.blurb}</p>
           </div>
           <div>
             {/* curator */}

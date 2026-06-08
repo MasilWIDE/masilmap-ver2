@@ -55,7 +55,7 @@ function MyPageScreen({ onNavigate }) {
 
         {/* 정복 배지 */}
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 16 }}>
-          <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>정복 배지</h2>
+          <h2 style={{ fontFamily: MT.family, fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: 0 }}>정복 배지</h2>
           <a href="Masil App.html" style={{ fontSize: 12.5, fontWeight: 800, color: M.olive, textDecoration: "none" }}>마실 앱에서 걷기 →</a>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16, marginBottom: 32 }}>
@@ -84,7 +84,7 @@ function MyPageScreen({ onNavigate }) {
         {/* 걷는 중인 코스 (따라 걷기 진행) */}
         {walking.length > 0 && (
           <>
-            <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 16px" }}>걷는 중인 코스</h2>
+            <h2 style={{ fontFamily: MT.family, fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 16px" }}>걷는 중인 코스</h2>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 16, marginBottom: 8 }}>
               {walking.map((c) => {
                 const pr = mxCourseProgress(c, done);
@@ -112,7 +112,7 @@ function MyPageScreen({ onNavigate }) {
         {/* 가볼 곳 — 팔로우한 채널 발자취에서 담은 장소 */}
         {(sh.s.savedPlaces || []).length > 0 && (
           <div style={{ marginTop: 24 }}>
-            <h2 style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 6px" }}>가볼 곳</h2>
+            <h2 style={{ fontFamily: MT.family, fontSize: 24, fontWeight: 900, letterSpacing: "-0.02em", color: M.ink, margin: "0 0 6px" }}>가볼 곳</h2>
             <p style={{ fontSize: 13, color: M.muted, fontWeight: 500, margin: "0 0 14px" }}>팔로우한 채널이 다녀온 곳에서 담아둔 장소예요.</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {(sh.s.savedPlaces || []).map((name, i) => (
@@ -137,9 +137,9 @@ function MyPageScreen({ onNavigate }) {
           <div>
             <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 4 }}>
               <h1 style={{ fontSize: 48, fontWeight: 900, letterSpacing: "-0.03em", margin: 0, color: M.ink }}>{USER.name}</h1>
-              <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 14, color: M.muted, fontWeight: 600 }}>{USER.handle}</span>
+              <span style={{ fontFamily: MT.family, fontSize: 14, color: M.muted, fontWeight: 600 }}>{USER.handle}</span>
             </div>
-            <p style={{ fontFamily: "'Noto Serif KR', serif", fontSize: 17, color: M.ink, margin: "0 0 16px", fontWeight: 400 }}>
+            <p style={{ fontFamily: MT.family, fontSize: 17, color: M.ink, margin: "0 0 16px", fontWeight: 400 }}>
               “{USER.bio}”
             </p>
             <div style={{ display: "flex", gap: 28 }}>
@@ -185,7 +185,7 @@ function MyPageScreen({ onNavigate }) {
                 display: "flex", alignItems: "center", gap: 8,
               }}>
                 <span>{t.label}</span>
-                <span style={{ fontSize: 11, fontFamily: "'JetBrains Mono', monospace", color: on ? M.terra : M.faint, fontWeight: 600 }}>{t.count}</span>
+                <span style={{ fontSize: 11, fontFamily: MT.family, color: on ? M.terra : M.faint, fontWeight: 600 }}>{t.count}</span>
               </div>
             );
           })}
