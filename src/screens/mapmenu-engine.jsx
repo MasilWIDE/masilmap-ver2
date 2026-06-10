@@ -172,12 +172,28 @@ function mkPinIcon(b, opts = {}) {
   });
 }
 
+/* Scholar 팔레트 클러스터 아이콘 — 줌아웃 시 그룹 표시 */
+function mkClusterIcon(cluster) {
+  const n = cluster.getChildCount();
+  const size = n < 10 ? 36 : n < 50 ? 44 : 52;
+  return window.L.divIcon({
+    className: "mk-cluster",
+    html:
+      `<div style="width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;` +
+        `border-radius:50%;background:` + M.terra + `;color:` + M.beige + `;` +
+        `border:2.5px solid ` + M.beige + `;box-shadow:0 0 0 5px rgba(211,172,43,0.32),0 4px 14px rgba(31,39,56,0.25);` +
+        `font-weight:900;font-size:` + (n < 10 ? 14 : 13) + `px;letter-spacing:-0.02em;">` + n + `</div>`,
+    iconSize: [size, size], iconAnchor: [size / 2, size / 2],
+  });
+}
+
 function MKDataMap({
   items, allInView, selectedId, hoveredId, onSelect, onHover,
   view, setView, onMoved, routeIds, routeColor, tone = "light", showLegend = true,
 }) {
   const containerRef = React.useRef(null);
   const mapRef       = React.useRef(null);
+  const clusterRef   = React.useRef(null);     // L.markerClusterGroup
   const markersRef   = React.useRef({});       // id → L.marker
   const routeLayerRef = React.useRef(null);
   /* 콜백 ref — effect 의존성 줄이고 stale closure 방지 */
@@ -217,9 +233,22 @@ function MKDataMap({
       cb.current.onMoved && cb.current.onMoved();
     });
 
+    /* 클러스터 그룹 — 줌 별로 합쳐졌다 분리됨 */
+    if (window.L.markerClusterGroup) {
+      const cluster = window.L.markerClusterGroup({
+        showCoverageOnHover: false,
+        spiderfyOnMaxZoom: true,
+        disableClusteringAtZoom: 13,    // 13 이상이면 모두 분리
+        maxClusterRadius: 55,            // 픽셀 반경 — 작을수록 잘 안 합쳐짐
+        iconCreateFunction: mkClusterIcon,
+      });
+      map.addLayer(cluster);
+      clusterRef.current = cluster;
+    }
+
     mapRef.current = map;
     setTimeout(() => map.invalidateSize(), 60);
-    return () => { map.remove(); mapRef.current = null; markersRef.current = {}; };
+    return () => { map.remove(); mapRef.current = null; markersRef.current = {}; clusterRef.current = null; };
   }, [dark]);
 
   /* ----- 외부에서 setView로 시점 갱신될 때 (전체 보기 / 코스 미리보기) ----- */
@@ -233,14 +262,15 @@ function MKDataMap({
     if (moved) map.setView(view.center, view.zoom, { animate: true });
   }, [view && view.center && view.center[0], view && view.center && view.center[1], view && view.zoom]);
 
-  /* ----- 마커 동기화 ----- */
+  /* ----- 마커 동기화 (cluster group에 추가) ----- */
   React.useEffect(() => {
     const map = mapRef.current;
     if (!map || !window.L) return;
+    const target = clusterRef.current || map;
     const want = new Set(items.filter((b) => b.latlng).map((b) => b.id));
     /* 사라진 것 제거 */
     for (const id of Object.keys(markersRef.current)) {
-      if (!want.has(id)) { map.removeLayer(markersRef.current[id]); delete markersRef.current[id]; }
+      if (!want.has(id)) { target.removeLayer(markersRef.current[id]); delete markersRef.current[id]; }
     }
     /* 새로 추가 */
     for (const b of items) {
@@ -256,7 +286,7 @@ function MKDataMap({
       });
       marker.on("mouseover", () => cb.current.onHover && cb.current.onHover(b.id));
       marker.on("mouseout",  () => cb.current.onHover && cb.current.onHover(null));
-      marker.addTo(map);
+      target.addLayer(marker);
       markersRef.current[b.id] = marker;
     }
   }, [items]);
@@ -370,5 +400,5 @@ Object.assign(window, {
   MK_CATS, MK_CAT_ORDER, MK_LENSES, MK_HOME_VIEW,
   mkExtSpaceOf, mkCatOf, mkCatColor, mkCoursesOf, mkCollectionsOf, mkExtMaps,
   mkExternalRefs, mkBuildings, useMapSaved, MKGlyph,
-  mkInBounds, mkPinIcon, MKDataMap, HudBtn,
+  mkInBounds, mkPinIcon, mkClusterIcon, MKDataMap, HudBtn,
 });

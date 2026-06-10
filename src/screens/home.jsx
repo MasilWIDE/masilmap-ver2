@@ -12,6 +12,7 @@
 function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = false }) {
   const containerRef = React.useRef(null);
   const mapRef = React.useRef(null);
+  const clusterRef = React.useRef(null);  // L.markerClusterGroup
   const markersRef = React.useRef({});   // id → L.circleMarker
   const onSelectRef = React.useRef(onSelect);
   onSelectRef.current = onSelect;
@@ -38,18 +39,31 @@ function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = f
       attribution: '&copy; OpenStreetMap &copy; CARTO',
     }).addTo(map);
     window.L.control.attribution({ position: "bottomleft", prefix: false }).addTo(map);
+    /* 클러스터 그룹 (있을 때만) */
+    if (window.L.markerClusterGroup && window.mkClusterIcon) {
+      const cluster = window.L.markerClusterGroup({
+        showCoverageOnHover: false,
+        spiderfyOnMaxZoom: true,
+        disableClusteringAtZoom: 13,
+        maxClusterRadius: 55,
+        iconCreateFunction: window.mkClusterIcon,
+      });
+      map.addLayer(cluster);
+      clusterRef.current = cluster;
+    }
     mapRef.current = map;
     setTimeout(() => map.invalidateSize(), 60);
-    return () => { map.remove(); mapRef.current = null; markersRef.current = {}; };
+    return () => { map.remove(); mapRef.current = null; markersRef.current = {}; clusterRef.current = null; };
   }, [tone]);
 
-  /* 마커 동기화 */
+  /* 마커 동기화 (cluster group 우선) */
   React.useEffect(() => {
     const map = mapRef.current;
     if (!map || !window.L) return;
+    const target = clusterRef.current || map;
     const want = new Set(buildings.filter((b) => b.latlng).map((b) => b.id));
     for (const id of Object.keys(markersRef.current)) {
-      if (!want.has(id)) { map.removeLayer(markersRef.current[id]); delete markersRef.current[id]; }
+      if (!want.has(id)) { target.removeLayer(markersRef.current[id]); delete markersRef.current[id]; }
     }
     for (const b of buildings) {
       if (!b.latlng || markersRef.current[b.id]) continue;
@@ -60,7 +74,7 @@ function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = f
       });
       marker.on("click", () => onSelectRef.current && onSelectRef.current(b.id));
       marker.bindTooltip(b.name, { direction: "top", offset: [0, -8], opacity: 0.95 });
-      marker.addTo(map);
+      target.addLayer(marker);
       markersRef.current[b.id] = marker;
     }
   }, [buildings]);

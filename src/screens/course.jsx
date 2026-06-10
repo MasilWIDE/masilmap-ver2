@@ -76,59 +76,73 @@ function CourseIndex({ onNavigate }) {
   );
 }
 
-/* 점선 경로 지도 */
+/* 코스 경로 지도 (Leaflet + CARTO Positron + 번호 마커 + 점선 폴리라인) */
 function CourseRouteMap({ stops, height = 380 }) {
-  // distribute stops along a curvy path
-  const pts = stops.map((s, i) => {
-    const t = (i + 0.5) / stops.length;
-    const x = 80 + t * 700 + Math.sin(t * 3.2) * 40;
-    const y = 200 + Math.sin(t * 4) * 90 + (i % 2 === 0 ? -10 : 10);
-    return { x, y, s, i };
-  });
-  const pathD = pts.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(" ");
+  const ref = React.useRef(null);
+  const mapRef = React.useRef(null);
+  /* stops 변동에 안전하게 — id 시퀀스로 키 의존 */
+  const stopsKey = stops.map((s) => s && s.id).join("|");
+
+  React.useEffect(() => {
+    if (!window.L || !ref.current || mapRef.current) return;
+    const pts = stops.filter((s) => s && s.latlng).map((s) => s.latlng);
+    if (pts.length === 0) return;
+    const map = window.L.map(ref.current, {
+      center: pts[0], zoom: 14,
+      minZoom: 10, maxZoom: 18,
+      zoomControl: false, attributionControl: false,
+      scrollWheelZoom: false,
+    });
+    window.L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      subdomains: "abcd", maxZoom: 19,
+      attribution: "&copy; OpenStreetMap &copy; CARTO",
+    }).addTo(map);
+    window.L.control.attribution({ position: "bottomleft", prefix: false }).addTo(map);
+
+    /* 점선 경로 */
+    if (pts.length >= 2) {
+      window.L.polyline(pts, {
+        color: M.terra, weight: 3.5, opacity: 0.95,
+        dashArray: "4 10", lineCap: "round", lineJoin: "round",
+      }).addTo(map);
+    }
+
+    /* 번호 마커 (START·번호·END) */
+    stops.forEach((s, i) => {
+      if (!s || !s.latlng) return;
+      const isFirst = i === 0;
+      const isLast  = i === stops.length - 1;
+      const ringColor = isFirst ? M.olive : isLast ? M.ink : M.terra;
+      const label = isFirst ? "S" : isLast ? "E" : String(i + 1);
+      const icon = window.L.divIcon({
+        className: "mk-pin",
+        iconSize: [36, 36], iconAnchor: [18, 18],
+        html:
+          `<div style="width:36px;height:36px;border-radius:50%;background:` + M.cream + `;` +
+            `border:2.5px solid ` + ringColor + `;display:flex;align-items:center;justify-content:center;` +
+            `font-family:` + MT.family + `;font-size:14px;font-weight:900;color:` + ringColor + `;` +
+            `box-shadow:0 4px 12px rgba(31,39,56,0.18);">` + label + `</div>`,
+      });
+      window.L.marker(s.latlng, { icon }).bindTooltip(s.name, { direction: "top", offset: [0, -18] }).addTo(map);
+    });
+
+    /* 모든 정류장 보이도록 fitBounds (10% 패딩) */
+    if (pts.length >= 2) {
+      map.fitBounds(window.L.latLngBounds(pts), { padding: [40, 40], maxZoom: 15 });
+    }
+
+    mapRef.current = map;
+    setTimeout(() => map.invalidateSize(), 60);
+    return () => { map.remove(); mapRef.current = null; };
+  }, [stopsKey]);
+
   return (
     <div style={{ position: "relative", width: "100%", height, background: M.cream, borderRadius: MR.cardLg, overflow: "hidden" }}>
-      <svg viewBox="0 0 900 400" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
-        <defs>
-          <pattern id="cgrid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(58,46,34,0.06)" strokeWidth="1"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#cgrid)" />
-        {/* roads */}
-        <path d="M -20 120 C 240 140 520 80 920 110" fill="none" stroke="#D4C29E" strokeWidth="22" strokeLinecap="round" />
-        <path d="M -20 280 C 220 300 600 250 920 290" fill="none" stroke="#D4C29E" strokeWidth="18" strokeLinecap="round" />
-        <path d="M 220 -20 C 230 180 280 320 240 420" fill="none" stroke="#D4C29E" strokeWidth="14" strokeLinecap="round" />
-        <path d="M 620 -20 C 610 160 650 320 640 420" fill="none" stroke="#D4C29E" strokeWidth="14" strokeLinecap="round" />
-        {/* dotted route */}
-        <path d={pathD} fill="none" stroke={M.terra} strokeWidth="3.5" strokeLinecap="round" strokeDasharray="2 10"/>
-        {/* numbered pins */}
-        {pts.map((p) => (
-          <g key={p.i} transform={`translate(${p.x}, ${p.y})`}>
-            <circle r="22" fill={M.cream} stroke={M.terra} strokeWidth="2.5"/>
-            <text textAnchor="middle" dy="6" fontFamily={MT.family} fontSize="16" fontWeight="900" fill={M.terra}>
-              {p.i + 1}
-            </text>
-            <text x="0" y="-30" textAnchor="middle" fontFamily={MT.family} fontSize="12" fontWeight="800" fill={M.ink}
-              style={{ paintOrder: "stroke", stroke: M.cream, strokeWidth: 4, strokeLinejoin: "round" }}>
-              {p.s.name}
-            </text>
-          </g>
-        ))}
-        {/* start/end caps */}
-        <g transform={`translate(${pts[0].x - 38}, ${pts[0].y})`}>
-          <rect x="-24" y="-10" width="48" height="20" rx="10" fill={M.olive}/>
-          <text textAnchor="middle" dy="4" fontSize="10" fontFamily={MT.family} fontWeight="700" fill={M.cream}>START</text>
-        </g>
-        <g transform={`translate(${pts[pts.length-1].x + 38}, ${pts[pts.length-1].y})`}>
-          <rect x="-22" y="-10" width="44" height="20" rx="10" fill={M.ink}/>
-          <text textAnchor="middle" dy="4" fontSize="10" fontFamily={MT.family} fontWeight="700" fill={M.cream}>END</text>
-        </g>
-      </svg>
+      <div ref={ref} style={{ position: "absolute", inset: 0 }}/>
       {/* HUD */}
-      <div style={{ position: "absolute", top: 16, left: 16, background: "rgba(255,248,236,0.95)", padding: "8px 14px", borderRadius: 12, boxShadow: MS.cardSm, display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{ position: "absolute", top: 16, left: 16, zIndex: 500, background: "rgba(255,255,255,0.94)", padding: "8px 14px", borderRadius: 12, boxShadow: MS.cardSm, display: "flex", alignItems: "center", gap: 10, pointerEvents: "none" }}>
         <MIcon name="walk" size={14} color={M.terra}/>
-        <MagCap>코스 경로 · 점선</MagCap>
+        <MagCap>코스 경로</MagCap>
       </div>
     </div>
   );
@@ -249,8 +263,8 @@ function CourseScreen({ onNavigate, courseId }) {
         <Hairline label="ROUTE · 점선 경로" style={{ marginBottom: 16 }}/>
         <CourseRouteMap stops={stops}/>
         <div style={{ marginTop: 8, display: "flex", justifyContent: "space-between", fontSize: 11, color: M.muted, fontWeight: 600 }}>
-          <span>지도는 실제 네이버·카카오 지도 SDK 연동 예정</span>
-          <span>↑ 일러스트 목업</span>
+          <span>CARTO Positron · 외부 길안내는 네이버·카카오·구글 지도</span>
+          <span>↑ 실 좌표 기반</span>
         </div>
       </section>
 

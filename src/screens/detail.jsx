@@ -7,43 +7,41 @@
    ================================================================ */
 
 function MiniMap({ b, style = {} }) {
+  const ref = React.useRef(null);
+  const mapRef = React.useRef(null);
+  React.useEffect(() => {
+    if (!window.L || !ref.current || mapRef.current) return;
+    if (!b.latlng) return;
+    const map = window.L.map(ref.current, {
+      center: b.latlng, zoom: 15,
+      minZoom: 12, maxZoom: 18,
+      zoomControl: false, attributionControl: false,
+      scrollWheelZoom: false, dragging: true,
+    });
+    window.L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+      subdomains: "abcd", maxZoom: 19,
+      attribution: "&copy; OpenStreetMap &copy; CARTO",
+    }).addTo(map);
+    window.L.control.attribution({ position: "bottomleft", prefix: false }).addTo(map);
+    const color = b.pinTone === "olive" ? M.olive : M.terra;
+    const icon = window.L.divIcon({
+      className: "mk-pin", iconSize: [30, 40], iconAnchor: [15, 39],
+      html:
+        `<svg width="30" height="40" viewBox="0 0 30 42" style="display:block;overflow:visible;">` +
+          `<ellipse cx="15" cy="40.5" rx="6.5" ry="2.2" fill="rgba(31,39,56,0.28)"/>` +
+          `<path d="M15 1 C23 1 30 7.5 30 16 C30 26 19 34 16 39 C15.4 39.9 14.6 39.9 14 39 C11 34 0 26 0 16 C0 7.5 7 1 15 1 Z" fill="` + color + `" stroke="#fff" stroke-width="2"/>` +
+          `<circle cx="15" cy="15" r="5" fill="` + M.cream + `"/>` +
+        `</svg>`,
+    });
+    window.L.marker(b.latlng, { icon }).bindTooltip(b.name, { permanent: false, direction: "top", offset: [0, -36] }).addTo(map);
+    mapRef.current = map;
+    setTimeout(() => map.invalidateSize(), 60);
+    return () => { map.remove(); mapRef.current = null; };
+  }, [b.id, b.latlng && b.latlng[0], b.latlng && b.latlng[1]]);
+
   return (
     <div style={{ position: "relative", width: "100%", aspectRatio: "4/3", borderRadius: MR.card, overflow: "hidden", background: M.cream, ...style }}>
-      <svg viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
-        <defs>
-          <pattern id="mgrid" width="24" height="24" patternUnits="userSpaceOnUse">
-            <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(58,46,34,0.07)" strokeWidth="1"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#mgrid)" />
-        {/* roads */}
-        <path d="M -20 80 C 120 100 220 60 420 90" fill="none" stroke="#D4C29E" strokeWidth="22" strokeLinecap="round" />
-        <path d="M -20 180 C 100 200 240 170 420 220" fill="none" stroke="#D4C29E" strokeWidth="18" strokeLinecap="round" />
-        <path d="M 120 -20 C 130 100 160 200 140 320" fill="none" stroke="#D4C29E" strokeWidth="16" strokeLinecap="round" />
-        <path d="M 280 -20 C 270 80 300 200 290 320" fill="none" stroke="#D4C29E" strokeWidth="14" strokeLinecap="round" />
-        {/* blocks */}
-        {[[60,40,80,60],[180,30,80,40],[180,210,100,70],[300,140,80,90],[40,210,90,60]].map((r, i) => (
-          <rect key={i} x={r[0]} y={r[1]} width={r[2]} height={r[3]} rx="6" fill="#E8D7B8" stroke="#D4C29E" strokeWidth="1"/>
-        ))}
-        {/* center pin */}
-        <g transform="translate(200, 150)">
-          <circle r="32" fill={b.pinTone === "olive" ? M.olive : M.terra} opacity="0.18">
-            <animate attributeName="r" from="20" to="42" dur="1.8s" repeatCount="indefinite" />
-            <animate attributeName="opacity" from="0.32" to="0" dur="1.8s" repeatCount="indefinite" />
-          </circle>
-          <g transform="translate(-12, -32)">
-            <path d="M12 0 C18 0 24 5 24 11 C24 17 17 25 13 28 C12.5 29 11.5 29 11 28 C7 25 0 17 0 11 C0 5 6 0 12 0 Z"
-              fill={b.pinTone === "olive" ? M.olive : M.terra}/>
-            <circle cx="12" cy="11" r="5" fill={M.cream}/>
-          </g>
-        </g>
-        {/* compass */}
-        <g transform="translate(360, 40)">
-          <circle r="14" fill={M.cream} stroke={M.beigeAlt}/>
-          <text textAnchor="middle" y="-3" fontSize="9" fontFamily={MT.family} fontWeight="700" fill={M.terra}>N</text>
-          <path d="M 0 -10 L 3 0 L 0 10 L -3 0 Z" fill={M.terra} transform="translate(0, 4) scale(0.5)"/>
-        </g>
-      </svg>
+      <div ref={ref} style={{ position: "absolute", inset: 0 }}/>
     </div>
   );
 }
