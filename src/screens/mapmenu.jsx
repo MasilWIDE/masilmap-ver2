@@ -331,9 +331,8 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
   };
   const pinItems = all.filter(matchFilters);
 
-  // 리스트 = searchedView 안 + 필터 (Google "이 지역 다시 검색" 패턴)
-  const searchVb = mkViewBox(searchedView);
-  const listItems = pinItems.filter((b) => mkInView(b.coord, searchVb, 30));
+  // 리스트 = searchedView bounds 안 + 필터 (Google "이 지역 다시 검색" 패턴)
+  const listItems = pinItems.filter((b) => b.latlng && mkInBounds(b.latlng, searchedView.bounds));
 
   const sel = all.find((b) => b.id === selectedId) || null;
   const routeIds = activeCourse ? activeCourse.buildings : (sel ? null : null);
@@ -343,12 +342,14 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
   const previewCourse = (c) => {
     setActiveCourse(c);
     if (c) {
-      // 코스 범위로 지도 이동
-      const pts = c.buildings.map((id) => (window.BUILDINGS.find((x) => x.id === id) || {}).coord).filter(Boolean);
+      // 코스 범위로 지도 이동 (latlng 평균)
+      const pts = c.buildings
+        .map((id) => (window.BUILDINGS.find((x) => x.id === id) || {}).latlng)
+        .filter(Boolean);
       if (pts.length) {
-        const cx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
-        const cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
-        const nv = { cx, cy, zoom: pts.length > 1 ? 1.7 : 2.3 };
+        const lat = pts.reduce((s, p) => s + p[0], 0) / pts.length;
+        const lng = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+        const nv = { center: [lat, lng], zoom: pts.length > 1 ? 11 : 14 };
         setView(nv); setSearchedView(nv); setMoved(false);
       }
     }
@@ -369,7 +370,7 @@ function MapMenuLayout({ onNavigate, searchQuery = "", isMobile = false }) {
             style={{ flex: 1, border: "none", outline: "none", background: "transparent", minWidth: 0,
               fontSize: 13, fontWeight: 600, color: M.ink, fontFamily: MT.family }}/>
         </div>
-        <button title="내 위치 주변" onClick={() => setView({ cx: 770, cy: 340, zoom: 2.6 })} style={{
+        <button title="내 위치 주변" onClick={() => setView({ center: [37.5665, 126.9780], zoom: 11 })} style={{
           width: 42, height: 42, flexShrink: 0, borderRadius: 999, border: "none", background: M.beige,
           boxShadow: MS.cardSm, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
         }}><MIcon name="location" size={17} color={M.terra}/></button>

@@ -8,6 +8,7 @@ const BUILDINGS = [
   {
     id: "kongkan",
     no: "001",
+    latlng: [37.58245, 126.98469],
     name: "공간 사옥",
     nameEn: "SPACE Group Building",
     architect: "김수근",
@@ -31,6 +32,7 @@ const BUILDINGS = [
   {
     id: "whanki",
     no: "002",
+    latlng: [37.59279, 126.96456],
     name: "환기미술관",
     nameEn: "Whanki Museum",
     architect: "우규승",
@@ -54,6 +56,7 @@ const BUILDINGS = [
   {
     id: "buseoksa",
     no: "003",
+    latlng: [36.99074, 128.68628],
     name: "부석사 무량수전",
     nameEn: "Muryangsujeon, Buseoksa",
     architect: "고려 도공",
@@ -77,6 +80,7 @@ const BUILDINGS = [
   {
     id: "boan",
     no: "004",
+    latlng: [37.57863, 126.97158],
     name: "통의동 보안여관",
     nameEn: "Boan 1942",
     architect: "미상",
@@ -100,6 +104,7 @@ const BUILDINGS = [
   {
     id: "bonte",
     no: "005",
+    latlng: [33.30171, 126.40192],
     name: "본태박물관",
     nameEn: "Bonte Museum",
     architect: "안도 다다오",
@@ -123,6 +128,7 @@ const BUILDINGS = [
   {
     id: "soeul",
     no: "006",
+    latlng: [37.75719, 128.88928],
     name: "솔올미술관",
     nameEn: "Solwol Museum",
     architect: "리처드 마이어",
@@ -146,6 +152,7 @@ const BUILDINGS = [
   {
     id: "jongmyo",
     no: "007",
+    latlng: [37.57493, 126.9941],
     name: "종묘 정전",
     nameEn: "Jongmyo Jeongjeon",
     architect: "조선 도공",
@@ -169,6 +176,7 @@ const BUILDINGS = [
   {
     id: "ddp",
     no: "008",
+    latlng: [37.56702, 127.00955],
     name: "동대문디자인플라자",
     nameEn: "Dongdaemun Design Plaza",
     architect: "자하 하디드",
@@ -192,6 +200,7 @@ const BUILDINGS = [
   {
     id: "leeum",
     no: "009",
+    latlng: [37.53843, 127.00088],
     name: "리움미술관",
     nameEn: "Leeum Museum of Art",
     architect: "마리오 보타·장 누벨·렘 콜하스",
@@ -215,6 +224,7 @@ const BUILDINGS = [
   {
     id: "museumsan",
     no: "010",
+    latlng: [37.41539, 127.98306],
     name: "뮤지엄 산",
     nameEn: "Museum SAN",
     architect: "안도 다다오",
@@ -238,6 +248,7 @@ const BUILDINGS = [
   {
     id: "njpcenter",
     no: "011",
+    latlng: [37.2724, 127.08628],
     name: "백남준아트센터",
     nameEn: "Nam June Paik Art Center",
     architect: "키르스텐 셰멜·마리나 슈탑",
@@ -261,6 +272,7 @@ const BUILDINGS = [
   {
     id: "mmcas",
     no: "012",
+    latlng: [37.57841, 126.98033],
     name: "국립현대미술관 서울",
     nameEn: "MMCA Seoul",
     architect: "민현준·mp_art architects",
@@ -284,6 +296,7 @@ const BUILDINGS = [
   {
     id: "jongrotower",
     no: "013",
+    latlng: [37.57026, 126.98263],
     name: "종로타워",
     nameEn: "Jongno Tower",
     architect: "라파엘 비뇰리",
@@ -307,6 +320,7 @@ const BUILDINGS = [
   {
     id: "geunjeongjeon",
     no: "014",
+    latlng: [37.57865, 126.97702],
     name: "경복궁 근정전",
     nameEn: "Geunjeongjeon, Gyeongbokgung",
     architect: "조선 도공",
@@ -330,6 +344,7 @@ const BUILDINGS = [
   {
     id: "yangjindang",
     no: "015",
+    latlng: [36.5396, 128.5176],
     name: "양진당",
     nameEn: "Yangjindang House",
     architect: "류운룡",
@@ -353,6 +368,7 @@ const BUILDINGS = [
   {
     id: "bongjeongsa",
     no: "016",
+    latlng: [36.61782, 128.65858],
     name: "봉정사 극락전",
     nameEn: "Geungnakjeon, Bongjeongsa",
     architect: "고려 도공",
@@ -376,6 +392,7 @@ const BUILDINGS = [
   {
     id: "acc",
     no: "017",
+    latlng: [35.14647, 126.92238],
     name: "국립아시아문화전당",
     nameEn: "Asia Culture Center",
     architect: "우규승",
@@ -399,6 +416,7 @@ const BUILDINGS = [
   {
     id: "amorepacific",
     no: "018",
+    latlng: [37.52983, 126.96475],
     name: "아모레퍼시픽 본사",
     nameEn: "Amorepacific Headquarters",
     architect: "데이비드 치퍼필드",
@@ -422,6 +440,7 @@ const BUILDINGS = [
   {
     id: "seonyudo",
     no: "019",
+    latlng: [37.54689, 126.90113],
     name: "선유도 공원",
     nameEn: "Seonyudo Park",
     architect: "정영선·조성룡",
@@ -445,6 +464,7 @@ const BUILDINGS = [
   {
     id: "parkmuseum",
     no: "020",
+    latlng: [38.1093, 127.9897],
     name: "박수근미술관",
     nameEn: "Park Soo-keun Museum",
     architect: "이종호",
@@ -468,6 +488,7 @@ const BUILDINGS = [
   {
     id: "hangeulmuseum",
     no: "021",
+    latlng: [37.51974, 126.98787],
     name: "국립한글박물관",
     nameEn: "National Hangeul Museum",
     architect: "박승홍 (삼우건축)",

@@ -6,136 +6,100 @@
      - editorial:   상단 매거진 헤로 + 그리드 + 작은 지도 (잡지 우선)
    ================================================================ */
 
-/* ---------- 추상 지도 (한반도 모티프, SVG) ---------- */
-function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = false, width = 1200, height = 700 }) {
-  const bg = tone === "deep" ? "#3A2E22" : M.beige;
-  const land = tone === "deep" ? "#4A3D2F" : "#EAD9BD";
-  const landLine = tone === "deep" ? "#5C4D3D" : "#D4C29E";
-  const water = tone === "deep" ? "#2F2519" : M.beige;   /* match page canvas (white) */
-  const grid = tone === "deep" ? "rgba(255,248,236,0.06)" : "rgba(58,46,34,0.06)";
+/* ---------- 실제 지도 (Leaflet + CARTO Positron) ----------
+   기존 SVG 추상 지도 → 진짜 타일 지도. 기존 props 시그니처 유지.
+   width/height props는 무시 (컨테이너 100% 채움).                */
+function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = false }) {
+  const containerRef = React.useRef(null);
+  const mapRef = React.useRef(null);
+  const markersRef = React.useRef({});   // id → L.circleMarker
+  const onSelectRef = React.useRef(onSelect);
+  onSelectRef.current = onSelect;
+
+  /* 지도 초기화 (한 번) */
+  React.useEffect(() => {
+    if (!window.L || !containerRef.current || mapRef.current) return;
+    const map = window.L.map(containerRef.current, {
+      center:  [36.4, 127.8],
+      zoom:    7,
+      minZoom: 6,
+      maxZoom: 18,
+      zoomControl: false,
+      attributionControl: false,
+      worldCopyJump: false,
+    });
+    /* CARTO Positron — 밝은 톤 / Dark Matter — deep 톤 */
+    const tileUrl = tone === "deep"
+      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+    window.L.tileLayer(tileUrl, {
+      subdomains: "abcd",
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+    }).addTo(map);
+    window.L.control.attribution({ position: "bottomleft", prefix: false }).addTo(map);
+    mapRef.current = map;
+    setTimeout(() => map.invalidateSize(), 60);
+    return () => { map.remove(); mapRef.current = null; markersRef.current = {}; };
+  }, [tone]);
+
+  /* 마커 동기화 */
+  React.useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !window.L) return;
+    const want = new Set(buildings.filter((b) => b.latlng).map((b) => b.id));
+    for (const id of Object.keys(markersRef.current)) {
+      if (!want.has(id)) { map.removeLayer(markersRef.current[id]); delete markersRef.current[id]; }
+    }
+    for (const b of buildings) {
+      if (!b.latlng || markersRef.current[b.id]) continue;
+      const color = b.pinTone === "olive" ? M.olive : M.terra;
+      const marker = window.L.circleMarker(b.latlng, {
+        radius: 7, color: "#fff", weight: 2, opacity: 1,
+        fillColor: color, fillOpacity: 1,
+      });
+      marker.on("click", () => onSelectRef.current && onSelectRef.current(b.id));
+      marker.bindTooltip(b.name, { direction: "top", offset: [0, -8], opacity: 0.95 });
+      marker.addTo(map);
+      markersRef.current[b.id] = marker;
+    }
+  }, [buildings]);
+
+  /* 선택된 핀 강조 + flyTo */
+  React.useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+    for (const [id, m] of Object.entries(markersRef.current)) {
+      const sel = id === selectedId;
+      const b = buildings.find((x) => x.id === id);
+      const color = b && b.pinTone === "olive" ? M.olive : M.terra;
+      m.setStyle({ radius: sel ? 11 : 7, weight: sel ? 3 : 2, fillColor: color });
+      if (sel) m.bringToFront();
+    }
+    if (selectedId) {
+      const b = buildings.find((x) => x.id === selectedId);
+      if (b && b.latlng) map.flyTo(b.latlng, Math.max(map.getZoom(), 11), { duration: 0.8 });
+    }
+  }, [selectedId, buildings]);
 
   return (
     <div style={{
       position: "relative", width: "100%", height: "100%",
-      background: water, borderRadius: compact ? MR.card : 0,
+      background: tone === "deep" ? "#2F2519" : "#FBFCFB",
+      borderRadius: compact ? MR.card : 0,
       overflow: "hidden",
     }}>
-      <svg
-        viewBox={`0 0 ${width} ${height}`}
-        preserveAspectRatio="xMidYMid slice"
-        width="100%" height="100%"
-        style={{ display: "block" }}>
-        {/* graph paper grid */}
-        <defs>
-          <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-            <path d="M 48 0 L 0 0 0 48" fill="none" stroke={grid} strokeWidth="1"/>
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
-
-        {/* abstract Korean peninsula */}
-        <path
-          d="M 700 100
-             C 760 110 800 160 790 220
-             C 780 270 810 300 820 340
-             C 830 380 870 400 880 460
-             C 890 510 870 560 820 590
-             C 770 620 740 640 740 680
-             L 740 750
-             C 740 800 700 830 660 830
-             C 600 830 560 800 540 760
-             C 520 720 530 680 510 660
-             C 480 620 480 580 510 540
-             C 540 500 540 460 520 420
-             C 500 380 510 340 540 310
-             C 580 280 620 270 650 240
-             C 670 210 680 170 700 100 Z"
-          fill={land}
-          stroke={landLine}
-          strokeWidth="1.5"
-        />
-        {/* Jeju */}
-        <ellipse cx="720" cy="980" rx="80" ry="35" fill={land} stroke={landLine} strokeWidth="1.5" />
-
-        {/* faint coast contour */}
-        <path
-          d="M 730 130 C 780 140 815 175 805 230 M 690 760 C 660 780 620 780 590 760"
-          fill="none" stroke={landLine} strokeWidth="1" opacity="0.5"
-        />
-
-        {/* region labels */}
-        {[
-          { x: 700, y: 200, t: "강원" },
-          { x: 670, y: 320, t: "서울·경기" },
-          { x: 600, y: 460, t: "충청" },
-          { x: 580, y: 600, t: "전라" },
-          { x: 730, y: 600, t: "경상" },
-          { x: 720, y: 990, t: "제주" },
-        ].map((r, i) => (
-          <text key={i} x={r.x} y={r.y}
-            fontFamily={MT.family}
-            fontSize="11" fontWeight="600"
-            letterSpacing="0.1em"
-            fill={tone === "deep" ? "rgba(245,235,220,0.5)" : "rgba(58,46,34,0.4)"}
-            textAnchor="middle">
-            {r.t.toUpperCase()}
-          </text>
-        ))}
-
-        {/* coordinate ticks */}
-        {[200, 400, 600, 800, 1000].map((y) => (
-          <g key={y}>
-            <line x1="20" y1={y} x2="32" y2={y} stroke={tone === "deep" ? "#5C4D3D" : "#B89E7A"} strokeWidth="1" />
-            <text x="38" y={y+4} fontFamily={MT.family} fontSize="9" fill={tone === "deep" ? "#7B6342" : "#8A7A65"}>
-              {(38 - y * 0.005).toFixed(2)}°
-            </text>
-          </g>
-        ))}
-
-        {/* pins */}
-        {buildings.map((b) => {
-          const on = b.id === selectedId;
-          const c = b.pinTone === "olive" ? M.olive : M.terra;
-          return (
-            <g
-              key={b.id}
-              transform={`translate(${b.coord[0]}, ${b.coord[1]})`}
-              onClick={() => onSelect(b.id)}
-              style={{ cursor: "pointer" }}>
-              {on && (
-                <circle r="34" fill={c} opacity="0.18">
-                  <animate attributeName="r" from="22" to="44" dur="1.6s" repeatCount="indefinite" />
-                  <animate attributeName="opacity" from="0.35" to="0" dur="1.6s" repeatCount="indefinite" />
-                </circle>
-              )}
-              <g transform={`scale(${on ? 1.15 : 0.85}) translate(-10, -26)`}>
-                <path
-                  d="M10 0 C15 0 19 4 19 9 C19 14 14 19 11 22 C10.5 23 9.5 23 9 22 C6 19 1 14 1 9 C1 4 5 0 10 0 Z"
-                  fill={c}/>
-                <circle cx="10" cy="9" r="4" fill={M.cream}/>
-              </g>
-              {on && (
-                <text x="0" y="-32" textAnchor="middle"
-                  fontFamily={MT.family}
-                  fontSize="13" fontWeight="800" fill={M.ink}
-                  style={{ paintOrder: "stroke", stroke: M.cream, strokeWidth: 4, strokeLinejoin: "round" }}>
-                  {b.name}
-                </text>
-              )}
-            </g>
-          );
-        })}
-      </svg>
+      <div ref={containerRef} style={{ position: "absolute", inset: 0 }}/>
 
       {/* HUD top-left */}
       <div style={{
-        position: "absolute", top: 16, left: 16,
-        background: tone === "deep" ? "rgba(58,46,34,0.85)" : "rgba(255,248,236,0.92)",
-        backdropFilter: "blur(4px)",
-        borderRadius: 14,
-        padding: "10px 14px",
+        position: "absolute", top: 16, left: 16, zIndex: 400,
+        background: tone === "deep" ? "rgba(31,39,56,0.85)" : "rgba(255,255,255,0.94)",
+        backdropFilter: "blur(6px)",
+        borderRadius: 14, padding: "10px 14px",
         display: "flex", alignItems: "center", gap: 10,
         boxShadow: MS.cardSm,
+        pointerEvents: "none",
       }}>
         <MIcon name="map" size={16} color={tone === "deep" ? M.beigeAlt : M.terra} />
         <MagCap color={tone === "deep" ? M.beigeAlt : M.ink}>
@@ -145,18 +109,22 @@ function MasilMap({ buildings, selectedId, onSelect, tone = "beige", compact = f
 
       {/* HUD bottom-right zoom */}
       <div style={{
-        position: "absolute", bottom: 16, right: 16,
+        position: "absolute", bottom: 16, right: 16, zIndex: 400,
         display: "flex", flexDirection: "column", gap: 4,
       }}>
-        {["+", "−"].map((c) => (
-          <div key={c} style={{
+        {[
+          { c: "+", action: () => mapRef.current && mapRef.current.zoomIn() },
+          { c: "−", action: () => mapRef.current && mapRef.current.zoomOut() },
+        ].map(({ c, action }) => (
+          <div key={c} onClick={action} style={{
             width: 36, height: 36, borderRadius: 12,
-            background: tone === "deep" ? "rgba(58,46,34,0.85)" : M.cream,
+            background: tone === "deep" ? "rgba(31,39,56,0.85)" : "rgba(255,255,255,0.94)",
             display: "flex", alignItems: "center", justifyContent: "center",
             color: tone === "deep" ? M.beigeAlt : M.ink,
             fontWeight: 800, fontSize: 18,
             boxShadow: MS.cardSm,
             cursor: "pointer",
+            userSelect: "none",
           }}>{c}</div>
         ))}
       </div>
